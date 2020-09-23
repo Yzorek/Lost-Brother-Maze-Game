@@ -34,10 +34,7 @@ namespace LBMG.Player
         {
             foreach (string path in _texturePaths)
             {
-                Debug.WriteLine(path);
                 Texture2D text = cm.Load<Texture2D>(path);
-                if (text == null)
-                    Debug.WriteLine("null !");
                 _textures.Add(text);
             }
         }
