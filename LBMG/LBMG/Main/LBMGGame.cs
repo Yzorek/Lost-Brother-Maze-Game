@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
 using LBMG.Player;
 using LBMG.Map;
+using System.Diagnostics;
 
 namespace LBMG.Main
 {
@@ -28,15 +29,15 @@ namespace LBMG.Main
             } 
         }
 
-        public Character Peter { get; set; }
-
-        public Character Fred { get; set; }
+        public List<Character> Characters { get; set; }
 
         public Map.Map Map { get; set; }
 
         public MapDrawer MapDrawer { get; set; }
 
         public CharacterDrawer CharacterDrawer { get; set; }
+
+        public Controller Controller { get; set; }
 
         public LBMGGame()
         {
@@ -57,18 +58,18 @@ namespace LBMG.Main
 #endif
             Content.RootDirectory = "PipelineContent";
 
-            Peter = new Character("Peter");
-            Fred = new Character("Fred");
+            Characters = new List<Character>
+            {
+                new Character("Peter", 70),
+                new Character("Fred", 70)
+            };
             Map = new Map.Map();
+            Controller = new Controller();
 
             MapDrawer = new MapDrawer();
 
             CharacterDrawer = new CharacterDrawer(
-                new List<Character> 
-                {
-                    Peter,
-                    Fred
-                },
+                Characters,
                 new List<string>
                 {
                     "Characters/peter",
@@ -76,8 +77,8 @@ namespace LBMG.Main
                 },
                 new List<Rectangle>
                 {
-                    new Rectangle(0, 0, 24, 32),
-                    new Rectangle(0, 0, 24, 32)
+                    new Rectangle(0, 0, 50, 69),
+                    new Rectangle(0, 0, 50, 69)
                 });
 
             ActivePLayer = 0;
@@ -100,7 +101,11 @@ namespace LBMG.Main
                 Exit();
             if (kse.WasKeyJustUp(Keys.C))                   // TEMP, will change with the timer later
                 ActivePLayer = ActivePLayer == 0 ? 1 : 0;
+
+            Controller.Update();
+            ControlCharacter();
             CharacterDrawer.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -112,6 +117,24 @@ namespace LBMG.Main
             _sb.Begin();
             CharacterDrawer.Draw(_sb, gameTime);
             _sb.End();
+        }
+
+        private void ControlCharacter()
+        {
+            if (Characters[ActivePLayer].IsMoving) return;
+            SendMove();
+            if (Controller.IsKeyPressed)                   //if (IsCollision() == false)       TODO : Add collision system
+            {
+                Characters[ActivePLayer].IsMoving = true;
+                Debug.WriteLine("Start");
+            }
+        }
+
+        private void SendMove()
+        {
+            Direction dir = Controller.Direction;
+
+            Characters[ActivePLayer].Direction = dir;
         }
     }
 }
