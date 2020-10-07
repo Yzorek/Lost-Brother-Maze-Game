@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using System.Diagnostics;
+using MonoGame.Extended.Tiled;
 
 namespace LBMG.Player
 {
@@ -48,7 +49,6 @@ namespace LBMG.Player
             MoveToCase(gameTime);
             if (_counter <= 0)
             {
-                Debug.WriteLine("Stop !");
                 Characters[_activePlayer].IsMoving = false;
                 _counter = TileSize;
             }
@@ -71,38 +71,41 @@ namespace LBMG.Player
 
             rect.Y = GetYRectVal(dir);
             rect.X = GetXRectVal();
+            rect.Size = new Point(50, AdjustSizeY(dir));
             _rectangles[_activePlayer] = rect;
         }
 
         private int GetYRectVal(Direction dir)
             => dir switch
             {
-                Direction.Left => 69,
-                Direction.Top => 207,
-                Direction.Right => 138,
+                Direction.Left => 72,
+                Direction.Top => 216,
+                Direction.Right => 144,
                 Direction.Bottom => 0
+            };
+
+        private int AdjustSizeY(Direction dir)
+            => dir switch
+            {
+                Direction.Left => 69,
+                Direction.Top => 60,
+                Direction.Right => 69,
+                Direction.Bottom => 69
             };
 
         private int GetXRectVal()
         {
             if (Characters[_activePlayer].IsMoving == false)
                 return 50;
-            if (_counter <= TileSize && _counter > TileSize - TileSize / 3)
-            {
-                Debug.WriteLine("rect 1");
-                return 0;
-            }
-            if (_counter <= TileSize - TileSize / 3 && _counter > TileSize - 2 * TileSize / 3)
-            {
-                Debug.WriteLine("rect 2");
+            if (_counter <= TileSize && _counter > TileSize - TileSize / 4)
+                return -2;
+            if (_counter <= TileSize - TileSize / 4 && _counter > TileSize - 2 * TileSize / 4)
                 return 50;
-            }
-            if (_counter <= TileSize - 2 * TileSize / 3)
-            {
-                Debug.WriteLine("rect 3");
-                return 100;
-            }
-            return 0;
+            if (_counter <= TileSize - 2 * TileSize / 4 && _counter > TileSize - 3 * TileSize / 4)
+                return 102;
+            if (_counter <= TileSize - 3 * TileSize / 4)
+                return 50;
+            return -2;
         }
 
         private void MoveToCase(GameTime gameTime)

@@ -124,10 +124,8 @@ namespace LBMG.Main
             if (Characters[ActivePLayer].IsMoving) return;
             SendMove();
             if (Controller.IsKeyPressed)                   //if (IsCollision() == false)       TODO : Add collision system
-            {
                 Characters[ActivePLayer].IsMoving = true;
-                Debug.WriteLine("Start");
-            }
+            
         }
 
         private void SendMove()
