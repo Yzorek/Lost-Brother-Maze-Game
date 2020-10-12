@@ -39,6 +39,8 @@ namespace LBMG.Main
 
         public UI.UI UserInterface { get; set; }
 
+        public UIDrawer UiDrawer { get; set; }
+
         public LBMGGame()
         {
             Content.RootDirectory = @"PipelineContent";
@@ -69,18 +71,20 @@ namespace LBMG.Main
 
             MapDrawer = new MapDrawer();
 
-            CharacterDrawer = new CharacterDrawer(
-                Characters,
-                new List<string>
-                {
-                    "Characters/peter",
-                    "Characters/fred"
-                },
-                new List<Rectangle>
-                {
-                    new Rectangle(0, 0, 50, 69),
-                    new Rectangle(0, 0, 50, 69)
-                });
+            CharacterDrawer = new CharacterDrawer(Characters, new List<string>
+            {
+                "Characters/peter",
+                "Characters/fred"
+            }, new List<Rectangle>
+            {
+                new Rectangle(0, 0, 50, 69),
+                new Rectangle(0, 0, 50, 69)
+            });
+
+            UiDrawer = new UIDrawer(UserInterface, new List<string>
+            {
+                "DialogBox/dialog_frame1"
+            });
 
             ActivePLayer = 0;
         }
@@ -90,6 +94,7 @@ namespace LBMG.Main
             _sb = new SpriteBatch(GraphicsDevice);
             MapDrawer.Initialize(GraphicsDevice, Content);
             CharacterDrawer.Initialize(GraphicsDevice, Content);
+            UiDrawer.Initialize(Content);
             base.Initialize();
         }
 
@@ -113,6 +118,7 @@ namespace LBMG.Main
             Controller.Update();
             ControlCharacter();
             CharacterDrawer.Update(gameTime);
+            UiDrawer.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -124,6 +130,7 @@ namespace LBMG.Main
             base.Draw(gameTime);
             _sb.Begin();
             CharacterDrawer.Draw(_sb, gameTime);
+            UiDrawer.Draw(_sb, gameTime);
             _sb.End();
         }
 
