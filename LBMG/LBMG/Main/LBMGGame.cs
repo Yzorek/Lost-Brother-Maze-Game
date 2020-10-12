@@ -8,6 +8,7 @@ using MonoGame.Extended.Input;
 using LBMG.Player;
 using LBMG.Map;
 using System.Diagnostics;
+using LBMG.UI;
 
 namespace LBMG.Main
 {
@@ -36,6 +37,8 @@ namespace LBMG.Main
 
         public Controller Controller { get; set; }
 
+        public UI.UI UserInterface { get; set; }
+
         public LBMGGame()
         {
             Content.RootDirectory = @"PipelineContent";
@@ -62,6 +65,7 @@ namespace LBMG.Main
             };
             Map = new Map.Map();
             Controller = new Controller();
+            UserInterface = new UI.UI();
 
             MapDrawer = new MapDrawer();
 
@@ -98,6 +102,13 @@ namespace LBMG.Main
                 Exit();
             if (kse.WasKeyJustUp(Keys.C))                   // TEMP, will change with the timer later
                 ActivePLayer = ActivePLayer == 0 ? 1 : 0;
+            if (kse.WasKeyJustUp(Keys.L))                   // TEMP
+            {
+                Debug.WriteLine("Is about to write something...");
+                UserInterface.DialogBox.Write(new List<int>{1, 2});
+            }
+            if (kse.WasKeyJustUp(Keys.N))                   // TEMP
+                UserInterface.DialogBox.NextDialog();
 
             Controller.Update();
             ControlCharacter();

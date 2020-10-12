@@ -4,7 +4,13 @@ using System.Text;
 
 namespace LBMG.UI
 {
-    class UI
+    public class UI
     {
+        public DialogBox DialogBox { get; set; }
+
+        public UI()
+        {
+            DialogBox = new DialogBox();
+        }
     }
 }
