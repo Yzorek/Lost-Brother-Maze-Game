@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using LBMG.Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,9 +13,10 @@ namespace LBMG.UI
         public DialogBox DialogBox { get; set; }
 
         private Texture2D _boxTexture;
-        private string _boxTexturePath;
-        private Rectangle _rectangle;
-        private Vector2 _boxPos;
+        private readonly string _boxTexturePath;
+        private readonly Rectangle _rectangle;
+        private readonly Vector2 _boxPos;
+        private readonly Vector2 _textPos;
         private SpriteFont _font;
 
         public DialogBoxDrawer(DialogBox dialogBox, string texturePath, Rectangle rectangle)
@@ -24,6 +26,8 @@ namespace LBMG.UI
             _rectangle = rectangle;
             _boxPos.X = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2 - DialogBox.Size.X / 2;
             _boxPos.Y = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - DialogBox.Size.Y - 20;
+            _textPos.X = _boxPos.X + Constants.PaddingLeft;
+            _textPos.Y = _boxPos.Y + Constants.PaddingTop;
         }
 
         public void Initialize(ContentManager cm)
@@ -42,7 +46,7 @@ namespace LBMG.UI
             if (DialogBox.Visible)
             {
                 sb.Draw(_boxTexture, _boxPos, _rectangle, Color.White);
-                sb.DrawString(_font, DialogBox.TextWritten[DialogBox.CurrentTextIndex], _boxPos, Color.White);
+                sb.DrawString(_font, DialogBox.TextWritten[DialogBox.CurrentTextIndex], _textPos, Color.White);
             }
         }
     }
