@@ -110,7 +110,7 @@ namespace LBMG.Main
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
             {
                 Debug.WriteLine("Is about to write something...");
-                UserInterface.DialogBox.Write(3);
+                UserInterface.DialogBox.Write(new List<int>{1, 2, 3, 4});
             }
             if (kse.WasKeyJustUp(Keys.N))                   // TEMP
                 UserInterface.DialogBox.NextDialog();

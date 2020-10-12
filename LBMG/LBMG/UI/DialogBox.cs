@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using LBMG.Tools;
 using Microsoft.Xna.Framework;
 
 namespace LBMG.UI
@@ -28,6 +29,7 @@ namespace LBMG.UI
             Visible = false;
             FontPath = font;
             Size = size;
+            CharWidth = 10;
         }
 
         public void Write(List<int> keysOfTextToDisplay)
@@ -92,8 +94,52 @@ namespace LBMG.UI
 
         private List<string> WrapText(string textToWrap)
         {
-            var str = textToWrap.Split(' ').ToList();   // TODO Add some wrapping logic
-            return str;
+            var splittedText = textToWrap.Split(' ');
+            List<string> textWrapped = new List<string>();
+            int lineLength = Size.X - Constants.PaddingLeft - Constants.PaddingRight;
+            int maxNbOfChar = lineLength / CharWidth;
+            int counter = 0;
+            string block = "";
+            string line = "";
+
+            foreach (var word in splittedText)
+            {
+                if (word.Length > maxNbOfChar)
+                    throw new TooBigWordException("A word delimited by spaces exceed the maximum amount of char available in a line.");
+                if (line.Length + word.Length >= maxNbOfChar)
+                {
+                    line += '\n';
+                    block += line;
+                    line = "";
+                    line += word;
+                    counter++;
+                }
+                else
+                {
+                    string adjustedWord = word + ' ';
+                    line += adjustedWord;
+                }
+
+                if (counter == 3)
+                {
+                    textWrapped.Add(block);
+                    block = "";
+                    counter = 0;
+                }
+            }
+
+            line += '\n';
+            block += line;
+            textWrapped.Add(block);
+
+            return textWrapped;
         }
+    }
+
+    public class TooBigWordException : SystemException
+    {
+        public TooBigWordException() : base() { }
+        public TooBigWordException(string message) : base(message) { }
+        public TooBigWordException(string message, SystemException inner) : base(message, inner) { }
     }
 }
