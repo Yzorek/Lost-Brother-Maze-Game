@@ -11,7 +11,7 @@ namespace LBMG.UI
 
         public UI()
         {
-            DialogBox = new DialogBox("Fonts/myFont", new Point(600, 600));
+            DialogBox = new DialogBox("Fonts/myFont", new Point(640, 112));
         }
     }
 }

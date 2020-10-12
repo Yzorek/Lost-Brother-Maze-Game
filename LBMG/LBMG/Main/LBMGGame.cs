@@ -83,7 +83,7 @@ namespace LBMG.Main
 
             UiDrawer = new UIDrawer(UserInterface, new List<string>
             {
-                "DialogBox/dialog_frame1"
+                "DialogBox/dialog_box"
             });
 
             ActivePLayer = 0;
@@ -110,7 +110,7 @@ namespace LBMG.Main
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
             {
                 Debug.WriteLine("Is about to write something...");
-                UserInterface.DialogBox.Write(new List<int>{1, 2});
+                UserInterface.DialogBox.Write(3);
             }
             if (kse.WasKeyJustUp(Keys.N))                   // TEMP
                 UserInterface.DialogBox.NextDialog();
