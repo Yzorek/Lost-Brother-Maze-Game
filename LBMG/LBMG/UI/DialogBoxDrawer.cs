@@ -28,7 +28,7 @@ namespace LBMG.UI
 
         public void Initialize(ContentManager cm)
         {
-            //_boxTexture = cm.Load<Texture2D>(_boxTexturePath);
+            _boxTexture = cm.Load<Texture2D>(_boxTexturePath);
             _font = cm.Load<SpriteFont>(DialogBox.FontPath);
         }
 
@@ -41,7 +41,7 @@ namespace LBMG.UI
         {
             if (DialogBox.Visible)
             {
-                //sb.Draw(_boxTexture, _boxPos, _rectangle, Color.White);
+                sb.Draw(_boxTexture, _boxPos, _rectangle, Color.White);
                 sb.DrawString(_font, DialogBox.TextWritten[DialogBox.CurrentTextIndex], _boxPos, Color.White);
             }
         }
