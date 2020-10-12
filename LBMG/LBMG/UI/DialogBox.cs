@@ -9,7 +9,7 @@ namespace LBMG.UI
 {
     public class DialogBox
     {
-        private bool Visible { get; set; }
+        public bool Visible { get; set; }
 
         public List<string> TextWritten { get; set; }
 
@@ -17,15 +17,17 @@ namespace LBMG.UI
 
         public Point Size { get; set; }
 
-        //public Font Font { get; set; }
+        public string FontPath { get; set; }
 
         public int CharWidth { get; set; }
 
         public int DisplaySpeed { get; set; }
 
-        public DialogBox()
+        public DialogBox(string font, Point size)
         {
             Visible = false;
+            FontPath = font;
+            Size = size;
         }
 
         public void Write(List<int> keysOfTextToDisplay)

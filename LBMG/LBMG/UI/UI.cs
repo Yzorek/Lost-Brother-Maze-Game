@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace LBMG.UI
 {
@@ -10,7 +11,7 @@ namespace LBMG.UI
 
         public UI()
         {
-            DialogBox = new DialogBox();
+            DialogBox = new DialogBox("Fonts/myFont", new Point(600, 600));
         }
     }
 }
