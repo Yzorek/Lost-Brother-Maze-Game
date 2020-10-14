@@ -18,7 +18,7 @@ namespace LBMG.Player
         private readonly List<Texture2D> _textures;
         private List<Rectangle> _rectangles;
         private int _activePlayer;
-        private Vector2 _playerPos;
+        private readonly Vector2 _playerPos;
         const int TileSize = 32;
         private double _counter;
 
@@ -50,6 +50,8 @@ namespace LBMG.Player
             if (_counter <= 0)
             {
                 Characters[_activePlayer].IsMoving = false;
+                Characters[_activePlayer].Move();
+                Debug.WriteLine("x : " + Characters[_activePlayer].Position.X + " y : " + Characters[_activePlayer].Position.Y);
                 _counter = TileSize;
             }
         }
@@ -81,7 +83,8 @@ namespace LBMG.Player
                 Direction.Left => 72,
                 Direction.Top => 216,
                 Direction.Right => 144,
-                Direction.Bottom => 0
+                Direction.Bottom => 0,
+                _ => throw new ArgumentOutOfRangeException(nameof(dir), dir, null)
             };
 
         private int AdjustSizeY(Direction dir)
@@ -90,7 +93,8 @@ namespace LBMG.Player
                 Direction.Left => 69,
                 Direction.Top => 60,
                 Direction.Right => 69,
-                Direction.Bottom => 69
+                Direction.Bottom => 69,
+                _ => throw new ArgumentOutOfRangeException(nameof(dir), dir, null)
             };
 
         private int GetXRectVal()

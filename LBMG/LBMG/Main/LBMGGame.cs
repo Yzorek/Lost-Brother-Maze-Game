@@ -18,10 +18,7 @@ namespace LBMG.Main
         private int _activePlayer = 0;
         private int ActivePLayer
         {
-            get 
-            {
-                return _activePlayer;
-            } 
+            get => _activePlayer;
             set 
             {
                 _activePlayer = value;
@@ -123,9 +120,6 @@ namespace LBMG.Main
         {
             if (Characters[ActivePLayer].IsMoving) return;
             SendMove();
-            if (Controller.IsKeyPressed)                   //if (IsCollision() == false)       TODO : Add collision system
-                Characters[ActivePLayer].IsMoving = true;
-            
         }
 
         private void SendMove()
@@ -133,6 +127,8 @@ namespace LBMG.Main
             Direction dir = Controller.Direction;
 
             Characters[ActivePLayer].Direction = dir;
+            if (Controller.IsKeyPressed)                   //if (IsCollision() == false)       TODO : Add collision system
+                Characters[ActivePLayer].IsMoving = true;
         }
     }
 }
