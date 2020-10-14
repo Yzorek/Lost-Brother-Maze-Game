@@ -26,8 +26,8 @@ namespace LBMG.UI
             _rectangle = rectangle;
             _boxPos.X = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2 - DialogBox.Size.X / 2;
             _boxPos.Y = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - DialogBox.Size.Y - 20;
-            _textPos.X = _boxPos.X + Constants.PaddingLeft;
-            _textPos.Y = _boxPos.Y + Constants.PaddingTop;
+            _textPos.X = _boxPos.X + Constants.DBoxPaddingLeft;
+            _textPos.Y = _boxPos.Y + Constants.DBoxPaddingTop;
         }
 
         public void Initialize(ContentManager cm)

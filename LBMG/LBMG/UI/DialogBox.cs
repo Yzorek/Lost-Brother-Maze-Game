@@ -32,6 +32,23 @@ namespace LBMG.UI
             CharWidth = 10;
         }
 
+        public void Write(int keyOfTextToDisplay, string[] args)
+        {
+            if (Visible)
+                return;
+
+            TextWritten = new List<string>();
+            Visible = true;
+
+            List<string> texts = WrapText(string.Format(TextBank.GetText(keyOfTextToDisplay), args));
+
+            foreach (var text in texts)
+            {
+                TextWritten.Add(text);
+            }
+            Debug.WriteLine(TextWritten[CurrentTextIndex]);
+        }
+
         public void Write(List<int> keysOfTextToDisplay)
         {
             if (Visible)
@@ -96,7 +113,7 @@ namespace LBMG.UI
         {
             var splittedText = textToWrap.Split(' ');
             List<string> textWrapped = new List<string>();
-            int lineLength = Size.X - Constants.PaddingLeft - Constants.PaddingRight;
+            int lineLength = Size.X - Constants.DBoxPaddingLeft - Constants.DBoxPaddingRight;
             int maxNbOfChar = lineLength / CharWidth;
             int counter = 0;
             string block = "";
