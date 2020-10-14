@@ -110,10 +110,12 @@ namespace LBMG.Main
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
             {
                 Debug.WriteLine("Is about to write something...");
-                UserInterface.DialogBox.Write(new List<int>{1, 2, 3, 4});
+                UserInterface.DialogBox.Write(5, new[]{"sud", "est"});
             }
             if (kse.WasKeyJustUp(Keys.N))                   // TEMP
                 UserInterface.DialogBox.NextDialog();
+            if (kse.WasKeyJustUp(Keys.T)) // TEMP
+                TextBank.CurrentLanguage = Language.English;
 
             Controller.Update();
             ControlCharacter();
