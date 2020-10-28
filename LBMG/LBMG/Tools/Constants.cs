@@ -8,9 +8,9 @@ namespace LBMG.Tools
     {
         /* ----------- DialogBox constants ----------- */
 
-        public const int DBoxPaddingLeft = 8;
-        public const int DBoxPaddingTop = 5;
-        public const int DBoxPaddingRight = 8;
-        public const int DBoxPaddingBottom = 5;
+        public const int DBoxPaddingLeft = 20;
+        public const int DBoxPaddingTop = 15;
+        public const int DBoxPaddingRight = 20;
+        public const int DBoxPaddingBottom = 15;
     }
 }

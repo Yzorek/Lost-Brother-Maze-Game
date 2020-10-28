@@ -8,6 +8,7 @@ using MonoGame.Extended.Input;
 using LBMG.Player;
 using LBMG.Map;
 using System.Diagnostics;
+using LBMG.Tools;
 using LBMG.UI;
 
 namespace LBMG.Main
@@ -46,18 +47,20 @@ namespace LBMG.Main
             Content.RootDirectory = @"PipelineContent";
             Window.AllowUserResizing = true;
             IsMouseVisible = true;
+            Point resolution = ResolutionHelper.GetResolution();
 
             gdm = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width,
-                PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height,
+                PreferredBackBufferWidth = 1920,            // TEMP, app must be DPI aware
+                PreferredBackBufferHeight = 1080,
                 IsFullScreen = true
             };
-#if DEBUG
-            gdm.IsFullScreen = false;
-            gdm.PreferredBackBufferWidth = 800;
-            gdm.PreferredBackBufferHeight = 600;
-#endif
+//#if DEBUG
+//            gdm.IsFullScreen = false;
+//            gdm.PreferredBackBufferWidth = 800;
+//            gdm.PreferredBackBufferHeight = 600;
+//            gdm.ApplyChanges();
+//#endif
             Content.RootDirectory = "PipelineContent";
 
             Characters = new List<Character>
@@ -110,7 +113,8 @@ namespace LBMG.Main
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
             {
                 Debug.WriteLine("Is about to write something...");
-                UserInterface.DialogBox.Write(5, new[]{"sud", "est"});
+                //UserInterface.DialogBox.Write(5, new[]{"sud", "est"});
+                UserInterface.DialogBox.Write(3);
             }
             if (kse.WasKeyJustUp(Keys.N))                   // TEMP
                 UserInterface.DialogBox.NextDialog();
