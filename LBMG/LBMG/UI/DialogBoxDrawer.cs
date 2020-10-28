@@ -34,6 +34,7 @@ namespace LBMG.UI
         {
             _boxTexture = cm.Load<Texture2D>(_boxTexturePath);
             _font = cm.Load<SpriteFont>(DialogBox.FontPath);
+            _font.LineSpacing = 26;
         }
 
         public void Update(GameTime gameTime/*, Camera<Vector2> camera*/)

@@ -24,14 +24,12 @@ namespace LBMG.UI
 
         public int DisplaySpeed { get; set; }               //TODO
 
-        public int SpaceBetweenLines { get; set; }          //TODO
-
         public DialogBox(string font, Point size)
         {
             Visible = false;
             FontPath = font;
             Size = size;
-            CharWidth = 9;
+            CharWidth = 12;
         }
 
         public void Write(int keyOfTextToDisplay, string[] args)
