@@ -55,6 +55,8 @@ namespace LBMG.Main
 
             if (ks.IsKeyDown(Keys.Escape))
                 Exit();
+            if (CurrentGame.Started)
+                CurrentGame.Update(gameTime, kse);
             base.Update(gameTime);
         }
 
