@@ -19,16 +19,6 @@ namespace LBMG.Main
 
         readonly GraphicsDeviceManager gdm;
         private SpriteBatch _sb;
-        private int _activePlayer = 0;
-        private int ActivePLayer
-        {
-            get => _activePlayer;
-            set 
-            {
-                _activePlayer = value;
-                CharacterDrawer?.SetActivePlayer(value);
-            } 
-        }
 
         public GamePlay.GamePlay CurrentGame { get; set; }
 
@@ -53,7 +43,6 @@ namespace LBMG.Main
             gdm.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             gdm.ApplyChanges();
 #endif
-
             _sb = new SpriteBatch(GraphicsDevice);
             CurrentGame.Initialize(GraphicsDevice, Content);    // TEMP, later will be launched with the menu
             base.Initialize();
@@ -66,23 +55,6 @@ namespace LBMG.Main
 
             if (ks.IsKeyDown(Keys.Escape))
                 Exit();
-            if (kse.WasKeyJustUp(Keys.C))                   // TEMP, will change with the timer later
-                ActivePLayer = ActivePLayer == 0 ? 1 : 0;
-            if (kse.WasKeyJustUp(Keys.L))                   // TEMP
-            {
-                Debug.WriteLine("Is about to write something...");
-                UserInterface.DialogBox.Write(5, new[]{"sud", "est"});
-            }
-            if (kse.WasKeyJustUp(Keys.N))                   // TEMP
-                UserInterface.DialogBox.NextDialog();
-            if (kse.WasKeyJustUp(Keys.T)) // TEMP
-                TextBank.CurrentLanguage = Language.English;
-
-            Controller.Update();
-            ControlCharacter();
-            CharacterDrawer.Update(gameTime);
-            UiDrawer.Update(gameTime);
-
             base.Update(gameTime);
         }
 
