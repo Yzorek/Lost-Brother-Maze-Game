@@ -9,22 +9,25 @@ using LBMG.Player;
 using LBMG.Map;
 using System.Diagnostics;
 using LBMG.UI;
+using System.Runtime.InteropServices;
+
 
 namespace LBMG.Main
 {
     public class LBMGGame : Game
     {
+
         readonly GraphicsDeviceManager gdm;
         private SpriteBatch _sb;
         private int _activePlayer = 0;
         private int ActivePLayer
         {
             get => _activePlayer;
-            set 
+            set
             {
                 _activePlayer = value;
                 CharacterDrawer?.SetActivePlayer(value);
-            } 
+            }
         }
 
         public List<Character> Characters { get; set; }
@@ -47,17 +50,8 @@ namespace LBMG.Main
             Window.AllowUserResizing = true;
             IsMouseVisible = true;
 
-            gdm = new GraphicsDeviceManager(this)
-            {
-                PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width,
-                PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height,
-                IsFullScreen = true
-            };
-#if DEBUG
-            gdm.IsFullScreen = false;
-            gdm.PreferredBackBufferWidth = 800;
-            gdm.PreferredBackBufferHeight = 600;
-#endif
+            gdm = new GraphicsDeviceManager(this);
+
             Content.RootDirectory = "PipelineContent";
 
             Characters = new List<Character>
@@ -91,6 +85,13 @@ namespace LBMG.Main
 
         protected override void Initialize()
         {
+#if !DEBUG
+            gdm.IsFullScreen = true;
+            gdm.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            gdm.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            gdm.ApplyChanges();
+#endif
+
             _sb = new SpriteBatch(GraphicsDevice);
             MapDrawer.Initialize(GraphicsDevice, Content);
             CharacterDrawer.Initialize(GraphicsDevice, Content);
@@ -110,7 +111,7 @@ namespace LBMG.Main
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
             {
                 Debug.WriteLine("Is about to write something...");
-                UserInterface.DialogBox.Write(5, new[]{"sud", "est"});
+                UserInterface.DialogBox.Write(5, new[] { "sud", "est" });
             }
             if (kse.WasKeyJustUp(Keys.N))                   // TEMP
                 UserInterface.DialogBox.NextDialog();

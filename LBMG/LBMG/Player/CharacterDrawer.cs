@@ -30,6 +30,7 @@ namespace LBMG.Player
             _textures = new List<Texture2D>();
             _playerPos.X = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2;
             _playerPos.Y = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2;
+
             _activePlayer = 0;
             _counter = TileSize;
         }
