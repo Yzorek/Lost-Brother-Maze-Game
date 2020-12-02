@@ -23,26 +23,14 @@ namespace LBMG.Main
         private int ActivePLayer
         {
             get => _activePlayer;
-            set
+            set 
             {
                 _activePlayer = value;
                 CharacterDrawer?.SetActivePlayer(value);
-            }
+            } 
         }
 
-        public List<Character> Characters { get; set; }
-
-        public Map.Map Map { get; set; }
-
-        public MapDrawer MapDrawer { get; set; }
-
-        public CharacterDrawer CharacterDrawer { get; set; }
-
-        public Controller Controller { get; set; }
-
-        public UI.UI UserInterface { get; set; }
-
-        public UIDrawer UiDrawer { get; set; }
+        public GamePlay.GamePlay CurrentGame { get; set; }
 
         public LBMGGame()
         {
@@ -54,33 +42,7 @@ namespace LBMG.Main
 
             Content.RootDirectory = "PipelineContent";
 
-            Characters = new List<Character>
-            {
-                new Character("Peter", 70),
-                new Character("Fred", 70)
-            };
-            Map = new Map.Map();
-            Controller = new Controller();
-            UserInterface = new UI.UI();
-
-            MapDrawer = new MapDrawer();
-
-            CharacterDrawer = new CharacterDrawer(Characters, new List<string>
-            {
-                "Characters/peter",
-                "Characters/fred"
-            }, new List<Rectangle>
-            {
-                new Rectangle(0, 0, 50, 69),
-                new Rectangle(0, 0, 50, 69)
-            });
-
-            UiDrawer = new UIDrawer(UserInterface, new List<string>
-            {
-                "DialogBox/dialog_box"
-            });
-
-            ActivePLayer = 0;
+            CurrentGame = new GamePlay.GamePlay();          // TEMP, later will be launched with the menu
         }
 
         protected override void Initialize()
@@ -93,9 +55,7 @@ namespace LBMG.Main
 #endif
 
             _sb = new SpriteBatch(GraphicsDevice);
-            MapDrawer.Initialize(GraphicsDevice, Content);
-            CharacterDrawer.Initialize(GraphicsDevice, Content);
-            UiDrawer.Initialize(Content);
+            CurrentGame.Initialize(GraphicsDevice, Content);    // TEMP, later will be launched with the menu
             base.Initialize();
         }
 
@@ -111,7 +71,7 @@ namespace LBMG.Main
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
             {
                 Debug.WriteLine("Is about to write something...");
-                UserInterface.DialogBox.Write(5, new[] { "sud", "est" });
+                UserInterface.DialogBox.Write(5, new[]{"sud", "est"});
             }
             if (kse.WasKeyJustUp(Keys.N))                   // TEMP
                 UserInterface.DialogBox.NextDialog();
@@ -132,24 +92,9 @@ namespace LBMG.Main
             GraphicsDevice.Clear(backgroundColor);
             base.Draw(gameTime);
             _sb.Begin();
-            CharacterDrawer.Draw(_sb, gameTime);
-            UiDrawer.Draw(_sb, gameTime);
+            if (CurrentGame.Started)
+                CurrentGame.Draw(gameTime, _sb);
             _sb.End();
-        }
-
-        private void ControlCharacter()
-        {
-            if (Characters[ActivePLayer].IsMoving) return;
-            SendMove();
-        }
-
-        private void SendMove()
-        {
-            Direction dir = Controller.Direction;
-
-            Characters[ActivePLayer].Direction = dir;
-            if (Controller.IsKeyPressed)                   //if (IsCollision() == false)       TODO : Add collision system
-                Characters[ActivePLayer].IsMoving = true;
         }
     }
 }
