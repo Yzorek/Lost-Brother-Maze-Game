@@ -13,10 +13,10 @@ namespace LBMG.UI
         public DialogBox DialogBox { get; set; }
 
         private Texture2D _boxTexture;
-        private readonly string _boxTexturePath;
-        private readonly Rectangle _rectangle;
-        private readonly Vector2 _boxPos;
-        private readonly Vector2 _textPos;
+        private string _boxTexturePath;
+        private Rectangle _rectangle;
+        private Vector2 _boxPos;
+        private Vector2 _textPos;
         private SpriteFont _font;
 
         public DialogBoxDrawer(DialogBox dialogBox, string texturePath, Rectangle rectangle)
@@ -24,14 +24,16 @@ namespace LBMG.UI
             DialogBox = dialogBox;
             _boxTexturePath = texturePath;
             _rectangle = rectangle;
-            _boxPos.X = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2 - DialogBox.Size.X / 2;
-            _boxPos.Y = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - DialogBox.Size.Y - 20;
-            _textPos.X = _boxPos.X + Constants.DBoxPaddingLeft;
-            _textPos.Y = _boxPos.Y + Constants.DBoxPaddingTop;
+
         }
 
-        public void Initialize(ContentManager cm)
+        public void Initialize(ContentManager cm, GameWindow window)
         {
+            _boxPos.X = window.ClientBounds.Width / 2 - DialogBox.Size.X / 2;
+            _boxPos.Y = window.ClientBounds.Height - DialogBox.Size.Y - 20;
+            _textPos.X = _boxPos.X + Constants.DBoxPaddingLeft;
+            _textPos.Y = _boxPos.Y + Constants.DBoxPaddingTop;
+
             _boxTexture = cm.Load<Texture2D>(_boxTexturePath);
             _font = cm.Load<SpriteFont>(DialogBox.FontPath);
         }

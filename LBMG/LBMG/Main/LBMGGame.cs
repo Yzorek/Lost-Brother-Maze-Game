@@ -19,32 +19,40 @@ namespace LBMG.Main
 
         readonly GraphicsDeviceManager gdm;
         private SpriteBatch _sb;
+        TitleScreen _titleScreen;
 
         public GamePlay.GamePlay CurrentGame { get; set; }
 
         public LBMGGame()
         {
             Content.RootDirectory = @"PipelineContent";
-            Window.AllowUserResizing = true;
+            Window.AllowUserResizing = false;
             IsMouseVisible = true;
 
             gdm = new GraphicsDeviceManager(this);
 
             Content.RootDirectory = "PipelineContent";
-
-            CurrentGame = new GamePlay.GamePlay();          // TEMP, later will be launched with the menu
         }
 
         protected override void Initialize()
         {
 #if !DEBUG
-            gdm.IsFullScreen = true;
             gdm.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             gdm.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            gdm.ApplyChanges();
+            gdm.IsFullScreen = true;
+#else
+            gdm.PreferredBackBufferWidth = 800;
+            gdm.PreferredBackBufferHeight = 600;
 #endif
+            gdm.ApplyChanges();
+
+            _titleScreen = new TitleScreen();
+            _titleScreen.PlayClick += (s, e) => CurrentGame.Started = true;
+            CurrentGame = new GamePlay.GamePlay();         
+
             _sb = new SpriteBatch(GraphicsDevice);
-            CurrentGame.Initialize(GraphicsDevice, Content);    // TEMP, later will be launched with the menu
+            _titleScreen.Initialize(Content, Window);
+            CurrentGame.Initialize(GraphicsDevice, Content, Window);
             base.Initialize();
         }
 
@@ -57,6 +65,8 @@ namespace LBMG.Main
                 Exit();
             if (CurrentGame.Started)
                 CurrentGame.Update(gameTime, kse);
+            else
+                _titleScreen.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -68,6 +78,9 @@ namespace LBMG.Main
             _sb.Begin();
             if (CurrentGame.Started)
                 CurrentGame.Draw(gameTime, _sb);
+            else
+                _titleScreen.Draw(_sb, gameTime);
+
             _sb.End();
         }
     }

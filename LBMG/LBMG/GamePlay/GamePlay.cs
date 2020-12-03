@@ -74,12 +74,12 @@ namespace LBMG.GamePlay
             Started = false;
         }
 
-        public void Initialize(GraphicsDevice gd, ContentManager cm)
+        public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
         {
             MapDrawer.Initialize(gd, cm);
-            CharacterDrawer.Initialize(gd, cm);
-            UiDrawer.Initialize(cm);
-            Started = true;
+            CharacterDrawer.Initialize(gd, cm, window);
+            UiDrawer.Initialize(cm, window);
+            Started = false;// true;
         }
 
         public void Update(GameTime gameTime, KeyboardStateExtended kse)

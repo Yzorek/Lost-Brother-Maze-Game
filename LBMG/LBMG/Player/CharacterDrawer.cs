@@ -18,7 +18,7 @@ namespace LBMG.Player
         private readonly List<Texture2D> _textures;
         private List<Rectangle> _rectangles;
         private int _activePlayer;
-        private readonly Vector2 _playerPos;
+        private  Vector2 _playerPos;
         const int TileSize = 32;
         private double _counter;
 
@@ -28,15 +28,16 @@ namespace LBMG.Player
             _texturePaths = paths;
             _rectangles = rectangles;
             _textures = new List<Texture2D>();
-            _playerPos.X = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2;
-            _playerPos.Y = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2;
+        }
+
+        public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
+        {
+            _playerPos.X = window.ClientBounds.Width / 2;
+            _playerPos.Y = window.ClientBounds.Height / 2;
 
             _activePlayer = 0;
             _counter = TileSize;
-        }
 
-        public void Initialize(GraphicsDevice gd, ContentManager cm)
-        {
             foreach (string path in _texturePaths)
             {
                 Texture2D text = cm.Load<Texture2D>(path);

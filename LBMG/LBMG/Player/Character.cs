@@ -25,6 +25,7 @@ namespace LBMG.Player
         public void SpawnAt(int x, int y/*, Map map*/)
         {
             Position = new Point(x, y);
+
         }
 
         public void Move()
