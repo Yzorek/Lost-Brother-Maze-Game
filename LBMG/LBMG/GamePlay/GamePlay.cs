@@ -4,11 +4,13 @@ using System.Diagnostics;
 using System.Text;
 using LBMG.Map;
 using LBMG.Player;
+using LBMG.Tools;
 using LBMG.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 using MonoGame.Extended.Input;
 
 namespace LBMG.GamePlay
@@ -25,6 +27,8 @@ namespace LBMG.GamePlay
                 CharacterDrawer?.SetActivePlayer(value);
             }
         }
+
+        static OrthographicCamera _camera;
 
         public List<Character> Characters { get; set; }
 
@@ -49,11 +53,11 @@ namespace LBMG.GamePlay
                 new Character("Peter", 70),
                 new Character("Fred", 70)
             };
-            //Map = new Map.Map();
+            Map = new Map.Map(Difficulty.Easy);
             Controller = new Controller();
             UserInterface = new UI.UI();
 
-            MapDrawer = new MapDrawer();
+            MapDrawer = new MapDrawer(Map);
 
             CharacterDrawer = new CharacterDrawer(Characters, new List<string>
             {
@@ -76,6 +80,9 @@ namespace LBMG.GamePlay
 
         public void Initialize(GraphicsDevice gd, ContentManager cm)
         {
+            _camera ??= new OrthographicCamera(gd) { };
+
+            _camera.ZoomIn(Constants.ZoomFact);
             MapDrawer.Initialize(gd, cm);
             CharacterDrawer.Initialize(gd, cm);
             UiDrawer.Initialize(cm);
@@ -84,6 +91,7 @@ namespace LBMG.GamePlay
 
         public void Update(GameTime gameTime, KeyboardStateExtended kse)
         {
+            KeyboardState ks = Keyboard.GetState();
             if (kse.WasKeyJustUp(Keys.C))                   // TEMP, will change with the timer later
                 ActivePLayer = ActivePLayer == 0 ? 1 : 0;
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
@@ -96,15 +104,26 @@ namespace LBMG.GamePlay
             if (kse.WasKeyJustUp(Keys.T)) // TEMP
                 TextBank.CurrentLanguage = Language.English;
 
+            if (ks.IsKeyDown(Keys.Left))                                                                                        // TEMP
+                _camera.Move(new Vector2(-Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, 0));   //
+            else if (ks.IsKeyDown(Keys.Up))                                                                                     //
+                _camera.Move(new Vector2(0, -Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds));   //
+            else if (ks.IsKeyDown(Keys.Right))                                                                                  //
+                _camera.Move(new Vector2(Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, 0));    //
+            else if (ks.IsKeyDown(Keys.Down))                                                                                   //
+                _camera.Move(new Vector2(0, Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds));    //
+
             Controller.Update();
             ControlCharacter();
             CharacterDrawer.Update(gameTime);
+            MapDrawer.Update(gameTime);
             UiDrawer.Update(gameTime);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
             CharacterDrawer.Draw(sb, gameTime);
+            MapDrawer.Draw(gameTime, _camera);
             UiDrawer.Draw(sb, gameTime);
         }
 

@@ -37,7 +37,7 @@ namespace LBMG.Main
 
         protected override void Initialize()
         {
-#if !DEBUG
+#if DEBUG
             gdm.IsFullScreen = true;
             gdm.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             gdm.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
