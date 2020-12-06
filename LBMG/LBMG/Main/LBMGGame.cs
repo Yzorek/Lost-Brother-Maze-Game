@@ -48,6 +48,7 @@ namespace LBMG.Main
 
             _titleScreen = new TitleScreen();
             _titleScreen.PlayClick += (s, e) => CurrentGame.Started = true;
+            _titleScreen.QuitClick += (s, e) => Exit();
             CurrentGame = new GamePlay.GamePlay();         
 
             _sb = new SpriteBatch(GraphicsDevice);
