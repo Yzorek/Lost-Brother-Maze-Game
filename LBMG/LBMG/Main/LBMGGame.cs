@@ -101,7 +101,7 @@ namespace LBMG.Main
                 _gdm.PreferredBackBufferHeight = 600;
             }
 
-            _gdm.IsFullScreen = _gdm.IsFullScreen;
+            _gdm.IsFullScreen = enabled;
             _gdm.ApplyChanges();
         }
     }
