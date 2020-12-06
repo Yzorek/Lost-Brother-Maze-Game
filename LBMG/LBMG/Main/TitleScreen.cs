@@ -2,7 +2,12 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
+using MonoGame.Extended.BitmapFonts;
+using MonoGame.Extended.Gui;
+using MonoGame.Extended.Gui.Controls;
 using MonoGame.Extended.Input;
+using MonoGame.Extended.ViewportAdapters;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,75 +16,154 @@ namespace LBMG.Main
 {
     class TitleScreen
     {
-        class Button
-        {
-            public Vector2 Position { get; set; }
-            public string Text { get; set; }
-            public Vector2 TextPos { get; set; }
-            public Texture2D Texture { get; set; }
-            public SpriteFont Font { get; set; }
-            public EventHandler ClickedEvent { get; set; }
-
-            public Button(Vector2 position, string text, Vector2 textPos, Texture2D texture, SpriteFont font, EventHandler clicked)
-            {
-                TextPos = textPos;
-                Texture = texture;
-                Position = position;
-                Text = text;
-                Font = font;
-                ClickedEvent += clicked;
-            }
-        }
-
-        private SpriteFont _font;
-        private Texture2D _buttonTexture;
-
-        Button[] _buttons;
 
         public event EventHandler PlayClick;
         public event EventHandler QuitClick;
+        public event EventHandler<SettingsChangedEventArgs> SettingsChanged;
+
+        private GuiSystem _guiSys;
 
         public TitleScreen()
         {
 
         }
 
-        public void Initialize(ContentManager cm, GameWindow window)
+        public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
         {
-            _font = cm.Load<SpriteFont>("Fonts/MenuFont");
-            _buttonTexture = cm.Load<Texture2D>("Menu/button");
+            var viewportAdapter = new DefaultViewportAdapter(gd);
+            var guiRenderer = new GuiSpriteBatchRenderer(gd, () => Matrix.Identity);
+            var font = cm.Load<BitmapFont>("Fonts/MenuFontBmp");
+            BitmapFont.UseKernings = false;
+            Skin.CreateDefault(font);
 
-            _buttons = new Button[]
-            {
-                new Button(new Vector2(25, 25), "Play", new Vector2(35, 35), _buttonTexture, _font, PlayClick),
-                new Button(new Vector2(25, 165), "Quit", new Vector2(35, 175), _buttonTexture, _font, QuitClick),
-            };
+            var controlsScrn = GenerateControls();
+
+            _guiSys = new GuiSystem(viewportAdapter, guiRenderer) { ActiveScreen = controlsScrn };
+            window.ClientSizeChanged += Window_ClientSizeChanged;
+        }
+
+        private void Window_ClientSizeChanged(object sender, EventArgs e)
+        {
+            _guiSys.ClientSizeChanged();
         }
 
         public void Update(GameTime gameTime)
         {
-            MouseStateExtended ms = MouseExtended.GetState();
-
-            foreach (Button b in _buttons)
-            {
-                if (ms.WasButtonJustUp(MouseButton.Left) &&
-                    ms.X >= b.Position.X && ms.Y >= b.Position.Y
-                    && ms.X - b.Position.X <= b.Texture.Width && ms.Y - b.Position.Y <= b.Texture.Height)
-                {
-                    b.ClickedEvent?.Invoke(this, EventArgs.Empty);
-                }
-            }
+            _guiSys.Update(gameTime);
         }
 
         public void Draw(SpriteBatch sb, GameTime gameTime)
         {
-            foreach (Button b in _buttons)
-            {
-                sb.Draw(b.Texture, b.Position, Color.White);
-                sb.DrawString(b.Font ,b.Text, b.TextPos, Color.DarkBlue);
-            }
+            _guiSys.Draw(gameTime);
         }
 
-        // TODO Add Quit button properly
+        Screen GenerateControls()
+        {
+            #region Main Menu
+            Thickness margin1 = new Thickness(20, 20, 0, 0);
+            int btnWidth = 235, btnHeight = 105;
+
+            Label titleLabel =
+                    new Label("LOST BROTHER MAZE GAME\nVersion Indev")
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        Margin = margin1
+                    };
+
+            Button playBtn = new Button
+            {
+                Content = "Play",
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Margin = margin1,
+                Width = btnWidth,
+                Height = btnHeight
+            },
+            settingsBtn = new Button
+            {
+                Content = "Settings",
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Margin = margin1,
+                Width = btnWidth,
+                Height = btnHeight
+            },
+            quitBtn = new Button
+            {
+                Content = "Quit",
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Margin = margin1,
+                Width = btnWidth,
+                Height = btnHeight
+            };
+
+            var mainLayout = new StackPanel
+            {
+                Margin = new Thickness(0),
+                BackgroundColor = new Color(51, 25, 0),
+                Items = { titleLabel, playBtn, settingsBtn, quitBtn }
+            };
+            #endregion
+
+            // Handlable main layout and return screen object here
+            var switchableLayoutControl = new ContentControl { Content = mainLayout, Padding = new Thickness(0) };
+            var scrn = new Screen { Content = switchableLayoutControl };
+
+            #region Settings Menu
+
+            var doneBtn = new Button
+            {
+                Content = "Done",
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Margin = new Thickness(0, 0, 20, 20),
+
+            };
+            var fullScreenCheckBox = new CheckBox
+            {
+                Content = "Full screen enabled",
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = margin1,
+
+            };
+
+            var settingsLayout = new UniformGrid
+            {
+                BackgroundColor = Color.Black,
+                Rows = 2, Columns = 1,
+                Items =
+                {
+                    new StackPanel
+                    {
+                        Items = {
+                            new Label("SETTINGS\n---")
+                            {
+                                Margin = margin1
+                            },
+                            fullScreenCheckBox 
+                        }
+                    },
+                    doneBtn,
+                }
+            };
+            #endregion
+
+            #region Events assignment
+            playBtn.Clicked += (s, e) => PlayClick?.Invoke(this, EventArgs.Empty);
+            quitBtn.Clicked += (s, e) => QuitClick?.Invoke(this, EventArgs.Empty);
+            settingsBtn.Clicked += (s, e) => switchableLayoutControl.Content = settingsLayout;
+
+            doneBtn.Clicked += (s, e) => 
+            {
+                SettingsChanged?.Invoke(this, new SettingsChangedEventArgs
+                {
+                    FullScreenEnabled = fullScreenCheckBox.IsChecked
+                });
+                switchableLayoutControl.Content = mainLayout;
+            };
+            #endregion
+
+            return scrn;
+        }
     }
 }

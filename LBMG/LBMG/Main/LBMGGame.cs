@@ -17,7 +17,7 @@ namespace LBMG.Main
     public class LBMGGame : Game
     {
 
-        readonly GraphicsDeviceManager gdm;
+        readonly GraphicsDeviceManager _gdm;
         private SpriteBatch _sb;
         TitleScreen _titleScreen;
 
@@ -26,33 +26,28 @@ namespace LBMG.Main
         public LBMGGame()
         {
             Content.RootDirectory = @"PipelineContent";
-            Window.AllowUserResizing = false;
+            Window.AllowUserResizing = true;
             IsMouseVisible = true;
 
-            gdm = new GraphicsDeviceManager(this);
-
-            Content.RootDirectory = "PipelineContent";
+            _gdm = new GraphicsDeviceManager(this);
         }
 
         protected override void Initialize()
         {
 #if !DEBUG
-            gdm.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            gdm.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            gdm.IsFullScreen = true;
+            SetFullScreen(true);
 #else
-            gdm.PreferredBackBufferWidth = 800;
-            gdm.PreferredBackBufferHeight = 600;
+            SetFullScreen(false);
 #endif
-            gdm.ApplyChanges();
 
             _titleScreen = new TitleScreen();
             _titleScreen.PlayClick += (s, e) => CurrentGame.Started = true;
             _titleScreen.QuitClick += (s, e) => Exit();
+            _titleScreen.SettingsChanged += SettingsChanged;
             CurrentGame = new GamePlay.GamePlay();         
 
             _sb = new SpriteBatch(GraphicsDevice);
-            _titleScreen.Initialize(Content, Window);
+            _titleScreen.Initialize(GraphicsDevice, Content, Window);
             CurrentGame.Initialize(GraphicsDevice, Content, Window);
             base.Initialize();
         }
@@ -83,6 +78,31 @@ namespace LBMG.Main
                 _titleScreen.Draw(_sb, gameTime);
 
             _sb.End();
+        }
+
+        private void SettingsChanged(object sender, SettingsChangedEventArgs e)
+        {
+            SetFullScreen(e.FullScreenEnabled);
+        }
+
+        void SetFullScreen(bool enabled)
+        {
+            if (enabled == _gdm.IsFullScreen) // Actually, if the window was already not fullscreen, we'd better not change anything 
+                return;
+
+            if (enabled)
+            {
+                _gdm.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                _gdm.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            }
+            else
+            {
+                _gdm.PreferredBackBufferWidth = 800;
+                _gdm.PreferredBackBufferHeight = 600;
+            }
+
+            _gdm.IsFullScreen = _gdm.IsFullScreen;
+            _gdm.ApplyChanges();
         }
     }
 }
