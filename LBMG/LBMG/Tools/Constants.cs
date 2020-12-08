@@ -15,6 +15,10 @@ namespace LBMG.Tools
 
         /* ----------- Camera constants ----------- */
 
-        public const float ZoomFact = (float) 0.6;
+        public const float ZoomFact = (float) 0;
+
+        /* ----------- Tile constants ----------- */
+
+        public const float TileSize = 32;
     }
 }

@@ -30,6 +30,8 @@ namespace LBMG.GamePlay
 
         static OrthographicCamera _camera;
 
+        public Vector2 CameraPos { get; set; }
+
         public List<Character> Characters { get; set; }
 
         public Map.Map Map { get; set; }
@@ -50,8 +52,8 @@ namespace LBMG.GamePlay
         {
             Characters = new List<Character>
             {
-                new Character("Peter", 70),
-                new Character("Fred", 70)
+                new Character("Peter", 100),
+                new Character("Fred", 100)
             };
             Map = new Map.Map(Difficulty.Easy);
             Controller = new Controller();
@@ -74,13 +76,14 @@ namespace LBMG.GamePlay
                 "DialogBox/dialog_box"
             });
 
+            CameraPos = new Vector2(0);
             ActivePLayer = 0;
             Started = false;
         }
 
         public void Initialize(GraphicsDevice gd, ContentManager cm)
         {
-            _camera ??= new OrthographicCamera(gd) { };
+            _camera ??= new OrthographicCamera(gd);
 
             _camera.ZoomIn(Constants.ZoomFact);
             MapDrawer.Initialize(gd, cm);
@@ -91,7 +94,6 @@ namespace LBMG.GamePlay
 
         public void Update(GameTime gameTime, KeyboardStateExtended kse)
         {
-            KeyboardState ks = Keyboard.GetState();
             if (kse.WasKeyJustUp(Keys.C))                   // TEMP, will change with the timer later
                 ActivePLayer = ActivePLayer == 0 ? 1 : 0;
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
@@ -104,18 +106,10 @@ namespace LBMG.GamePlay
             if (kse.WasKeyJustUp(Keys.T)) // TEMP
                 TextBank.CurrentLanguage = Language.English;
 
-            if (ks.IsKeyDown(Keys.Left))                                                                                        // TEMP
-                _camera.Move(new Vector2(-Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, 0));   //
-            else if (ks.IsKeyDown(Keys.Up))                                                                                     //
-                _camera.Move(new Vector2(0, -Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds));   //
-            else if (ks.IsKeyDown(Keys.Right))                                                                                  //
-                _camera.Move(new Vector2(Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, 0));    //
-            else if (ks.IsKeyDown(Keys.Down))                                                                                   //
-                _camera.Move(new Vector2(0, Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds));    //
-
             Controller.Update();
             ControlCharacter();
             CharacterDrawer.Update(gameTime);
+            MoveCamera(Characters[_activePlayer].Direction, gameTime);
             MapDrawer.Update(gameTime);
             UiDrawer.Update(gameTime);
         }
@@ -138,8 +132,32 @@ namespace LBMG.GamePlay
             Direction dir = Controller.Direction;
 
             Characters[ActivePLayer].Direction = dir;
-            if (Controller.IsKeyPressed)                   //if (IsCollision() == false)       TODO : Add collision system
-                Characters[ActivePLayer].IsMoving = true;
+            if (Controller.IsKeyPressed)                    //if (IsCollision() == false)       TODO : Add collision system
+                Characters[ActivePLayer].IsMoving = true;   //
+        }
+
+        private void MoveCamera(Direction dir, GameTime gameTime)
+        {
+            if (Characters[_activePlayer].IsMoving == true)
+            {
+                switch (dir)
+                {
+                    case Direction.Left:
+                        _camera.Move(new Vector2(-Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, 0));
+                        break;
+                    case Direction.Top:
+                        _camera.Move(new Vector2(0, -Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds));
+                        break;
+                    case Direction.Right:
+                        _camera.Move(new Vector2(Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, 0));
+                        break;
+                    case Direction.Bottom:
+                        _camera.Move(new Vector2(0, Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
+                }
+            }
         }
     }
 }

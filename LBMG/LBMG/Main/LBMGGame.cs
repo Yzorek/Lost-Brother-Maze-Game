@@ -68,6 +68,9 @@ namespace LBMG.Main
             _sb.Begin();
             if (CurrentGame.Started)
                 CurrentGame.Draw(gameTime, _sb);
+            Texture2D text = new Texture2D(GraphicsDevice, 1, 1);           // TEMP to test the case size
+            text.SetData(new[] { Color.White });
+            _sb.Draw(text, new Rectangle(960, 540, 32, 32), Color.White);
             _sb.End();
         }
     }
