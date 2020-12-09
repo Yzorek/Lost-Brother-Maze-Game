@@ -52,8 +52,8 @@ namespace LBMG.GamePlay
         {
             Characters = new List<Character>
             {
-                new Character("Peter", 100),
-                new Character("Fred", 100)
+                new Character("Peter", 250),
+                new Character("Fred", 250)
             };
             Map = new Map.Map(Difficulty.Easy);
             Controller = new Controller();
@@ -81,16 +81,15 @@ namespace LBMG.GamePlay
             Started = false;
         }
 
-        public void Initialize(GraphicsDevice gd, ContentManager cm)
+        public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
         {
             _camera ??= new OrthographicCamera(gd);
 
             _camera.ZoomIn(Constants.ZoomFact);
             _camera.Move(new Vector2(3, 4));
+            CharacterDrawer.Initialize(gd, cm, window);
             MapDrawer.Initialize(gd, cm);
-            CharacterDrawer.Initialize(gd, cm);
-            UiDrawer.Initialize(cm);
-            Started = true;
+            UiDrawer.Initialize(cm, window);
         }
 
         public void Update(GameTime gameTime, KeyboardStateExtended kse)
@@ -116,8 +115,9 @@ namespace LBMG.GamePlay
 
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
-            CharacterDrawer.Draw(sb, gameTime);
-            MapDrawer.Draw(gameTime, _camera);
+            MapDrawer.DrawBackLayer(gameTime, _camera, sb);
+            CharacterDrawer.Draw(gameTime);
+            MapDrawer.DrawFrontLayer(gameTime, _camera, sb);
             UiDrawer.Draw(sb, gameTime);
         }
 

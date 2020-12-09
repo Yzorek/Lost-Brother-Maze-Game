@@ -1,10 +1,10 @@
 
 #----------------------------- Global Properties ----------------------------#
 
-/outputDir:..\bin\Debug\netcoreapp3.1\PipelineContent
-/intermediateDir:..\obj\Debug\netcoreapp3.1\PipelineContent
-/platform:Windows
-/config:
+/outputDir:bin
+/intermediateDir:obj
+/platform:DesktopGL
+/config:Debug
 /profile:Reach
 /compress:False
 
@@ -62,6 +62,42 @@
 /processorParam:TextureFormat=Color
 /build:DialogBox/dialogbox_tiles.png
 
+#begin Fonts/MenuFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/MenuFont.spritefont
+
+#begin Fonts/MenuFontBmp.fnt
+/importer:BitmapFontImporter
+/processor:BitmapFontProcessor
+/build:Fonts/MenuFontBmp.fnt
+
+#begin Fonts/MenuFontBmp_0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Fonts/MenuFontBmp_0.png
+
+#begin Fonts/MenuFontBmp_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Fonts/MenuFontBmp_1.png
+
 #begin Fonts/myFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -69,23 +105,15 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/myFont.spritefont
 
-#begin TiledMaps/bottom_left_tunnel.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:TiledMaps/bottom_left_tunnel.tmx
-
-#begin TiledMaps/bottom_right_tunnel.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:TiledMaps/bottom_right_tunnel.tmx
-
-#begin TiledMaps/cross_road.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:TiledMaps/cross_road.tmx
-
-#begin TiledMaps/top_right_tunnel.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:TiledMaps/top_right_tunnel.tmx
+#begin Menu/button.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Menu/button.png
 

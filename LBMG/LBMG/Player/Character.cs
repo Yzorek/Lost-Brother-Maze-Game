@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using LBMG.Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -25,6 +26,7 @@ namespace LBMG.Player
         public void SpawnAt(int x, int y/*, Map map*/)
         {
             Position = new Point(x, y);
+
         }
 
         public void Move()
@@ -52,13 +54,5 @@ namespace LBMG.Player
 
             Position = new Point(x, y);
         }
-    }
-
-    public enum Direction
-    {
-        Left,
-        Top,
-        Right,
-        Bottom
     }
 }

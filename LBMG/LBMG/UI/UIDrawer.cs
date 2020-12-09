@@ -15,9 +15,9 @@ namespace LBMG.UI
             DialogDrawer = new DialogBoxDrawer(ui.DialogBox, texturePaths[0], new Rectangle(0, 0, ui.DialogBox.Size.X, ui.DialogBox.Size.Y));
         }
 
-        public void Initialize(ContentManager cm)
+        public void Initialize(ContentManager cm, GameWindow window)
         {
-            DialogDrawer.Initialize(cm);
+            DialogDrawer.Initialize(cm, window);
         }
 
         public void Update(GameTime gameTime/*, Camera<Vector2> camera*/)

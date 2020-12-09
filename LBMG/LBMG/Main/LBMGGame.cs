@@ -17,8 +17,9 @@ namespace LBMG.Main
     public class LBMGGame : Game
     {
 
-        readonly GraphicsDeviceManager gdm;
+        readonly GraphicsDeviceManager _gdm;
         private SpriteBatch _sb;
+        TitleScreen _titleScreen;
 
         public GamePlay.GamePlay CurrentGame { get; set; }
 
@@ -28,23 +29,26 @@ namespace LBMG.Main
             Window.AllowUserResizing = true;
             IsMouseVisible = true;
 
-            gdm = new GraphicsDeviceManager(this);
-
-            Content.RootDirectory = "PipelineContent";
-
-            CurrentGame = new GamePlay.GamePlay();          // TEMP, later will be launched with the menu
+            _gdm = new GraphicsDeviceManager(this);
         }
 
         protected override void Initialize()
         {
-#if DEBUG
-            gdm.IsFullScreen = true;
-            gdm.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            gdm.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            gdm.ApplyChanges();
+#if !DEBUG
+            SetFullScreen(true);
+#else
+            SetFullScreen(false);
 #endif
+
+            _titleScreen = new TitleScreen();
+            _titleScreen.PlayClick += (s, e) => CurrentGame.Started = true;
+            _titleScreen.QuitClick += (s, e) => Exit();
+            _titleScreen.SettingsChanged += SettingsChanged;
+            CurrentGame = new GamePlay.GamePlay();         
+
             _sb = new SpriteBatch(GraphicsDevice);
-            CurrentGame.Initialize(GraphicsDevice, Content);    // TEMP, later will be launched with the menu
+            _titleScreen.Initialize(GraphicsDevice, Content, Window);
+            CurrentGame.Initialize(GraphicsDevice, Content, Window);
             base.Initialize();
         }
 
@@ -57,6 +61,8 @@ namespace LBMG.Main
                 Exit();
             if (CurrentGame.Started)
                 CurrentGame.Update(gameTime, kse);
+            else
+                _titleScreen.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -65,10 +71,38 @@ namespace LBMG.Main
             Color backgroundColor = new Color(1, 2, 11);
             GraphicsDevice.Clear(backgroundColor);
             base.Draw(gameTime);
-            _sb.Begin();
+            _sb.Begin(samplerState: SamplerState.PointClamp);
             if (CurrentGame.Started)
                 CurrentGame.Draw(gameTime, _sb);
+            else
+                _titleScreen.Draw(_sb, gameTime);
+
             _sb.End();
+        }
+
+        private void SettingsChanged(object sender, SettingsChangedEventArgs e)
+        {
+            SetFullScreen(e.FullScreenEnabled);
+        }
+
+        void SetFullScreen(bool enabled)
+        {
+            if (enabled == _gdm.IsFullScreen) // Actually, if the window was already not fullscreen, we'd better not change anything 
+                return;
+
+            if (enabled)
+            {
+                _gdm.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                _gdm.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            }
+            else
+            {
+                _gdm.PreferredBackBufferWidth = 800;
+                _gdm.PreferredBackBufferHeight = 600;
+            }
+
+            _gdm.IsFullScreen = enabled;
+            _gdm.ApplyChanges();
         }
     }
 }

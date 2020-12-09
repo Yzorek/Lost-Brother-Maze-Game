@@ -20,8 +20,9 @@ namespace LBMG.Player
         private readonly List<Texture2D> _textures;
         private List<Rectangle> _rectangles;
         private int _activePlayer;
-        private readonly Vector2 _playerPos;
+        private Vector2 _playerPos;
         const float TileSize = Constants.TileSize;
+        private SpriteBatch _sb;
         private float _counter;
 
         public CharacterDrawer(List<Character> characters, List<string> paths, List<Rectangle> rectangles)
@@ -30,20 +31,31 @@ namespace LBMG.Player
             _texturePaths = paths;
             _rectangles = rectangles;
             _textures = new List<Texture2D>();
-            _playerPos.X = (float) GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2;
-            _playerPos.Y = (float) GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2;
+        }
+
+        public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
+        {
+            _playerPos.X = window.ClientBounds.Width / 2;
+            _playerPos.Y = window.ClientBounds.Height / 2;
 
             _activePlayer = 0;
             _counter = TileSize;
-        }
+            _sb = new SpriteBatch(gd);
 
-        public void Initialize(GraphicsDevice gd, ContentManager cm)
-        {
             foreach (string path in _texturePaths)
             {
                 Texture2D text = cm.Load<Texture2D>(path);
                 _textures.Add(text);
             }
+
+            window.ClientSizeChanged += Window_ClientSizeChanged;
+        }
+
+        private void Window_ClientSizeChanged(object sender, EventArgs e)
+        {
+            GameWindow window = sender as GameWindow; 
+            _playerPos.X = window.ClientBounds.Width / 2;
+            _playerPos.Y = window.ClientBounds.Height / 2;
         }
 
         public void Update(GameTime gameTime, Camera<Vector2> camera)
@@ -60,11 +72,15 @@ namespace LBMG.Player
             }
         }
 
-        public void Draw(SpriteBatch sb, GameTime gameTime/*, Matrix transformMatrix*/)
+        public void Draw(GameTime gameTime/*, Matrix transformMatrix*/)
         {
-            sb.Draw(_textures[_activePlayer], _playerPos, _rectangles[_activePlayer], Color.White, default,
+            _sb.Begin(samplerState: SamplerState.PointClamp);
+
+            _sb.Draw(_textures[_activePlayer], _playerPos, _rectangles[_activePlayer], Color.White, default,
                 new Vector2((float) _rectangles[_activePlayer].Width / 2, (float) _rectangles[_activePlayer].Height / 2), 1, default,
                 default);
+
+            _sb.End();
         }
 
         public void SetActivePlayer(int val)

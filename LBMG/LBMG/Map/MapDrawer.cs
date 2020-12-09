@@ -21,8 +21,9 @@ namespace LBMG.Map
         public void Initialize(GraphicsDevice gd, ContentManager cm)
         {
             Map.LoadMap(gd, cm);
+            sb = new SpriteBatch(gd);
         }
-
+        SpriteBatch sb;
         public void Update(GameTime gameTime/*, Camera<Vector2> camera*/)
         {
             foreach (Piece piece in Map.TiledMapsDictionary.Values)
@@ -31,12 +32,16 @@ namespace LBMG.Map
             }
         }
 
-        public void Draw(GameTime gameTime, Camera<Vector2> camera)
+        public void DrawBackLayer(GameTime gameTime, Camera<Vector2> camera, SpriteBatch spriteBatch)
         {
             foreach (Piece piece in Map.TiledMapsDictionary.Values)
-            {
-                piece.DrawTiledMap(camera);
-            }
+                piece.DrawBackTiledMap(camera, spriteBatch);
+        }
+
+        public void DrawFrontLayer(GameTime gameTime, Camera<Vector2> camera, SpriteBatch spriteBatch)
+        {
+            foreach (Piece piece in Map.TiledMapsDictionary.Values)
+                piece.DrawFrontTiledMap(camera, spriteBatch);
         }
     }
 }
