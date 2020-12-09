@@ -4,11 +4,13 @@ using System.Diagnostics;
 using System.Text;
 using LBMG.Map;
 using LBMG.Player;
+using LBMG.Tools;
 using LBMG.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 using MonoGame.Extended.Input;
 
 namespace LBMG.GamePlay
@@ -25,6 +27,10 @@ namespace LBMG.GamePlay
                 CharacterDrawer?.SetActivePlayer(value);
             }
         }
+
+        static OrthographicCamera _camera;
+
+        public Vector2 CameraPos { get; set; }
 
         public List<Character> Characters { get; set; }
 
@@ -46,14 +52,14 @@ namespace LBMG.GamePlay
         {
             Characters = new List<Character>
             {
-                new Character("Peter", 70),
-                new Character("Fred", 70)
+                new Character("Peter", 100),
+                new Character("Fred", 100)
             };
-            //Map = new Map.Map();
+            Map = new Map.Map(Difficulty.Easy);
             Controller = new Controller();
             UserInterface = new UI.UI();
 
-            MapDrawer = new MapDrawer();
+            MapDrawer = new MapDrawer(Map);
 
             CharacterDrawer = new CharacterDrawer(Characters, new List<string>
             {
@@ -70,12 +76,16 @@ namespace LBMG.GamePlay
                 "DialogBox/dialog_box"
             });
 
+            CameraPos = new Vector2(0);
             ActivePLayer = 0;
             Started = false;
         }
 
         public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
         {
+            _camera ??= new OrthographicCamera(gd);
+
+            _camera.ZoomIn(Constants.ZoomFact);
             MapDrawer.Initialize(gd, cm);
             CharacterDrawer.Initialize(gd, cm, window);
             UiDrawer.Initialize(cm, window);
@@ -99,12 +109,15 @@ namespace LBMG.GamePlay
             Controller.Update();
             ControlCharacter();
             CharacterDrawer.Update(gameTime);
+            MoveCamera(Characters[_activePlayer].Direction, gameTime);
+            MapDrawer.Update(gameTime);
             UiDrawer.Update(gameTime);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
             CharacterDrawer.Draw(sb, gameTime);
+            MapDrawer.Draw(gameTime, _camera);
             UiDrawer.Draw(sb, gameTime);
         }
 
@@ -119,8 +132,32 @@ namespace LBMG.GamePlay
             Direction dir = Controller.Direction;
 
             Characters[ActivePLayer].Direction = dir;
-            if (Controller.IsKeyPressed)                   //if (IsCollision() == false)       TODO : Add collision system
-                Characters[ActivePLayer].IsMoving = true;
+            if (Controller.IsKeyPressed)                    //if (IsCollision() == false)       TODO : Add collision system
+                Characters[ActivePLayer].IsMoving = true;   //
+        }
+
+        private void MoveCamera(Direction dir, GameTime gameTime)
+        {
+            if (Characters[_activePlayer].IsMoving == true)
+            {
+                switch (dir)
+                {
+                    case Direction.Left:
+                        _camera.Move(new Vector2(-Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, 0));
+                        break;
+                    case Direction.Top:
+                        _camera.Move(new Vector2(0, -Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds));
+                        break;
+                    case Direction.Right:
+                        _camera.Move(new Vector2(Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, 0));
+                        break;
+                    case Direction.Bottom:
+                        _camera.Move(new Vector2(0, Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
+                }
+            }
         }
     }
 }

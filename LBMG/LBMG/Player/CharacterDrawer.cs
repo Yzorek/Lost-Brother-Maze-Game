@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using System.Diagnostics;
+using LBMG.Tools;
 using MonoGame.Extended.Tiled;
 
 namespace LBMG.Player
@@ -18,8 +19,8 @@ namespace LBMG.Player
         private readonly List<Texture2D> _textures;
         private List<Rectangle> _rectangles;
         private int _activePlayer;
-        private  Vector2 _playerPos;
-        const int TileSize = 32;
+        private readonly Vector2 _playerPos;
+        const float TileSize = Constants.TileSize;
         private double _counter;
 
         public CharacterDrawer(List<Character> characters, List<string> paths, List<Rectangle> rectangles)
@@ -53,14 +54,16 @@ namespace LBMG.Player
             {
                 Characters[_activePlayer].IsMoving = false;
                 Characters[_activePlayer].Move();
-                Debug.WriteLine("x : " + Characters[_activePlayer].Position.X + " y : " + Characters[_activePlayer].Position.Y);
+                //Debug.WriteLine("x : " + Characters[_activePlayer].Position.X + " y : " + Characters[_activePlayer].Position.Y);
                 _counter = TileSize;
             }
         }
 
         public void Draw(SpriteBatch sb, GameTime gameTime/*, Matrix transformMatrix*/)
         {
-            sb.Draw(_textures[_activePlayer], _playerPos, _rectangles[_activePlayer], Color.White);
+            sb.Draw(_textures[_activePlayer], _playerPos, _rectangles[_activePlayer], Color.White, default,
+                new Vector2((float) _rectangles[_activePlayer].Width / 2, (float) _rectangles[_activePlayer].Height / 2), 1, default,
+                default);
         }
 
         public void SetActivePlayer(int val)
@@ -116,8 +119,11 @@ namespace LBMG.Player
 
         private void MoveToCase(GameTime gameTime)
         {
-            if (Characters[_activePlayer].IsMoving == true)
+            if (Characters[_activePlayer].IsMoving == true) // TODO Review this calculation
+            {
                 _counter -= (Characters[_activePlayer].Speed * gameTime.ElapsedGameTime.TotalSeconds);
+                Debug.WriteLine(_counter);
+            }
         }
     }
 }

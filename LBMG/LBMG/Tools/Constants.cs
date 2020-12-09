@@ -12,5 +12,13 @@ namespace LBMG.Tools
         public const int DBoxPaddingTop = 5;
         public const int DBoxPaddingRight = 8;
         public const int DBoxPaddingBottom = 5;
+
+        /* ----------- Camera constants ----------- */
+
+        public const float ZoomFact = (float) 0;
+
+        /* ----------- Tile constants ----------- */
+
+        public const float TileSize = 32;
     }
 }
