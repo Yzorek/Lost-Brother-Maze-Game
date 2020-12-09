@@ -19,9 +19,10 @@ namespace LBMG.Player
         private readonly List<Texture2D> _textures;
         private List<Rectangle> _rectangles;
         private int _activePlayer;
-        private readonly Vector2 _playerPos;
+        private Vector2 _playerPos;
         const float TileSize = Constants.TileSize;
         private double _counter;
+        private SpriteBatch _sb;
 
         public CharacterDrawer(List<Character> characters, List<string> paths, List<Rectangle> rectangles)
         {
@@ -38,6 +39,7 @@ namespace LBMG.Player
 
             _activePlayer = 0;
             _counter = TileSize;
+            _sb = new SpriteBatch(gd);
 
             foreach (string path in _texturePaths)
             {
@@ -59,11 +61,15 @@ namespace LBMG.Player
             }
         }
 
-        public void Draw(SpriteBatch sb, GameTime gameTime/*, Matrix transformMatrix*/)
+        public void Draw(GameTime gameTime/*, Matrix transformMatrix*/)
         {
-            sb.Draw(_textures[_activePlayer], _playerPos, _rectangles[_activePlayer], Color.White, default,
+            _sb.Begin(samplerState: SamplerState.PointClamp);
+
+            _sb.Draw(_textures[_activePlayer], _playerPos, _rectangles[_activePlayer], Color.White, default,
                 new Vector2((float) _rectangles[_activePlayer].Width / 2, (float) _rectangles[_activePlayer].Height / 2), 1, default,
                 default);
+
+            _sb.End();
         }
 
         public void SetActivePlayer(int val)

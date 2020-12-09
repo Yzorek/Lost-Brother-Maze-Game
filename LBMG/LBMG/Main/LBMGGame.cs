@@ -71,7 +71,7 @@ namespace LBMG.Main
             Color backgroundColor = new Color(1, 2, 11);
             GraphicsDevice.Clear(backgroundColor);
             base.Draw(gameTime);
-            _sb.Begin();
+            _sb.Begin(samplerState: SamplerState.PointClamp);
             if (CurrentGame.Started)
                 CurrentGame.Draw(gameTime, _sb);
             else

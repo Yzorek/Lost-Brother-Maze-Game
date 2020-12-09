@@ -1,5 +1,7 @@
 ﻿using LBMG.Main;
 using System;
+using LBMG.Map;
+using MonoGame.Extended;
 
 namespace LBMG
 {
