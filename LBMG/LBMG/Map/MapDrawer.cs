@@ -21,9 +21,8 @@ namespace LBMG.Map
         public void Initialize(GraphicsDevice gd, ContentManager cm)
         {
             Map.LoadMap(gd, cm);
-            sb = new SpriteBatch(gd);
         }
-        SpriteBatch sb;
+
         public void Update(GameTime gameTime/*, Camera<Vector2> camera*/)
         {
             foreach (Piece piece in Map.TiledMapsDictionary.Values)

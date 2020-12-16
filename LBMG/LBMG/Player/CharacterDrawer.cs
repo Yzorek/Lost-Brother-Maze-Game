@@ -83,9 +83,11 @@ namespace LBMG.Player
             _sb.End();
         }
 
-        public void SetActivePlayer(int val)
+        public void SetActivePlayer(int val, Camera<Vector2> camera)
         {
             _activePlayer = val;
+
+            SetCameraPosToCharacterPos(camera);
         }
 
         private void AnimateSprite()
@@ -179,6 +181,12 @@ namespace LBMG.Player
                     camera.Move(new Vector2(0, _counter));
                     break;
             }
+        }
+
+        private void SetCameraPosToCharacterPos(Camera<Vector2> camera)
+        {
+            Point charPos = Characters[_activePlayer].Position;
+            camera.Position = new Vector2(charPos.X * TileSize, -charPos.Y * TileSize);
         }
     }
 }

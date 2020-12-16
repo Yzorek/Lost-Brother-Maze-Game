@@ -18,34 +18,26 @@ namespace LBMG.GamePlay
     public class GamePlay
     {
         private int _activePlayer = 0;
-        private int ActivePLayer
+        private int ActivePlayer
         {
             get => _activePlayer;
             set
             {
                 _activePlayer = value;
-                CharacterDrawer?.SetActivePlayer(value);
+                CharacterDrawer?.SetActivePlayer(value, _camera);
             }
         }
 
         static OrthographicCamera _camera;
 
         public Vector2 CameraPos { get; set; }
-
         public List<Character> Characters { get; set; }
-
         public Map.Map Map { get; set; }
-
         public MapDrawer MapDrawer { get; set; }
-
         public CharacterDrawer CharacterDrawer { get; set; }
-
         public Controller Controller { get; set; }
-
         public UI.UI UserInterface { get; set; }
-
         public UIDrawer UiDrawer { get; set; }
-
         public bool Started { get; set; }
 
         public GamePlay()
@@ -77,7 +69,6 @@ namespace LBMG.GamePlay
             });
 
             CameraPos = new Vector2(0);
-            ActivePLayer = 0;
             Started = false;
         }
 
@@ -85,8 +76,10 @@ namespace LBMG.GamePlay
         {
             _camera ??= new OrthographicCamera(gd);
 
+            ActivePlayer = 0;
+
             _camera.ZoomIn(Constants.ZoomFact);
-            _camera.Move(new Vector2(3, 4));
+            _camera.Move(new Vector2(0, 0));
             CharacterDrawer.Initialize(gd, cm, window);
             MapDrawer.Initialize(gd, cm);
             UiDrawer.Initialize(cm, window);
@@ -94,8 +87,18 @@ namespace LBMG.GamePlay
 
         public void Update(GameTime gameTime, KeyboardStateExtended kse)
         {
+            Debug.WriteLine("Character : " + Characters[ActivePlayer].Position);
+            Debug.WriteLine("Macera" + _camera.Position);
+            Debug.WriteLine("Direction" + Characters[ActivePlayer].Direction);
+
             if (kse.WasKeyJustUp(Keys.C))                   // TEMP, will change with the timer later
-                ActivePLayer = ActivePLayer == 0 ? 1 : 0;
+            {
+                ActivePlayer = ActivePlayer == 0 ? 1 : 0;
+            }
+            if (kse.WasKeyJustUp(Keys.H))
+            {
+                //Characters[ActivePlayer].Position += new Point(20, 0);
+            }
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
             {
                 Debug.WriteLine("Is about to write something...");
@@ -123,18 +126,18 @@ namespace LBMG.GamePlay
 
         private void ControlCharacter()
         {
-            if (Characters[ActivePLayer].IsMoving) return;
+            if (Characters[ActivePlayer].IsMoving) return;
             SendMove();
         }
 
         private void SendMove()
         {
-            Direction dir = Controller.Direction;
-
-            Characters[ActivePLayer].Direction = dir;
             if (Controller.IsKeyPressed)                    //if (IsCollision() == false)       TODO : Add collision system
             {
-                Characters[ActivePLayer].IsMoving = true;   //
+                Direction dir = Controller.Direction;
+                Characters[ActivePlayer].Direction = dir;
+
+                Characters[ActivePlayer].IsMoving = true;   //
             }
         }
     }

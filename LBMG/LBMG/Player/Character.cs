@@ -13,7 +13,8 @@ namespace LBMG.Player
         public float Speed { get; set; }
         public Direction Direction { get; set; }
         public bool IsMoving { get; set; }
-        public Point Position { get; set; }
+        public Point Position { get; private set; }
+
         public Character(string name, float speed)
         {
             Name = name;
@@ -26,7 +27,6 @@ namespace LBMG.Player
         public void SpawnAt(int x, int y/*, Map map*/)
         {
             Position = new Point(x, y);
-
         }
 
         public void Move()

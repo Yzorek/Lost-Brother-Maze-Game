@@ -19,6 +19,6 @@ namespace LBMG.Tools
 
         /* ----------- Tile constants ----------- */
 
-        public const float TileSize = 32;
+        public const float TileSize = 16;
     }
 }
