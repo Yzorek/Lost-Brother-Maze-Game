@@ -117,3 +117,53 @@
 /processorParam:TextureFormat=Color
 /build:Menu/button.png
 
+#begin TiledMaps/bottom_left_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/bottom_left_tunnel.tmx
+
+#begin TiledMaps/bottom_right_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/bottom_right_tunnel.tmx
+
+#begin TiledMaps/bottom_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/bottom_tunnel.tmx
+
+#begin TiledMaps/cross_road.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/cross_road.tmx
+
+#begin TiledMaps/horizontal_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/horizontal_tunnel.tmx
+
+#begin TiledMaps/top_bottom_left_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/top_bottom_left_tunnel.tmx
+
+#begin TiledMaps/top_left_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/top_left_tunnel.tmx
+
+#begin TiledMaps/top_right_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/top_right_tunnel.tmx
+
+#begin TiledMaps/top_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/top_tunnel.tmx
+
+#begin TiledMaps/vertical_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/vertical_tunnel.tmx
+

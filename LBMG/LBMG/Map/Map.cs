@@ -42,7 +42,13 @@ namespace LBMG.Map
                     { new[] { Direction.Left, Direction.Top, Direction.Right, Direction.Bottom }, cm.Load<TiledMap>("TiledMaps/cross_road") },
                     { new[] { Direction.Bottom, Direction.Left }, cm.Load<TiledMap>("TiledMaps/bottom_left_tunnel") },
                     { new[] { Direction.Bottom, Direction.Right }, cm.Load<TiledMap>("TiledMaps/bottom_right_tunnel") },
-                    { new[] { Direction.Top, Direction.Right }, cm.Load<TiledMap>("TiledMaps/top_right_tunnel") }
+                    { new[] { Direction.Top, Direction.Right }, cm.Load<TiledMap>("TiledMaps/top_right_tunnel") },
+                    { new[] { Direction.Bottom }, cm.Load<TiledMap>("TiledMaps/bottom_tunnel") },
+                    { new[] { Direction.Top, Direction.Bottom, Direction.Left }, cm.Load<TiledMap>("TiledMaps/top_bottom_left_tunnel") },
+                    { new[] { Direction.Left, Direction.Top }, cm.Load<TiledMap>("TiledMaps/top_left_tunnel") },
+                    { new[] { Direction.Top }, cm.Load<TiledMap>("TiledMaps/top_tunnel") },
+                    { new[] { Direction.Bottom, Direction.Top }, cm.Load<TiledMap>("TiledMaps/vertical_tunnel") },
+                    { new[] { Direction.Left, Direction.Right }, cm.Load<TiledMap>("TiledMaps/horizontal_tunnel") },
                 };
 
             foreach (var dirsPiece in generatedMap.GetPieces())
@@ -57,9 +63,12 @@ namespace LBMG.Map
                     .Where(x => directions.SetEquals(new HashSet<Direction>(x)))
                     .FirstOrDefault();
 
-                var piece = new Piece(dtmeDictKey != null ? directionsTMEquivalent[dtmeDictKey] : crossRoad, gpPosX, gpPosY);
-                piece.Initialize(gd);
-                TiledMapsDictionary.Add(position, piece);
+                if (dtmeDictKey != null)
+                {
+                    var piece = new Piece(directionsTMEquivalent[dtmeDictKey], gpPosX, gpPosY);
+                    piece.Initialize(gd);
+                    TiledMapsDictionary.Add(position, piece);
+                }
             }
         }
     }
