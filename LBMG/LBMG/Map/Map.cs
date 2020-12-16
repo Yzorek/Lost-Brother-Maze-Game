@@ -35,7 +35,7 @@ namespace LBMG.Map
             //
             //ConsoleGMapDrawer cgmd = new ConsoleGMapDrawer(generatedMap);
             //cgmd.Draw(true);
-            TiledMap crossRoad = cm.Load<TiledMap>("TiledMaps/cross_road");
+            TiledMap crossRoad = cm.Load<TiledMap>("TiledMaps/top_tunnel");
 
             Dictionary<Direction[], TiledMap> directionsTMEquivalent = new Dictionary<Direction[], TiledMap>
                {
