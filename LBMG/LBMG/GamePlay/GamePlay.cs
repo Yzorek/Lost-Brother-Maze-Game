@@ -86,6 +86,7 @@ namespace LBMG.GamePlay
             _camera ??= new OrthographicCamera(gd);
 
             _camera.ZoomIn(Constants.ZoomFact);
+            _camera.Move(new Vector2(3, 4));
             CharacterDrawer.Initialize(gd, cm, window);
             MapDrawer.Initialize(gd, cm);
             UiDrawer.Initialize(cm, window);
@@ -107,8 +108,7 @@ namespace LBMG.GamePlay
 
             Controller.Update();
             ControlCharacter();
-            CharacterDrawer.Update(gameTime);
-            MoveCamera(Characters[_activePlayer].Direction, gameTime);
+            CharacterDrawer.Update(gameTime, _camera);
             MapDrawer.Update(gameTime);
             UiDrawer.Update(gameTime);
         }
@@ -133,30 +133,8 @@ namespace LBMG.GamePlay
 
             Characters[ActivePLayer].Direction = dir;
             if (Controller.IsKeyPressed)                    //if (IsCollision() == false)       TODO : Add collision system
-                Characters[ActivePLayer].IsMoving = true;   //
-        }
-
-        private void MoveCamera(Direction dir, GameTime gameTime)
-        {
-            if (Characters[_activePlayer].IsMoving == true)
             {
-                switch (dir)
-                {
-                    case Direction.Left:
-                        _camera.Move(new Vector2(-Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, 0));
-                        break;
-                    case Direction.Top:
-                        _camera.Move(new Vector2(0, -Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds));
-                        break;
-                    case Direction.Right:
-                        _camera.Move(new Vector2(Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds, 0));
-                        break;
-                    case Direction.Bottom:
-                        _camera.Move(new Vector2(0, Characters[ActivePLayer].Speed * (float)gameTime.ElapsedGameTime.TotalSeconds));
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
-                }
+                Characters[ActivePLayer].IsMoving = true;   //
             }
         }
     }

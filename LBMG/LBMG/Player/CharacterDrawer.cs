@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using System.Diagnostics;
 using LBMG.Tools;
 using MonoGame.Extended.Tiled;
+using MonoGame.Extended;
 
 namespace LBMG.Player
 {
@@ -21,8 +22,8 @@ namespace LBMG.Player
         private int _activePlayer;
         private Vector2 _playerPos;
         const float TileSize = Constants.TileSize;
-        private double _counter;
         private SpriteBatch _sb;
+        private float _counter;
 
         public CharacterDrawer(List<Character> characters, List<string> paths, List<Rectangle> rectangles)
         {
@@ -46,17 +47,27 @@ namespace LBMG.Player
                 Texture2D text = cm.Load<Texture2D>(path);
                 _textures.Add(text);
             }
+
+            window.ClientSizeChanged += Window_ClientSizeChanged;
         }
 
-        public void Update(GameTime gameTime/*, Camera<Vector2> camera*/)
+        private void Window_ClientSizeChanged(object sender, EventArgs e)
+        {
+            GameWindow window = sender as GameWindow; 
+            _playerPos.X = window.ClientBounds.Width / 2;
+            _playerPos.Y = window.ClientBounds.Height / 2;
+        }
+
+        public void Update(GameTime gameTime, Camera<Vector2> camera)
         {
             AnimateSprite();
             MoveToCase(gameTime);
+            MoveCamera(gameTime, camera);
             if (_counter <= 0)
             {
                 Characters[_activePlayer].IsMoving = false;
                 Characters[_activePlayer].Move();
-                //Debug.WriteLine("x : " + Characters[_activePlayer].Position.X + " y : " + Characters[_activePlayer].Position.Y);
+                AdjustCamera(camera);
                 _counter = TileSize;
             }
         }
@@ -126,9 +137,47 @@ namespace LBMG.Player
         private void MoveToCase(GameTime gameTime)
         {
             if (Characters[_activePlayer].IsMoving == true) // TODO Review this calculation
+                _counter -= (Characters[_activePlayer].Speed * (float) gameTime.ElapsedGameTime.TotalSeconds);
+        }
+
+        private void MoveCamera(GameTime gameTime, Camera<Vector2> camera)
+        {
+            if (Characters[_activePlayer].IsMoving == true)
             {
-                _counter -= (Characters[_activePlayer].Speed * gameTime.ElapsedGameTime.TotalSeconds);
-                Debug.WriteLine(_counter);
+                switch (Characters[_activePlayer].Direction)
+                {
+                    case Direction.Left:
+                        camera.Move(new Vector2(-Characters[_activePlayer].Speed * (float) gameTime.ElapsedGameTime.TotalSeconds, 0));
+                        break;
+                    case Direction.Top:
+                        camera.Move(new Vector2(0, -Characters[_activePlayer].Speed * (float) gameTime.ElapsedGameTime.TotalSeconds));
+                        break;
+                    case Direction.Right:
+                        camera.Move(new Vector2(Characters[_activePlayer].Speed * (float) gameTime.ElapsedGameTime.TotalSeconds, 0));
+                        break;
+                    case Direction.Bottom:
+                        camera.Move(new Vector2(0, Characters[_activePlayer].Speed * (float) gameTime.ElapsedGameTime.TotalSeconds));
+                        break;
+                }
+            }
+        }
+
+        private void AdjustCamera(Camera<Vector2> camera)
+        {
+            switch (Characters[_activePlayer].Direction)
+            {
+                case Direction.Left:
+                    camera.Move(new Vector2(-_counter, 0));
+                    break;
+                case Direction.Top:
+                    camera.Move(new Vector2(0, -_counter));
+                    break;
+                case Direction.Right:
+                    camera.Move(new Vector2(_counter, 0));
+                    break;
+                case Direction.Bottom:
+                    camera.Move(new Vector2(0, _counter));
+                    break;
             }
         }
     }
