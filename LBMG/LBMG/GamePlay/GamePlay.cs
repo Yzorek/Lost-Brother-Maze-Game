@@ -44,7 +44,7 @@ namespace LBMG.GamePlay
         {
             Characters = new List<Character>
             {
-                new Character("Peter", 250),
+                new Character("Peter", 175),
                 new Character("Fred", 250)
             };
             Map = new Map.Map(Difficulty.Easy);
@@ -70,6 +70,10 @@ namespace LBMG.GamePlay
 
             CameraPos = new Vector2(0);
             Started = false;
+
+#if DEBUG
+            Started = true;
+#endif
         }
 
         public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
@@ -79,18 +83,15 @@ namespace LBMG.GamePlay
             ActivePlayer = 0;
 
             _camera.ZoomIn(Constants.ZoomFact);
-            _camera.Move(new Vector2(0, 0));
+            _camera.Origin = new Vector2(0, 0);
+
             CharacterDrawer.Initialize(gd, cm, window);
-            MapDrawer.Initialize(gd, cm);
+            MapDrawer.Initialize(gd, cm, window);
             UiDrawer.Initialize(cm, window);
         }
 
         public void Update(GameTime gameTime, KeyboardStateExtended kse)
         {
-            Debug.WriteLine("Character : " + Characters[ActivePlayer].Position);
-            Debug.WriteLine("Macera" + _camera.Position);
-            Debug.WriteLine("Direction" + Characters[ActivePlayer].Direction);
-
             if (kse.WasKeyJustUp(Keys.C))                   // TEMP, will change with the timer later
             {
                 ActivePlayer = ActivePlayer == 0 ? 1 : 0;
@@ -119,7 +120,7 @@ namespace LBMG.GamePlay
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
             MapDrawer.DrawBackLayer(gameTime, _camera, sb);
-            CharacterDrawer.Draw(gameTime);
+            CharacterDrawer.Draw(gameTime, _camera);
             MapDrawer.DrawFrontLayer(gameTime, _camera, sb);
             UiDrawer.Draw(sb, gameTime);
         }
@@ -137,7 +138,10 @@ namespace LBMG.GamePlay
                 Direction dir = Controller.Direction;
                 Characters[ActivePlayer].Direction = dir;
 
-                Characters[ActivePlayer].IsMoving = true;   //
+                if (!Map.IsCollision(Characters[ActivePlayer].GetFacingPoint()))
+                {
+                    Characters[ActivePlayer].IsMoving = true;
+                }
             }
         }
     }

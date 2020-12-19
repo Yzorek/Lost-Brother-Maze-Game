@@ -18,9 +18,9 @@ namespace LBMG.Map
             Map = map;
         }
 
-        public void Initialize(GraphicsDevice gd, ContentManager cm)
+        public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
         {
-            Map.LoadMap(gd, cm);
+            Map.LoadMap(gd, cm, window);
         }
 
         public void Update(GameTime gameTime/*, Camera<Vector2> camera*/)

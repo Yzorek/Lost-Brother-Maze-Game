@@ -1,11 +1,12 @@
 ﻿using LBMG.Tools;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Tiled;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -13,7 +14,6 @@ namespace LBMG.Map
 {
     public class Map
     {
-        private const int TiledMapSize = 512;
 
         public Dictionary<Point, Piece> TiledMapsDictionary { get; set; }
 
@@ -26,7 +26,7 @@ namespace LBMG.Map
             TiledMapsDictionary = new Dictionary<Point, Piece>();
         }
 
-        public void LoadMap(GraphicsDevice gd, ContentManager cm)
+        public void LoadMap(GraphicsDevice gd, ContentManager cm, GameWindow window)
         {
             // Generating Map
             MapGenerator mg = new MapGenerator();
@@ -35,7 +35,7 @@ namespace LBMG.Map
             //
             //ConsoleGMapDrawer cgmd = new ConsoleGMapDrawer(generatedMap);
             //cgmd.Draw(true);
-            TiledMap crossRoad = cm.Load<TiledMap>("TiledMaps/top_tunnel");
+            TiledMap crossRoad = cm.Load<TiledMap>("TiledMaps/cross_road");
 
             Dictionary<Direction[], TiledMap> directionsTMEquivalent = new Dictionary<Direction[], TiledMap>
                {
@@ -53,11 +53,12 @@ namespace LBMG.Map
 
             foreach (var dirsPiece in generatedMap.GetPieces())
             {
-                Point position = new Point(dirsPiece.Item1.Item1, dirsPiece.Item1.Item2);
-                HashSet<Direction> directions = dirsPiece.Item2;
+                Point tiledMapLocation = new Point(dirsPiece.Item1.Item1, dirsPiece.Item1.Item2);
+                //tiledMapLocation = new Point(0, 0);
+                //if (TiledMapsDictionary.ContainsKey(tiledMapLocation))
+                //    break;
 
-                int gpPosX = (TiledMapSize + (int)(TiledMapSize * Constants.ZoomFact)) * position.X,
-                    gpPosY = (TiledMapSize + (int)(TiledMapSize * Constants.ZoomFact)) * position.Y;
+                HashSet<Direction> directions = dirsPiece.Item2;
 
                 var dtmeDictKey = directionsTMEquivalent.Keys
                     .Where(x => directions.SetEquals(new HashSet<Direction>(x)))
@@ -65,11 +66,28 @@ namespace LBMG.Map
 
                 if (dtmeDictKey != null)
                 {
-                    var piece = new Piece(directionsTMEquivalent[dtmeDictKey], gpPosX, gpPosY);
-                    piece.Initialize(gd);
-                    TiledMapsDictionary.Add(position, piece);
+                    var piece = new Piece(crossRoad, tiledMapLocation.X, tiledMapLocation.Y);
+                    piece.Initialize(gd, window);
+                    TiledMapsDictionary.Add(tiledMapLocation, piece);
                 }
             }
+        }
+
+        public bool IsCollision(Point coordinates)
+        {
+            Point tiledMapLocation = new Point(((coordinates.X < 0 ? -Constants.TiledMapSize : 0) + coordinates.X) / Constants.TiledMapSize,
+                 -((coordinates.Y >= 0 ? Constants.TiledMapSize : 0) + coordinates.Y) / Constants.TiledMapSize);
+
+            if (!TiledMapsDictionary.ContainsKey(tiledMapLocation))
+                return false;
+
+            Point onPiecePos = coordinates - new Point(Constants.TiledMapSize * tiledMapLocation.X, Constants.TiledMapSize * -tiledMapLocation.Y);
+            onPiecePos.Y *= -Constants.TileSize;
+            onPiecePos.X *= Constants.TileSize;
+
+            Debug.WriteLine("COP: " + onPiecePos);
+
+            return TiledMapsDictionary[tiledMapLocation].IsCollision(onPiecePos);
         }
     }
 

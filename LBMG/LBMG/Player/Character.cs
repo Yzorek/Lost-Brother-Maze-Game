@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using LBMG.Tools;
 using Microsoft.Xna.Framework;
@@ -13,7 +14,7 @@ namespace LBMG.Player
         public float Speed { get; set; }
         public Direction Direction { get; set; }
         public bool IsMoving { get; set; }
-        public Point Position { get; private set; }
+        public Point Coordinates { get; private set; }
 
         public Character(string name, float speed)
         {
@@ -21,18 +22,23 @@ namespace LBMG.Player
             Speed = speed;
             Direction = Direction.Bottom;
             IsMoving = false;
-            Position = new Point(0, 0);
+            Coordinates = new Point(0, 0);
         }
 
         public void SpawnAt(int x, int y/*, Map map*/)
         {
-            Position = new Point(x, y);
+            Coordinates = new Point(x, y);
         }
 
         public void Move()
         {
-            int x = Position.X;
-            int y = Position.Y;
+            Coordinates = GetFacingPoint();
+        }
+
+        public Point GetFacingPoint()
+        {
+            int x = Coordinates.X;
+            int y = Coordinates.Y;
 
             x += Direction switch
             {
@@ -52,7 +58,7 @@ namespace LBMG.Player
                 _ => throw new ArgumentOutOfRangeException()
             };
 
-            Position = new Point(x, y);
+            return new Point(x, y);
         }
     }
 }

@@ -72,7 +72,7 @@ namespace LBMG.Player
             }
         }
 
-        public void Draw(GameTime gameTime/*, Matrix transformMatrix*/)
+        public void Draw(GameTime gameTime, Camera<Vector2> camera)
         {
             _sb.Begin(samplerState: SamplerState.PointClamp);
 
@@ -185,7 +185,7 @@ namespace LBMG.Player
 
         private void SetCameraPosToCharacterPos(Camera<Vector2> camera)
         {
-            Point charPos = Characters[_activePlayer].Position;
+            Point charPos = Characters[_activePlayer].Coordinates;
             camera.Position = new Vector2(charPos.X * TileSize, -charPos.Y * TileSize);
         }
     }

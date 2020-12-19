@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using LBMG.Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -19,18 +21,22 @@ namespace LBMG.Map
         private TiledMapObjectLayer _collisionLayer;
         private TiledMapLayer _backLayer;
         private TiledMapLayer _frontLayer;
+        private Point _drawingPos;
 
-        public Point Position { get; set; }
+        public Point Location { get; set; }
 
-        public Piece(TiledMap tiledMap, int posX, int posY)
+        public Piece(TiledMap tiledMap, int locX, int locY)
         {
             TiledMap = tiledMap;
             Name = TiledMap.Name;
-            Position = new Point(posX, posY);
+            Location = new Point(locX, locY);
         }
 
-        public void Initialize(GraphicsDevice gd)
+        public void Initialize(GraphicsDevice gd, GameWindow window)
         {
+            window.ClientSizeChanged += Window_ClientSizeChanged;
+            SetDrawingPosition(window);
+
             foreach (TiledMapLayer tml in TiledMap.Layers)
             {
                 string[] name = tml.Name.ToLower().Split(' ', StringSplitOptions.None);
@@ -56,6 +62,11 @@ namespace LBMG.Map
             _tiledMapRenderer = new TiledMapRenderer(gd, TiledMap);
         }
 
+        private void Window_ClientSizeChanged(object sender, EventArgs e)
+        {
+            SetDrawingPosition(sender as GameWindow);
+        }
+
         public void UpdateRenderer(GameTime gameTime)
         {
             _tiledMapRenderer.Update(gameTime);
@@ -68,8 +79,33 @@ namespace LBMG.Map
         {
             Matrix matrix = camera.GetViewMatrix();
 
-            matrix.Translation += new Vector3(Position.ToVector2(), 0);
+            matrix.Translation += new Vector3(_drawingPos.ToVector2(), 0);
             _tiledMapRenderer.Draw(layer, matrix);
+        }
+
+        private void SetDrawingPosition(GameWindow window)
+        {
+            int gpPosX = (Constants.TiledMapSizePixel + (int)(Constants.TiledMapSizePixel * Constants.ZoomFact)) * Location.X,
+                gpPosY = (Constants.TiledMapSizePixel + (int)(Constants.TiledMapSizePixel * Constants.ZoomFact)) * Location.Y;
+
+            gpPosX += window.ClientBounds.Width / 2;
+            gpPosY += window.ClientBounds.Height / 2;
+
+            _drawingPos = new Point(gpPosX, gpPosY);
+        }
+
+        public bool IsCollision(Point onPiecePosition)
+        {
+
+
+            foreach (TiledMapObject tmObj in _collisionLayer.Objects)
+            {
+                if (onPiecePosition.X >= tmObj.Position.X && onPiecePosition.Y >= tmObj.Position.Y
+                       && onPiecePosition.X <= tmObj.Position.X + tmObj.Size.Width && onPiecePosition.Y <= tmObj.Position.Y + tmObj.Size.Height)
+                    return true;
+            }
+
+            return false;
         }
     }
 }
