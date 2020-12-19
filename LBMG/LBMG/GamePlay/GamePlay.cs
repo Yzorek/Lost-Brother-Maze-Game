@@ -81,6 +81,15 @@ namespace LBMG.GamePlay
             Started = false;
         }
 
+        private void Window_ClientSizeChanged(object sender, EventArgs e)
+        {
+            GameWindow window = sender as GameWindow;
+
+            CharacterDrawer.SetPixelPos(new Vector2(window.ClientBounds.Width / 2, window.ClientBounds.Height / 2));
+            UiDrawer.DialogDrawer.SetPixelPos(new Vector2(window.ClientBounds.Width / 2 - UserInterface.DialogBox.Size.X / 2,
+                window.ClientBounds.Height - UserInterface.DialogBox.Size.Y - 20));
+        }
+
         public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
         {
             _camera ??= new OrthographicCamera(gd);
@@ -90,6 +99,8 @@ namespace LBMG.GamePlay
             CharacterDrawer.Initialize(gd, cm, window);
             MapDrawer.Initialize(gd, cm);
             UiDrawer.Initialize(cm, window);
+
+            window.ClientSizeChanged += Window_ClientSizeChanged;
         }
 
         public void Update(GameTime gameTime, KeyboardStateExtended kse)
@@ -98,8 +109,8 @@ namespace LBMG.GamePlay
                 ActivePLayer = ActivePLayer == 0 ? 1 : 0;
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
             {
-                Debug.WriteLine("Is about to write something...");
-                UserInterface.DialogBox.Write(5, new[] { "sud", "est" });
+                //UserInterface.DialogBox.Write(5, new[] { "sud", "est" });
+                UserInterface.DialogBox.Write(3);
             }
             if (kse.WasKeyJustUp(Keys.N))                   // TEMP
                 UserInterface.DialogBox.NextDialog();

@@ -47,15 +47,12 @@ namespace LBMG.Player
                 Texture2D text = cm.Load<Texture2D>(path);
                 _textures.Add(text);
             }
-
-            window.ClientSizeChanged += Window_ClientSizeChanged;
         }
 
-        private void Window_ClientSizeChanged(object sender, EventArgs e)
+        public void SetPixelPos(Vector2 pos)
         {
-            GameWindow window = sender as GameWindow; 
-            _playerPos.X = window.ClientBounds.Width / 2;
-            _playerPos.Y = window.ClientBounds.Height / 2;
+            _playerPos.X = pos.X;
+            _playerPos.Y = pos.Y;
         }
 
         public void Update(GameTime gameTime, Camera<Vector2> camera)
