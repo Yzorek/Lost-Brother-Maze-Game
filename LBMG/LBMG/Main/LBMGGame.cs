@@ -8,6 +8,7 @@ using MonoGame.Extended.Input;
 using LBMG.Player;
 using LBMG.Map;
 using System.Diagnostics;
+using LBMG.Tools;
 using LBMG.UI;
 using System.Runtime.InteropServices;
 
@@ -28,6 +29,7 @@ namespace LBMG.Main
             Content.RootDirectory = @"PipelineContent";
             Window.AllowUserResizing = true;
             IsMouseVisible = true;
+            Point resolution = ResolutionHelper.GetResolution();
 
             _gdm = new GraphicsDeviceManager(this);
         }
@@ -63,6 +65,24 @@ namespace LBMG.Main
                 CurrentGame.Update(gameTime, kse);
             else
                 _titleScreen.Update(gameTime);
+            if (kse.WasKeyJustUp(Keys.C))                   // TEMP, will change with the timer later
+                ActivePLayer = ActivePLayer == 0 ? 1 : 0;
+            if (kse.WasKeyJustUp(Keys.L))                   // TEMP
+            {
+                Debug.WriteLine("Is about to write something...");
+                //UserInterface.DialogBox.Write(5, new[]{"sud", "est"});
+                UserInterface.DialogBox.Write(3);
+            }
+            if (kse.WasKeyJustUp(Keys.N))                   // TEMP
+                UserInterface.DialogBox.NextDialog();
+            if (kse.WasKeyJustUp(Keys.T)) // TEMP
+                TextBank.CurrentLanguage = Language.English;
+
+            Controller.Update();
+            ControlCharacter();
+            CharacterDrawer.Update(gameTime);
+            UiDrawer.Update(gameTime);
+
             base.Update(gameTime);
         }
 
