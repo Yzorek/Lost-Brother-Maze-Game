@@ -35,7 +35,7 @@ namespace LBMG.Map
             //
             //ConsoleGMapDrawer cgmd = new ConsoleGMapDrawer(generatedMap);
             //cgmd.Draw(true);
-            TiledMap crossRoad = cm.Load<TiledMap>("TiledMaps/cross_road");
+            //TiledMap crossRoad = cm.Load<TiledMap>("TiledMaps/cross_road");
 
             Dictionary<Direction[], TiledMap> directionsTMEquivalent = new Dictionary<Direction[], TiledMap>
                {
@@ -66,7 +66,7 @@ namespace LBMG.Map
 
                 if (dtmeDictKey != null)
                 {
-                    var piece = new Piece(crossRoad, tiledMapLocation.X, tiledMapLocation.Y);
+                    var piece = new Piece(directionsTMEquivalent[dtmeDictKey], tiledMapLocation.X, tiledMapLocation.Y);
                     piece.Initialize(gd, window);
                     TiledMapsDictionary.Add(tiledMapLocation, piece);
                 }
@@ -82,12 +82,10 @@ namespace LBMG.Map
                 return false;
 
             Point onPiecePos = coordinates - new Point(Constants.TiledMapSize * tiledMapLocation.X, Constants.TiledMapSize * -tiledMapLocation.Y);
-            onPiecePos.Y *= -Constants.TileSize;
-            onPiecePos.X *= Constants.TileSize;
+            onPiecePos.Y *= -1;
 
-            Debug.WriteLine("COP: " + onPiecePos);
-
-            return TiledMapsDictionary[tiledMapLocation].IsCollision(onPiecePos);
+            bool r = TiledMapsDictionary[tiledMapLocation].IsCollision(onPiecePos);
+            return r;
         }
     }
 

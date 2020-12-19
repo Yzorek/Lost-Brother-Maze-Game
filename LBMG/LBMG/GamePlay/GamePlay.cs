@@ -44,7 +44,7 @@ namespace LBMG.GamePlay
         {
             Characters = new List<Character>
             {
-                new Character("Peter", 175),
+                new Character("Peter", 220),
                 new Character("Fred", 250)
             };
             Map = new Map.Map(Difficulty.Easy);

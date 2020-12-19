@@ -94,14 +94,14 @@ namespace LBMG.Map
             _drawingPos = new Point(gpPosX, gpPosY);
         }
 
-        public bool IsCollision(Point onPiecePosition)
+        public bool IsCollision(Point onPieceCoordinates)
         {
-
+            Point pos = new Point(onPieceCoordinates.X * Constants.TileSize + Constants.TileSize / 2, onPieceCoordinates.Y * Constants.TileSize + Constants.TileSize / 2);
 
             foreach (TiledMapObject tmObj in _collisionLayer.Objects)
             {
-                if (onPiecePosition.X >= tmObj.Position.X && onPiecePosition.Y >= tmObj.Position.Y
-                       && onPiecePosition.X <= tmObj.Position.X + tmObj.Size.Width && onPiecePosition.Y <= tmObj.Position.Y + tmObj.Size.Height)
+                if (pos.X >= tmObj.Position.X && pos.Y >= tmObj.Position.Y
+                       && pos.X <= tmObj.Position.X + tmObj.Size.Width && pos.Y <= tmObj.Position.Y + tmObj.Size.Height)
                     return true;
             }
 

@@ -30,8 +30,6 @@ namespace LBMG.Main
             IsMouseVisible = true;
 
             _gdm = new GraphicsDeviceManager(this);
-            _gdm.PreferredBackBufferWidth = 800;
-            _gdm.PreferredBackBufferHeight = 600;
         }
 
         protected override void Initialize()
@@ -39,7 +37,9 @@ namespace LBMG.Main
 #if !DEBUG
             SetFullScreen(true);
 #else
-            SetFullScreen(false);
+            _gdm.PreferredBackBufferWidth = 800;
+            _gdm.PreferredBackBufferHeight = 600;
+            _gdm.ApplyChanges();
 #endif
 
             _titleScreen = new TitleScreen();

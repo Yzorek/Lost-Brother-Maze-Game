@@ -35,8 +35,8 @@ namespace LBMG.Player
 
         public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
         {
-            _playerPos.X = window.ClientBounds.Width / 2;
-            _playerPos.Y = window.ClientBounds.Height / 2;
+            SetPosition(window);
+            window.ClientSizeChanged += (s, e) => SetPosition(s as GameWindow);
 
             _activePlayer = 0;
             _counter = TileSize;
@@ -47,13 +47,10 @@ namespace LBMG.Player
                 Texture2D text = cm.Load<Texture2D>(path);
                 _textures.Add(text);
             }
-
-            window.ClientSizeChanged += Window_ClientSizeChanged;
         }
 
-        private void Window_ClientSizeChanged(object sender, EventArgs e)
+        private void SetPosition(GameWindow window)
         {
-            GameWindow window = sender as GameWindow; 
             _playerPos.X = window.ClientBounds.Width / 2;
             _playerPos.Y = window.ClientBounds.Height / 2;
         }
@@ -77,7 +74,7 @@ namespace LBMG.Player
             _sb.Begin(samplerState: SamplerState.PointClamp);
 
             _sb.Draw(_textures[_activePlayer], _playerPos, _rectangles[_activePlayer], Color.White, default,
-                new Vector2((float) _rectangles[_activePlayer].Width / 2, (float) _rectangles[_activePlayer].Height / 2), 1, default,
+                new Vector2(0, (float)_rectangles[_activePlayer].Height / 2), 1, default,
                 default);
 
             _sb.End();
