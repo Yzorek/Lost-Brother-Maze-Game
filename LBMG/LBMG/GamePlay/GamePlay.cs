@@ -7,6 +7,7 @@ using LBMG.Player;
 using LBMG.Tools;
 using LBMG.UI;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -46,7 +47,9 @@ namespace LBMG.GamePlay
 
         public UIDrawer UiDrawer { get; set; }
 
-        public bool Started { get; set; }
+        public bool Started { get; private set; }
+
+        private Song BackGroundMusic { get; set; }
 
         public GamePlay()
         {
@@ -81,6 +84,12 @@ namespace LBMG.GamePlay
             Started = false;
         }
 
+        public void Start()
+        {
+            Started = true;
+            MediaPlayer.Play(BackGroundMusic);
+        }
+
         private void Window_ClientSizeChanged(object sender, EventArgs e)
         {
             GameWindow window = sender as GameWindow;
@@ -96,6 +105,7 @@ namespace LBMG.GamePlay
 
             _camera.ZoomIn(Constants.ZoomFact);
             _camera.Move(new Vector2(3, 4));
+            BackGroundMusic = cm.Load<Song>("Sounds/043 - Crystal Cave");
             CharacterDrawer.Initialize(gd, cm, window);
             MapDrawer.Initialize(gd, cm);
             UiDrawer.Initialize(cm, window);

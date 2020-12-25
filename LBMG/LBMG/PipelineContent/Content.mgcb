@@ -167,3 +167,9 @@
 /processor:TiledMapProcessor
 /build:TiledMaps/vertical_tunnel.tmx
 
+#begin Sounds/043 - Crystal Cave.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/043 - Crystal Cave.mp3
+
