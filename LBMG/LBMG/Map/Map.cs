@@ -44,7 +44,7 @@ namespace LBMG.Map
                     { new[] { Direction.Bottom, Direction.Right }, cm.Load<TiledMap>("TiledMaps/bottom_right_tunnel") },
                     { new[] { Direction.Top, Direction.Right }, cm.Load<TiledMap>("TiledMaps/top_right_tunnel") },
                     { new[] { Direction.Bottom }, cm.Load<TiledMap>("TiledMaps/bottom_tunnel") },
-                    { new[] { Direction.Top, Direction.Bottom, Direction.Left }, cm.Load<TiledMap>("TiledMaps/top_bottom_left_tunnel") },
+                    //{ new[] { Direction.Top, Direction.Bottom, Direction.Left }, cm.Load<TiledMap>("TiledMaps/vertical_left_tunnel") },
                     { new[] { Direction.Left, Direction.Top }, cm.Load<TiledMap>("TiledMaps/top_left_tunnel") },
                     { new[] { Direction.Top }, cm.Load<TiledMap>("TiledMaps/top_tunnel") },
                     { new[] { Direction.Bottom, Direction.Top }, cm.Load<TiledMap>("TiledMaps/vertical_tunnel") },
@@ -66,6 +66,7 @@ namespace LBMG.Map
 
                 if (dtmeDictKey != null)
                 {
+                   // var piece = new Piece(crossRoad, tiledMapLocation.X, tiledMapLocation.Y);
                     var piece = new Piece(directionsTMEquivalent[dtmeDictKey], tiledMapLocation.X, tiledMapLocation.Y);
                     piece.Initialize(gd, window);
                     TiledMapsDictionary.Add(tiledMapLocation, piece);
@@ -75,14 +76,17 @@ namespace LBMG.Map
 
         public bool IsCollision(Point coordinates)
         {
-            Point tiledMapLocation = new Point(((coordinates.X < 0 ? -Constants.TiledMapSize : 0) + coordinates.X) / Constants.TiledMapSize,
-                 -((coordinates.Y >= 0 ? Constants.TiledMapSize : 0) + coordinates.Y) / Constants.TiledMapSize);
+            Point fixedCoordinates = coordinates;
+            fixedCoordinates.Y *= -1;
+
+            Vector2 pos = fixedCoordinates.ToVector2() / Constants.TiledMapSize;
+
+            Point tiledMapLocation = new Point((int)Math.Round(pos.X, MidpointRounding.ToNegativeInfinity), (int)Math.Round(pos.Y, MidpointRounding.ToNegativeInfinity));
 
             if (!TiledMapsDictionary.ContainsKey(tiledMapLocation))
                 return false;
 
-            Point onPiecePos = coordinates - new Point(Constants.TiledMapSize * tiledMapLocation.X, Constants.TiledMapSize * -tiledMapLocation.Y);
-            onPiecePos.Y *= -1;
+            Point onPiecePos = fixedCoordinates - new Point(Constants.TiledMapSize * tiledMapLocation.X, Constants.TiledMapSize * tiledMapLocation.Y);
 
             bool r = TiledMapsDictionary[tiledMapLocation].IsCollision(onPiecePos);
             return r;

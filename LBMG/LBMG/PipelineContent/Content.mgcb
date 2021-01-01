@@ -142,11 +142,6 @@
 /processor:TiledMapProcessor
 /build:TiledMaps/horizontal_tunnel.tmx
 
-#begin TiledMaps/top_bottom_left_tunnel.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:TiledMaps/top_bottom_left_tunnel.tmx
-
 #begin TiledMaps/top_left_tunnel.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
