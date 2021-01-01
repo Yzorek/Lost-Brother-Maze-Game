@@ -22,14 +22,14 @@ namespace LBMG.UI
 
         public int CharWidth { get; set; }
 
-        public int DisplaySpeed { get; set; }
+        public int DisplaySpeed { get; set; }               //TODO
 
         public DialogBox(string font, Point size)
         {
             Visible = false;
             FontPath = font;
             Size = size;
-            CharWidth = 10;
+            CharWidth = 12;
         }
 
         public void Write(int keyOfTextToDisplay, string[] args)

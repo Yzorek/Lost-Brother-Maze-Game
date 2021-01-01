@@ -27,15 +27,24 @@ namespace LBMG.UI
 
         }
 
+        public void SetPixelPos(Vector2 pos)
+        {
+            _boxPos.X = pos.X;
+            _boxPos.Y = pos.Y;
+            _textPos.X = _boxPos.X + Constants.DBoxPaddingLeft;
+            _textPos.Y = _boxPos.Y + Constants.DBoxPaddingTop;
+        }
+
         public void Initialize(ContentManager cm, GameWindow window)
         {
             _boxPos.X = window.ClientBounds.Width / 2 - DialogBox.Size.X / 2;
-            _boxPos.Y = window.ClientBounds.Height - DialogBox.Size.Y - 20; // TODO When Window size change, adapt
+            _boxPos.Y = window.ClientBounds.Height - DialogBox.Size.Y - 20;
             _textPos.X = _boxPos.X + Constants.DBoxPaddingLeft;
             _textPos.Y = _boxPos.Y + Constants.DBoxPaddingTop;
 
             _boxTexture = cm.Load<Texture2D>(_boxTexturePath);
             _font = cm.Load<SpriteFont>(DialogBox.FontPath);
+            _font.LineSpacing = 26;
         }
 
         public void Update(GameTime gameTime/*, Camera<Vector2> camera*/)

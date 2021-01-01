@@ -8,6 +8,7 @@ using MonoGame.Extended.Input;
 using LBMG.Player;
 using LBMG.Map;
 using System.Diagnostics;
+using LBMG.Tools;
 using LBMG.UI;
 using System.Runtime.InteropServices;
 
@@ -43,7 +44,7 @@ namespace LBMG.Main
 #endif
 
             _titleScreen = new TitleScreen();
-            _titleScreen.PlayClick += (s, e) => CurrentGame.Started = true;
+            _titleScreen.PlayClick += (s, e) => CurrentGame.Start();
             _titleScreen.QuitClick += (s, e) => Exit();
             _titleScreen.SettingsChanged += SettingsChanged;
             CurrentGame = new GamePlay.GamePlay();         

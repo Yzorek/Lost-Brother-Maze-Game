@@ -7,6 +7,7 @@ using LBMG.Player;
 using LBMG.Tools;
 using LBMG.UI;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -38,7 +39,10 @@ namespace LBMG.GamePlay
         public Controller Controller { get; set; }
         public UI.UI UserInterface { get; set; }
         public UIDrawer UiDrawer { get; set; }
-        public bool Started { get; set; }
+
+        public bool Started { get; private set; }
+
+        private Song BackGroundMusic { get; set; }
 
         public GamePlay()
         {
@@ -76,6 +80,20 @@ namespace LBMG.GamePlay
 #endif
         }
 
+        public void Start()
+        {
+            Started = true;
+            MediaPlayer.Play(BackGroundMusic);
+        }
+
+        private void Window_ClientSizeChanged(object sender, EventArgs e)
+        {
+            GameWindow window = sender as GameWindow;
+
+            UiDrawer.DialogDrawer.SetPixelPos(new Vector2(window.ClientBounds.Width / 2 - UserInterface.DialogBox.Size.X / 2,
+                window.ClientBounds.Height - UserInterface.DialogBox.Size.Y - 20));
+        }
+
         public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
         {
             _camera ??= new OrthographicCamera(gd);
@@ -83,27 +101,22 @@ namespace LBMG.GamePlay
             ActivePlayer = 0;
 
             _camera.ZoomIn(Constants.ZoomFact);
-            _camera.Origin = new Vector2(0, 0);
-
+            BackGroundMusic = cm.Load<Song>("Sounds/043 - Crystal Cave");
             CharacterDrawer.Initialize(gd, cm, window);
             MapDrawer.Initialize(gd, cm, window);
             UiDrawer.Initialize(cm, window);
+
+            window.ClientSizeChanged += Window_ClientSizeChanged;
         }
 
         public void Update(GameTime gameTime, KeyboardStateExtended kse)
         {
             if (kse.WasKeyJustUp(Keys.C))                   // TEMP, will change with the timer later
-            {
-                ActivePlayer = ActivePlayer == 0 ? 1 : 0;
-            }
-            if (kse.WasKeyJustUp(Keys.H))
-            {
-                //Characters[ActivePlayer].Position += new Point(20, 0);
-            }
+                ActivePLayer = ActivePLayer == 0 ? 1 : 0;
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
             {
-                Debug.WriteLine("Is about to write something...");
-                UserInterface.DialogBox.Write(5, new[] { "sud", "est" });
+                //UserInterface.DialogBox.Write(5, new[] { "sud", "est" });
+                UserInterface.DialogBox.Write(3);
             }
             if (kse.WasKeyJustUp(Keys.N))                   // TEMP
                 UserInterface.DialogBox.NextDialog();
