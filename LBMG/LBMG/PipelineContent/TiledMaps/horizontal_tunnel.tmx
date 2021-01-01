@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="2020.05.27" orientation="orthogonal" renderorder="left-up" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="18" nextobjectid="41">
+<map version="1.2" tiledversion="2020.05.27" orientation="orthogonal" renderorder="left-up" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="18" nextobjectid="48">
  <tileset firstgid="1" source="Tilesets/VS Dungeon Set 01/_Tiled_Hanzo-Dungeon01VS.tsx"/>
  <tileset firstgid="1025" source="Tilesets/VS Dungeon Set 01/_Tiled_AT-A5-DungeonVX01-Ground.tsx"/>
  <tileset firstgid="1033" source="Tilesets/VS Dungeon Set 01/_Tiled_AT-A2-DungeonVX01-GroundTiles.tsx"/>
@@ -384,10 +384,6 @@
   <object id="14" x="192" y="464" width="16" height="48"/>
   <object id="15" x="160" y="464" width="32" height="16"/>
   <object id="16" x="160" y="416" width="16" height="48"/>
-  <object id="17" x="128" y="384" width="16" height="32"/>
-  <object id="19" x="128" y="416" width="32" height="16"/>
-  <object id="20" x="96" y="384" width="32" height="16"/>
-  <object id="24" x="64" y="368" width="48" height="16"/>
   <object id="25" x="64" y="336" width="16" height="32"/>
   <object id="26" x="0" y="336" width="64" height="16"/>
   <object id="27" x="0" y="192" width="160" height="16"/>
@@ -402,5 +398,8 @@
   <object id="38" x="144" y="272" width="64" height="96"/>
   <object id="39" x="208" y="336" width="16" height="32"/>
   <object id="40" x="400" y="320" width="32" height="32"/>
+  <object id="43" x="96" y="416" width="64" height="16"/>
+  <object id="44" x="96" y="384" width="16" height="32"/>
+  <object id="47" x="64" y="368" width="48" height="16"/>
  </objectgroup>
 </map>

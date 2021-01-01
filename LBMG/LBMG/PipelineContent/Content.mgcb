@@ -117,6 +117,12 @@
 /processorParam:TextureFormat=Color
 /build:Menu/button.png
 
+#begin Sounds/043 - Crystal Cave.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/043 - Crystal Cave.mp3
+
 #begin TiledMaps/bottom_left_tunnel.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
@@ -132,15 +138,35 @@
 /processor:TiledMapProcessor
 /build:TiledMaps/bottom_tunnel.tmx
 
-#begin TiledMaps/cross_road.tmx
+#begin TiledMaps/cross_road_tunnel.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
-/build:TiledMaps/cross_road.tmx
+/build:TiledMaps/cross_road_tunnel.tmx
+
+#begin TiledMaps/horizontal_bottom_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/horizontal_bottom_tunnel.tmx
+
+#begin TiledMaps/horizontal_top_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/horizontal_top_tunnel.tmx
 
 #begin TiledMaps/horizontal_tunnel.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:TiledMaps/horizontal_tunnel.tmx
+
+#begin TiledMaps/left_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/left_tunnel.tmx
+
+#begin TiledMaps/right_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/right_tunnel.tmx
 
 #begin TiledMaps/top_left_tunnel.tmx
 /importer:TiledMapImporter
@@ -157,14 +183,18 @@
 /processor:TiledMapProcessor
 /build:TiledMaps/top_tunnel.tmx
 
+#begin TiledMaps/vertical_left_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/vertical_left_tunnel.tmx
+
+#begin TiledMaps/vertical_right_tunnel.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TiledMaps/vertical_right_tunnel.tmx
+
 #begin TiledMaps/vertical_tunnel.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:TiledMaps/vertical_tunnel.tmx
-
-#begin Sounds/043 - Crystal Cave.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:Sounds/043 - Crystal Cave.mp3
 

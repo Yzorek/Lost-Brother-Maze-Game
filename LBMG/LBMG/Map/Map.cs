@@ -35,21 +35,28 @@ namespace LBMG.Map
             //
             //ConsoleGMapDrawer cgmd = new ConsoleGMapDrawer(generatedMap);
             //cgmd.Draw(true);
-            //TiledMap crossRoad = cm.Load<TiledMap>("TiledMaps/cross_road");
+            //TiledMap crossRoad = cm.Load<TiledMap>("TiledMaps/cross_road_tunnel");
 
-            Dictionary<Direction[], TiledMap> directionsTMEquivalent = new Dictionary<Direction[], TiledMap>
+            var directionsTMEquivalent = new Dictionary<HashSet<Direction>, TiledMap>
                {
-                    { new[] { Direction.Left, Direction.Top, Direction.Right, Direction.Bottom }, cm.Load<TiledMap>("TiledMaps/cross_road") },
-                    { new[] { Direction.Bottom, Direction.Left }, cm.Load<TiledMap>("TiledMaps/bottom_left_tunnel") },
-                    { new[] { Direction.Bottom, Direction.Right }, cm.Load<TiledMap>("TiledMaps/bottom_right_tunnel") },
-                    { new[] { Direction.Top, Direction.Right }, cm.Load<TiledMap>("TiledMaps/top_right_tunnel") },
-                    { new[] { Direction.Bottom }, cm.Load<TiledMap>("TiledMaps/bottom_tunnel") },
-                    //{ new[] { Direction.Top, Direction.Bottom, Direction.Left }, cm.Load<TiledMap>("TiledMaps/vertical_left_tunnel") },
-                    { new[] { Direction.Left, Direction.Top }, cm.Load<TiledMap>("TiledMaps/top_left_tunnel") },
-                    { new[] { Direction.Top }, cm.Load<TiledMap>("TiledMaps/top_tunnel") },
-                    { new[] { Direction.Bottom, Direction.Top }, cm.Load<TiledMap>("TiledMaps/vertical_tunnel") },
-                    { new[] { Direction.Left, Direction.Right }, cm.Load<TiledMap>("TiledMaps/horizontal_tunnel") },
+                    { new HashSet<Direction> { Direction.Left, Direction.Top, Direction.Right, Direction.Bottom }, cm.Load<TiledMap>("TiledMaps/cross_road_tunnel") },
+                    { new HashSet<Direction> { Direction.Bottom, Direction.Left }, cm.Load<TiledMap>("TiledMaps/bottom_left_tunnel") },
+                    { new HashSet<Direction> { Direction.Bottom, Direction.Right }, cm.Load<TiledMap>("TiledMaps/bottom_right_tunnel") },
+                    { new HashSet<Direction> { Direction.Top, Direction.Right }, cm.Load<TiledMap>("TiledMaps/top_right_tunnel") },
+                    { new HashSet<Direction> { Direction.Bottom }, cm.Load<TiledMap>("TiledMaps/bottom_tunnel") },
+                    { new HashSet<Direction> { Direction.Top, Direction.Bottom, Direction.Left }, cm.Load<TiledMap>("TiledMaps/vertical_left_tunnel") },
+                    { new HashSet<Direction> { Direction.Left, Direction.Top }, cm.Load<TiledMap>("TiledMaps/top_left_tunnel") },
+                    { new HashSet<Direction> { Direction.Top }, cm.Load<TiledMap>("TiledMaps/top_tunnel") },
+                    { new HashSet<Direction> { Direction.Bottom, Direction.Top }, cm.Load<TiledMap>("TiledMaps/vertical_tunnel") },
+                    { new HashSet<Direction> { Direction.Left, Direction.Right }, cm.Load<TiledMap>("TiledMaps/horizontal_tunnel") },
+                    { new HashSet<Direction> { Direction.Left, Direction.Right, Direction.Bottom }, cm.Load<TiledMap>("TiledMaps/horizontal_bottom_tunnel") },
+                    { new HashSet<Direction> { Direction.Left, Direction.Right, Direction.Top }, cm.Load<TiledMap>("TiledMaps/horizontal_top_tunnel") },
+                    { new HashSet<Direction> { Direction.Bottom, Direction.Top, Direction.Right }, cm.Load<TiledMap>("TiledMaps/vertical_right_tunnel") },
+                    { new HashSet<Direction> { Direction.Right }, cm.Load<TiledMap>("TiledMaps/right_tunnel") },
+                    { new HashSet<Direction> { Direction.Left }, cm.Load<TiledMap>("TiledMaps/left_tunnel") },
                 };
+
+            
 
             foreach (var dirsPiece in generatedMap.GetPieces())
             {
@@ -61,16 +68,15 @@ namespace LBMG.Map
                 HashSet<Direction> directions = dirsPiece.Item2;
 
                 var dtmeDictKey = directionsTMEquivalent.Keys
-                    .Where(x => directions.SetEquals(new HashSet<Direction>(x)))
+                    .Where(x => directions.SetEquals(x))
                     .FirstOrDefault();
 
-                if (dtmeDictKey != null)
-                {
-                   // var piece = new Piece(crossRoad, tiledMapLocation.X, tiledMapLocation.Y);
-                    var piece = new Piece(directionsTMEquivalent[dtmeDictKey], tiledMapLocation.X, tiledMapLocation.Y);
-                    piece.Initialize(gd, window);
-                    TiledMapsDictionary.Add(tiledMapLocation, piece);
-                }
+                //if (dtmeDictKey != null)
+
+                // var piece = new Piece(crossRoad, tiledMapLocation.X, tiledMapLocation.Y);
+                var piece = new Piece(directionsTMEquivalent[dtmeDictKey], tiledMapLocation.X, tiledMapLocation.Y);
+                piece.Initialize(gd, window);
+                TiledMapsDictionary.Add(tiledMapLocation, piece);
             }
         }
 

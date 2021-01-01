@@ -31,7 +31,6 @@ namespace LBMG.GamePlay
 
         static OrthographicCamera _camera;
 
-        public Vector2 CameraPos { get; set; }
         public List<Character> Characters { get; set; }
         public Map.Map Map { get; set; }
         public MapDrawer MapDrawer { get; set; }
@@ -48,9 +47,11 @@ namespace LBMG.GamePlay
         {
             Characters = new List<Character>
             {
-                new Character("Peter", 220),
-                new Character("Fred", 250)
+                new Character("Peter", 225),
+                new Character("Fred", 225)
             };
+            foreach (var ch in Characters) ch.SpawnAt(16, 16);
+
             Map = new Map.Map(Difficulty.Easy);
             Controller = new Controller();
             UserInterface = new UI.UI();
@@ -72,17 +73,13 @@ namespace LBMG.GamePlay
                 "DialogBox/dialog_box"
             });
 
-            CameraPos = new Vector2(0);
             Started = false;
-
-#if DEBUG
-            Started = true;
-#endif
         }
 
         public void Start()
         {
             Started = true;
+            MediaPlayer.IsRepeating = true;
             MediaPlayer.Play(BackGroundMusic);
         }
 
@@ -100,11 +97,16 @@ namespace LBMG.GamePlay
 
             ActivePlayer = 0;
 
+            _camera.Origin = new Vector2(0, 0);
             _camera.ZoomIn(Constants.ZoomFact);
             BackGroundMusic = cm.Load<Song>("Sounds/043 - Crystal Cave");
             CharacterDrawer.Initialize(gd, cm, window);
             MapDrawer.Initialize(gd, cm, window);
             UiDrawer.Initialize(cm, window);
+
+#if DEBUG // So we can avoid redundant start menu
+            Start();
+#endif
 
             window.ClientSizeChanged += Window_ClientSizeChanged;
         }
@@ -112,7 +114,7 @@ namespace LBMG.GamePlay
         public void Update(GameTime gameTime, KeyboardStateExtended kse)
         {
             if (kse.WasKeyJustUp(Keys.C))                   // TEMP, will change with the timer later
-                ActivePLayer = ActivePLayer == 0 ? 1 : 0;
+                ActivePlayer = ActivePlayer == 0 ? 1 : 0;
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
             {
                 //UserInterface.DialogBox.Write(5, new[] { "sud", "est" });
@@ -146,7 +148,7 @@ namespace LBMG.GamePlay
 
         private void SendMove()
         {
-            if (Controller.IsKeyPressed)                    //if (IsCollision() == false)       TODO : Add collision system
+            if (Controller.IsKeyPressed)
             {
                 Direction dir = Controller.Direction;
                 Characters[ActivePlayer].Direction = dir;
