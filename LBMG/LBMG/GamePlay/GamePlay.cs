@@ -47,8 +47,8 @@ namespace LBMG.GamePlay
         {
             Characters = new List<Character>
             {
-                new Character("Peter", 225),
-                new Character("Fred", 225)
+                new Character("Peter", 160),
+                new Character("Fred", 160)
             };
             foreach (var ch in Characters) ch.SpawnAt(16, 16);
 

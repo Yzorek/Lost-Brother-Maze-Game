@@ -15,6 +15,7 @@ namespace LBMG.Player
         public Direction Direction { get; set; }
         public bool IsMoving { get; set; }
         public Point Coordinates { get; private set; }
+        public int MoveState { get; set; }
 
         public Character(string name, float speed)
         {
@@ -23,6 +24,7 @@ namespace LBMG.Player
             Direction = Direction.Bottom;
             IsMoving = false;
             Coordinates = new Point(0, 0);
+            MoveState = 1;
         }
 
         public void SpawnAt(int x, int y/*, Map map*/)

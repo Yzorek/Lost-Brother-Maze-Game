@@ -64,6 +64,7 @@ namespace LBMG.Player
             {
                 Characters[_activePlayer].IsMoving = false;
                 Characters[_activePlayer].Move();
+                Characters[_activePlayer].MoveState = (Characters[_activePlayer].MoveState == 1) ? 2 : 1;
                 AdjustCamera(camera);
                 _counter = TileSize;
             }
@@ -122,20 +123,26 @@ namespace LBMG.Player
         {
             if (Characters[_activePlayer].IsMoving == false)
                 return 50;
-            if (_counter <= TileSize && _counter > TileSize - TileSize / 4)
-                return -2;
-            if (_counter <= TileSize - TileSize / 4 && _counter > TileSize - 2 * TileSize / 4)
-                return 50;
-            if (_counter <= TileSize - 2 * TileSize / 4 && _counter > TileSize - 3 * TileSize / 4)
-                return 102;
-            if (_counter <= TileSize - 3 * TileSize / 4)
-                return 50;
+            if (Characters[_activePlayer].MoveState == 1)
+            {
+                if (_counter <= TileSize && _counter > TileSize - TileSize / 2)
+                    return -2;
+                if (_counter <= TileSize - TileSize / 2)
+                    return 50;
+            }
+            if (Characters[_activePlayer].MoveState == 2)
+            {
+                if (_counter <= TileSize && _counter > TileSize - TileSize / 2)
+                    return 102;
+                if (_counter <= TileSize - TileSize / 2)
+                    return 50;
+            }
             return -2;
         }
 
         private void MoveToCase(GameTime gameTime)
         {
-            if (Characters[_activePlayer].IsMoving == true) // TODO Review this calculation
+            if (Characters[_activePlayer].IsMoving == true)
                 _counter -= (Characters[_activePlayer].Speed * (float) gameTime.ElapsedGameTime.TotalSeconds);
         }
 
