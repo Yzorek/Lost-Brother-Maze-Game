@@ -96,6 +96,13 @@ namespace LBMG.Map
 
         public bool IsCollision(Point onPieceCoordinates)
         {
+            return IsGenuineCollision(onPieceCoordinates)
+                || IsGenuineCollision(onPieceCoordinates + new Point(1, 0)); // Check is not too much on the right actually
+        }
+
+
+        private bool IsGenuineCollision(Point onPieceCoordinates)
+        {
             Point pos = new Point(onPieceCoordinates.X * Constants.TileSize + Constants.TileSize / 2, onPieceCoordinates.Y * Constants.TileSize + Constants.TileSize / 2);
 
             foreach (TiledMapObject tmObj in _collisionLayer.Objects)
