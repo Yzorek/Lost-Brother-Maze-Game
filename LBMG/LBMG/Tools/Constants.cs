@@ -20,7 +20,7 @@ namespace LBMG.Tools
         /* ----------- Tile constants ----------- */
 
         public const int TileSize = 16;
-        public const int TiledMapSizePixel = TiledMapSize * TileSize;
+        public const int TiledMapSizePixel = TiledMapSize * TileSize; // 32 * 16 = 512
         public const int TiledMapSize = 32;
     }
 }

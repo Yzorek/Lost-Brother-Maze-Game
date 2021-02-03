@@ -32,10 +32,8 @@ namespace LBMG.Map
             MapGenerator mg = new MapGenerator();
             GeneratedMap generatedMap = mg.GenerateMap(new Range<int>(2), 7, 1, 0);//(new Range<int>(2), 50, 1, 0);
 
-            //
             //ConsoleGMapDrawer cgmd = new ConsoleGMapDrawer(generatedMap);
             //cgmd.Draw(true);
-            //TiledMap crossRoad = cm.Load<TiledMap>("TiledMaps/cross_road_tunnel");
 
             var directionsTMEquivalent = new Dictionary<HashSet<Direction>, TiledMap>
                {
@@ -56,28 +54,49 @@ namespace LBMG.Map
                     { new HashSet<Direction> { Direction.Left }, cm.Load<TiledMap>("TiledMaps/left_tunnel") },
                 };
 
-            
 
-            foreach (var dirsPiece in generatedMap.GetPieces())
-            {
-                Point tiledMapLocation = new Point(dirsPiece.Item1.Item1, dirsPiece.Item1.Item2);
-                //tiledMapLocation = new Point(0, 0);
-                //if (TiledMapsDictionary.ContainsKey(tiledMapLocation))
-                //    break;
+#if DEBUG  // For clean tests sometimes
+            TiledMap crossRoad = cm.Load<TiledMap>("TiledMaps/cross_road_tunnel");
 
-                HashSet<Direction> directions = dirsPiece.Item2;
+            bool __nomap = false,
+                __onlycrossroad = false,
+                __onemap = false;
+#endif
 
-                var dtmeDictKey = directionsTMEquivalent.Keys
-                    .Where(x => directions.SetEquals(x))
-                    .FirstOrDefault();
+#if DEBUG
+            if (!__nomap)
+#endif
+                foreach (var dirsPiece in generatedMap.GetPieces())
+                {
+                    Point tiledMapLocation = new Point(dirsPiece.Item1.Item1, dirsPiece.Item1.Item2);
 
-                //if (dtmeDictKey != null)
+#if DEBUG
+                    if (__onemap)
+                    {
+                        tiledMapLocation = new Point(0, 0);
+                        if (TiledMapsDictionary.ContainsKey(tiledMapLocation))
+                            break;
+                    }
+#endif
 
-                // var piece = new Piece(crossRoad, tiledMapLocation.X, tiledMapLocation.Y);
-                var piece = new Piece(directionsTMEquivalent[dtmeDictKey], tiledMapLocation.X, tiledMapLocation.Y);
-                piece.Initialize(gd, window);
-                TiledMapsDictionary.Add(tiledMapLocation, piece);
-            }
+                    HashSet<Direction> directions = dirsPiece.Item2;
+
+                    var dtmeDictKey = directionsTMEquivalent.Keys
+                        .Where(x => directions.SetEquals(x))
+                        .FirstOrDefault();
+
+                    Piece piece;
+#if DEBUG
+                    if (__onlycrossroad)
+                        piece = new Piece(crossRoad, tiledMapLocation.X, tiledMapLocation.Y);
+                    else
+#endif
+                        piece = new Piece(directionsTMEquivalent[dtmeDictKey], tiledMapLocation.X, tiledMapLocation.Y);
+
+
+                    piece.Initialize(gd, window);
+                    TiledMapsDictionary.Add(tiledMapLocation, piece);
+                }
         }
 
         public bool IsCollision(Point coordinates)

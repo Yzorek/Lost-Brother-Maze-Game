@@ -20,11 +20,11 @@ namespace LBMG.Player
         private readonly List<Texture2D> _textures;
         private List<Rectangle> _rectangles;
         private int _activePlayer;
-        private Vector2 _playerPos;
+        private Vector2 _centerPos;
         const float TileSize = Constants.TileSize;
         private SpriteBatch _sb;
         private float _counter;
-
+        
         public CharacterDrawer(List<Character> characters, List<string> paths, List<Rectangle> rectangles)
         {
             Characters = characters;
@@ -32,6 +32,7 @@ namespace LBMG.Player
             _rectangles = rectangles;
             _textures = new List<Texture2D>();
         }
+
 
         public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
         {
@@ -51,8 +52,8 @@ namespace LBMG.Player
 
         private void SetPosition(GameWindow window)
         {
-            _playerPos.X = window.ClientBounds.Width / 2;
-            _playerPos.Y = window.ClientBounds.Height / 2;
+            _centerPos.X = window.ClientBounds.Width / 2;
+            _centerPos.Y = window.ClientBounds.Height / 2;
         }
 
         public void Update(GameTime gameTime, Camera<Vector2> camera)
@@ -74,29 +75,51 @@ namespace LBMG.Player
         {
             _sb.Begin(samplerState: SamplerState.PointClamp);
 
-            _sb.Draw(_textures[_activePlayer], _playerPos, _rectangles[_activePlayer], Color.White, default,
+            _sb.Draw(_textures[_activePlayer], _centerPos, _rectangles[_activePlayer], Color.White, default,
                 new Vector2(0, (float)_rectangles[_activePlayer].Height / 2), 1, default,
                 default);
+
+            // Drawing inactive players
+            for (int i = 0; i < Characters.Count; i++)
+            {
+                if (i == _activePlayer) // Don't write our same player twice
+                    continue;
+
+                Vector2 cdp = GetCharacterDrawingPosByCamera(Characters[i], camera);
+                _sb.Draw(_textures[i], cdp, _rectangles[i], Color.White, default, new Vector2(0, (float)_rectangles[_activePlayer].Height / 2), 1, default, default);
+            }
 
             _sb.End();
         }
 
         public void SetActivePlayer(int val, Camera<Vector2> camera)
         {
+            Characters[_activePlayer].IsMoving = false;
             _activePlayer = val;
 
-            SetCameraPosToCharacterPos(camera);
+            SetCameraPosToCharacterCoords(camera);
+        }
+
+        Vector2 GetCharacterDrawingPosByCamera(Character character, Camera<Vector2> camera)
+        {
+            return camera.WorldToScreen(GetPixelPosFromCoordinates(character.Coordinates)) + _centerPos;
         }
 
         private void AnimateSprite()
         {
-            Rectangle rect = _rectangles[_activePlayer];
-            Direction dir = Characters[_activePlayer].Direction;
+            // TODO Update too inactive to right.
+            for (int pl = 0; pl < Characters.Count; pl++)
+            {
+                Rectangle rect = _rectangles[pl];
+                Direction dir = Characters[pl].Direction;
 
-            rect.Y = GetYRectVal(dir);
-            rect.X = GetXRectVal();
-            rect.Size = new Point(50, AdjustSizeY(dir));
-            _rectangles[_activePlayer] = rect;
+                rect.Y = GetYRectVal(dir);
+                rect.X = GetXRectVal(pl);
+                rect.Size = new Point(50, AdjustSizeY(dir));
+                _rectangles[pl] = rect;
+            }
+
+            
         }
 
         private int GetYRectVal(Direction dir)
@@ -119,18 +142,18 @@ namespace LBMG.Player
                 _ => throw new ArgumentOutOfRangeException(nameof(dir), dir, null)
             };
 
-        private int GetXRectVal()
+        private int GetXRectVal(int player)
         {
-            if (Characters[_activePlayer].IsMoving == false)
+            if (Characters[player].IsMoving == false)
                 return 50;
-            if (Characters[_activePlayer].MoveState == 1)
+            if (Characters[player].MoveState == 1)
             {
                 if (_counter <= TileSize && _counter > TileSize - TileSize / 2)
                     return -2;
                 if (_counter <= TileSize - TileSize / 2)
                     return 50;
             }
-            if (Characters[_activePlayer].MoveState == 2)
+            if (Characters[player].MoveState == 2)
             {
                 if (_counter <= TileSize && _counter > TileSize - TileSize / 2)
                     return 102;
@@ -187,10 +210,15 @@ namespace LBMG.Player
             }
         }
 
-        private void SetCameraPosToCharacterPos(Camera<Vector2> camera)
+        private void SetCameraPosToCharacterCoords(Camera<Vector2> camera)
         {
             Point charPos = Characters[_activePlayer].Coordinates;
             camera.Position = new Vector2(charPos.X * TileSize, -charPos.Y * TileSize);
+        }
+
+        static Vector2 GetPixelPosFromCoordinates(Point coordinates)
+        {
+            return new Vector2(coordinates.X * (TileSize), -coordinates.Y * (TileSize));
         }
     }
 }

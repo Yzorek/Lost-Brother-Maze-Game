@@ -29,7 +29,8 @@ namespace LBMG.GamePlay
             }
         }
 
-        static OrthographicCamera _camera;
+        static Camera<Vector2> _camera;
+        ActivePlayerTimer _activePlayerTimer = new ActivePlayerTimer();
 
         public List<Character> Characters { get; set; }
         public Map.Map Map { get; set; }
@@ -50,7 +51,7 @@ namespace LBMG.GamePlay
                 new Character("Peter", 160),
                 new Character("Fred", 160)
             };
-            foreach (var ch in Characters) ch.SpawnAt(16, 16);
+            foreach (var ch in Characters) ch.SpawnAt(16, -16);
 
             Map = new Map.Map(Difficulty.Easy);
             Controller = new Controller();
@@ -79,6 +80,7 @@ namespace LBMG.GamePlay
         public void Start()
         {
             Started = true;
+            _activePlayerTimer.Start();
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Play(BackGroundMusic);
         }
@@ -96,9 +98,10 @@ namespace LBMG.GamePlay
             _camera ??= new OrthographicCamera(gd);
 
             ActivePlayer = 0;
-
-            _camera.Origin = new Vector2(0, 0);
+            
             _camera.ZoomIn(Constants.ZoomFact);
+            _camera.Origin = Vector2.Zero;
+            Debug.WriteLine(_camera.WorldToScreen(new Vector2(256, 256)));
             BackGroundMusic = cm.Load<Song>("Sounds/043 - Crystal Cave");
             CharacterDrawer.Initialize(gd, cm, window);
             MapDrawer.Initialize(gd, cm, window);
@@ -113,6 +116,8 @@ namespace LBMG.GamePlay
 
         public void Update(GameTime gameTime, KeyboardStateExtended kse)
         {
+            _activePlayerTimer.Update(gameTime);
+
             if (kse.WasKeyJustUp(Keys.C))                   // TEMP, will change with the timer later
                 ActivePlayer = ActivePlayer == 0 ? 1 : 0;
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP

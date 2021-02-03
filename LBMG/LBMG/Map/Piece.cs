@@ -34,9 +34,6 @@ namespace LBMG.Map
 
         public void Initialize(GraphicsDevice gd, GameWindow window)
         {
-            window.ClientSizeChanged += Window_ClientSizeChanged;
-            SetDrawingPosition(window);
-
             foreach (TiledMapLayer tml in TiledMap.Layers)
             {
                 string[] name = tml.Name.ToLower().Split(' ', StringSplitOptions.None);
@@ -59,6 +56,9 @@ namespace LBMG.Map
                 }
             }
 
+            window.ClientSizeChanged += Window_ClientSizeChanged;
+            SetDrawingPosition(window);
+
             _tiledMapRenderer = new TiledMapRenderer(gd, TiledMap);
         }
 
@@ -80,6 +80,7 @@ namespace LBMG.Map
             Matrix matrix = camera.GetViewMatrix();
 
             matrix.Translation += new Vector3(_drawingPos.ToVector2(), 0);
+
             _tiledMapRenderer.Draw(layer, matrix);
         }
 
@@ -87,6 +88,9 @@ namespace LBMG.Map
         {
             int gpPosX = (Constants.TiledMapSizePixel + (int)(Constants.TiledMapSizePixel * Constants.ZoomFact)) * Location.X,
                 gpPosY = (Constants.TiledMapSizePixel + (int)(Constants.TiledMapSizePixel * Constants.ZoomFact)) * Location.Y;
+
+            //_frontLayer.Offset = Location.ToVector2() * Constants.TiledMapSizePixel + new Vector2(camera.BoundingRectangle.Width, camera.BoundingRectangle.Height) / 2;
+            //_backLayer.Offset = _frontLayer.Offset;
 
             gpPosX += window.ClientBounds.Width / 2;
             gpPosY += window.ClientBounds.Height / 2;

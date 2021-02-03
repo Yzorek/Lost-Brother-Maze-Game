@@ -33,6 +33,11 @@ namespace LBMG.Main
             _gdm = new GraphicsDeviceManager(this);
         }
 
+        protected new void LoadContent()
+        {
+            base.LoadContent();
+        }
+
         protected override void Initialize()
         {
 #if !DEBUG
