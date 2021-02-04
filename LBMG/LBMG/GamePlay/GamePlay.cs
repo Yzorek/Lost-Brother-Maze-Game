@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Input;
+using LBMG.Object;
 
 namespace LBMG.GamePlay
 {
@@ -39,6 +40,8 @@ namespace LBMG.GamePlay
         public Controller Controller { get; set; }
         public UI.UI UserInterface { get; set; }
         public UIDrawer UiDrawer { get; set; }
+        public List<GameObject> Objects { get; set; }
+        public GameObjectDrawer ObjectDrawer { get; set; }
 
         public bool Started { get; private set; }
 
@@ -56,7 +59,18 @@ namespace LBMG.GamePlay
             Map = new Map.Map(Difficulty.Easy);
             Controller = new Controller();
             UserInterface = new UI.UI();
+            Objects = new List<GameObject>
+            {
+                new Torch("Torch", ObjectState.OnGround, new Point(16, -16))
+            };
 
+            InitDrawers();
+
+            Started = false;
+        }
+
+        public void InitDrawers()
+        {
             MapDrawer = new MapDrawer(Map);
 
             CharacterDrawer = new CharacterDrawer(Characters, new List<string>
@@ -74,7 +88,13 @@ namespace LBMG.GamePlay
                 "DialogBox/dialog_box"
             });
 
-            Started = false;
+            ObjectDrawer = new GameObjectDrawer(Objects, new List<string>
+            {
+                "Objects/test"
+            }, new List<Rectangle>
+            {
+                new Rectangle(0, 0, 1280, 720)
+            });
         }
 
         public void Start()
@@ -106,6 +126,7 @@ namespace LBMG.GamePlay
             CharacterDrawer.Initialize(gd, cm, window);
             MapDrawer.Initialize(gd, cm, window);
             UiDrawer.Initialize(cm, window);
+            ObjectDrawer.Initialize(gd, cm, window);
 
 #if DEBUG // So we can avoid redundant start menu
             Start();
@@ -134,6 +155,7 @@ namespace LBMG.GamePlay
             ControlCharacter();
             CharacterDrawer.Update(gameTime, _camera);
             MapDrawer.Update(gameTime);
+            ObjectDrawer.UpdateObjects(gameTime, _camera);
             UiDrawer.Update(gameTime);
         }
 
@@ -142,6 +164,7 @@ namespace LBMG.GamePlay
             MapDrawer.DrawBackLayer(gameTime, _camera, sb);
             CharacterDrawer.Draw(gameTime, _camera);
             MapDrawer.DrawFrontLayer(gameTime, _camera, sb);
+            ObjectDrawer.DrawObjects(gameTime, _camera);
             UiDrawer.Draw(sb, gameTime);
         }
 

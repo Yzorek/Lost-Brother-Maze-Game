@@ -85,7 +85,7 @@ namespace LBMG.Player
                 if (i == _activePlayer) // Don't write our same player twice
                     continue;
 
-                Vector2 cdp = GetCharacterDrawingPosByCamera(Characters[i], camera);
+                Vector2 cdp = Entity.GetEntityDrawingPosByCamera(Characters[i], camera, _centerPos);
                 _sb.Draw(_textures[i], cdp, _rectangles[i], Color.White, default, new Vector2(0, (float)_rectangles[_activePlayer].Height / 2), 1, default, default);
             }
 
@@ -98,11 +98,6 @@ namespace LBMG.Player
             _activePlayer = val;
 
             SetCameraPosToCharacterCoords(camera);
-        }
-
-        Vector2 GetCharacterDrawingPosByCamera(Character character, Camera<Vector2> camera)
-        {
-            return camera.WorldToScreen(GetPixelPosFromCoordinates(character.Coordinates)) + _centerPos;
         }
 
         private void AnimateSprite()
@@ -214,11 +209,6 @@ namespace LBMG.Player
         {
             Point charPos = Characters[_activePlayer].Coordinates;
             camera.Position = new Vector2(charPos.X * TileSize, -charPos.Y * TileSize);
-        }
-
-        static Vector2 GetPixelPosFromCoordinates(Point coordinates)
-        {
-            return new Vector2(coordinates.X * (TileSize), -coordinates.Y * (TileSize));
         }
     }
 }
