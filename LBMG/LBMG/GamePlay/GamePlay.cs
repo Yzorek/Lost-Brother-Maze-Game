@@ -30,7 +30,8 @@ namespace LBMG.GamePlay
         }
 
         static Camera<Vector2> _camera;
-        ActivePlayerTimer _activePlayerTimer = new ActivePlayerTimer();
+        ActivePlayerTimer _activePlayerTimer;
+        ActivePlayerTimerDrawer _activePlayerTimerDrawer;
 
         public List<Character> Characters { get; set; }
         public Map.Map Map { get; set; }
@@ -51,7 +52,13 @@ namespace LBMG.GamePlay
                 new Character("Peter", 160),
                 new Character("Fred", 160)
             };
-            foreach (var ch in Characters) ch.SpawnAt(16, -16);
+
+            float minutsTime = 1;
+#if DEBUG
+            minutsTime = 10;
+#endif
+            _activePlayerTimer = new ActivePlayerTimer(minutsTime * 60 * 1000);
+            _activePlayerTimer.ChangeActivePlayer += ActivePlayerTimer_ChangeActivePlayer;
 
             Map = new Map.Map(Difficulty.Easy);
             Controller = new Controller();
@@ -77,6 +84,37 @@ namespace LBMG.GamePlay
             Started = false;
         }
 
+        public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
+        {
+            _camera ??= new OrthographicCamera(gd);
+
+            _camera.ZoomIn(Constants.ZoomFact);
+            _camera.Origin = Vector2.Zero;
+            Debug.WriteLine(_camera.WorldToScreen(new Vector2(256, 256)));
+            BackGroundMusic = cm.Load<Song>("Sounds/043 - Crystal Cave");
+            CharacterDrawer.Initialize(gd, cm, window);
+
+            Map.LoadMap(gd, cm, window, out Point[] characterSpawnPoints);
+            // Spawn characters
+            for (int i = 0; i < Characters.Count; i++)
+            {
+                Point spawningCoords = characterSpawnPoints[i];
+                Debug.WriteLine(spawningCoords);
+                Characters[i].SpawnAt(spawningCoords.X, spawningCoords.Y);
+            }
+
+            ActivePlayer = 0;
+
+            MapDrawer.Initialize(gd, cm, window);
+            UiDrawer.Initialize(cm, window);
+            _activePlayerTimerDrawer = new ActivePlayerTimerDrawer(_activePlayerTimer, cm.Load<SpriteFont>("Fonts/myFont"));
+
+#if DEBUG // So we can avoid redundant start menu
+            Start();
+#endif
+
+            window.ClientSizeChanged += Window_ClientSizeChanged;
+        }
         public void Start()
         {
             Started = true;
@@ -93,33 +131,20 @@ namespace LBMG.GamePlay
                 window.ClientBounds.Height - UserInterface.DialogBox.Size.Y - 20));
         }
 
-        public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
+        private void ActivePlayerTimer_ChangeActivePlayer(object sender, EventArgs e)
         {
-            _camera ??= new OrthographicCamera(gd);
-
-            ActivePlayer = 0;
-            
-            _camera.ZoomIn(Constants.ZoomFact);
-            _camera.Origin = Vector2.Zero;
-            Debug.WriteLine(_camera.WorldToScreen(new Vector2(256, 256)));
-            BackGroundMusic = cm.Load<Song>("Sounds/043 - Crystal Cave");
-            CharacterDrawer.Initialize(gd, cm, window);
-            MapDrawer.Initialize(gd, cm, window);
-            UiDrawer.Initialize(cm, window);
-
-#if DEBUG // So we can avoid redundant start menu
-            Start();
-#endif
-
-            window.ClientSizeChanged += Window_ClientSizeChanged;
+            ActivePlayer = ActivePlayer == 0 ? 1 : 0;
         }
+
 
         public void Update(GameTime gameTime, KeyboardStateExtended kse)
         {
             _activePlayerTimer.Update(gameTime);
 
-            if (kse.WasKeyJustUp(Keys.C))                   // TEMP, will change with the timer later
+#if DEBUG
+            if (kse.WasKeyJustUp(Keys.C))
                 ActivePlayer = ActivePlayer == 0 ? 1 : 0;
+#endif
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
             {
                 //UserInterface.DialogBox.Write(5, new[] { "sud", "est" });
@@ -143,6 +168,7 @@ namespace LBMG.GamePlay
             CharacterDrawer.Draw(gameTime, _camera);
             MapDrawer.DrawFrontLayer(gameTime, _camera, sb);
             UiDrawer.Draw(sb, gameTime);
+            _activePlayerTimerDrawer.Draw(gameTime, sb);
         }
 
         private void ControlCharacter()

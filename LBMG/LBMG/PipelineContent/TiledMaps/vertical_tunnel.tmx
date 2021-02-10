@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="2020.05.27" orientation="orthogonal" renderorder="left-up" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="19" nextobjectid="58">
+<map version="1.2" tiledversion="2020.05.27" orientation="orthogonal" renderorder="left-up" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="19" nextobjectid="73">
  <tileset firstgid="1" source="Tilesets/VS Dungeon Set 01/_Tiled_Hanzo-Dungeon01VS.tsx"/>
  <tileset firstgid="1025" source="Tilesets/VS Dungeon Set 01/_Tiled_AT-A5-DungeonVX01-Ground.tsx"/>
  <tileset firstgid="1033" source="Tilesets/VS Dungeon Set 01/_Tiled_AT-A2-DungeonVX01-GroundTiles.tsx"/>
@@ -398,5 +398,25 @@
   <object id="55" x="192" y="384" width="16" height="128"/>
   <object id="56" x="288" y="384" width="32" height="32"/>
   <object id="57" x="240" y="224" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup color="#00ff00" id="18" name="Spawn Layer">
+  <object id="47" x="275.229" y="198.876">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup color="#00ffff" id="19" name="Walkable Layer">
+  <object id="59" x="208" y="0" width="96" height="64"/>
+  <object id="60" x="240" y="64" width="64" height="160"/>
+  <object id="61" x="304" y="112" width="32" height="32"/>
+  <object id="62" x="304" y="176" width="16" height="208"/>
+  <object id="63" x="320" y="304" width="48" height="48"/>
+  <object id="64" x="320" y="352" width="16" height="64"/>
+  <object id="65" x="240" y="256" width="64" height="128"/>
+  <object id="66" x="272" y="224" width="32" height="32"/>
+  <object id="67" x="160" y="304" width="80" height="32"/>
+  <object id="69" x="176" y="336" width="64" height="32"/>
+  <object id="70" x="208" y="368" width="32" height="144"/>
+  <object id="71" x="240" y="384" width="48" height="128"/>
+  <object id="72" x="288" y="416" width="16" height="96"/>
  </objectgroup>
 </map>

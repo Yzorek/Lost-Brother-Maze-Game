@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="2020.05.27" orientation="orthogonal" renderorder="left-up" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="53">
+<map version="1.2" tiledversion="2020.05.27" orientation="orthogonal" renderorder="left-up" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="18" nextobjectid="74">
  <tileset firstgid="1" source="Tilesets/VS Dungeon Set 01/_Tiled_Hanzo-Dungeon01VS.tsx"/>
  <tileset firstgid="1025" source="Tilesets/VS Dungeon Set 01/_Tiled_AT-A5-DungeonVX01-Ground.tsx"/>
  <tileset firstgid="1033" source="Tilesets/VS Dungeon Set 01/_Tiled_AT-A2-DungeonVX01-GroundTiles.tsx"/>
@@ -372,5 +372,31 @@
   <object id="50" x="48" y="160" width="64" height="16"/>
   <object id="51" x="96" y="112" width="16" height="48"/>
   <object id="52" x="96" y="96" width="96" height="16"/>
+ </objectgroup>
+ <objectgroup color="#00ff00" id="18" name="Spawn Layer">
+  <object id="47" x="147.563" y="204.209">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup color="#00ffff" id="17" name="Walkable Layer">
+  <object id="54" x="112" y="112" width="48" height="320"/>
+  <object id="55" x="160" y="400" width="96" height="32"/>
+  <object id="56" x="176" y="432" width="80" height="32"/>
+  <object id="57" x="208" y="464" width="48" height="48"/>
+  <object id="58" x="256" y="480" width="16" height="32"/>
+  <object id="59" x="64" y="368" width="48" height="16"/>
+  <object id="60" x="96" y="384" width="16" height="48"/>
+  <object id="61" x="48" y="176" width="64" height="32"/>
+  <object id="62" x="96" y="208" width="16" height="160"/>
+  <object id="63" x="160" y="112" width="16" height="160"/>
+  <object id="65" x="176" y="128" width="32" height="144"/>
+  <object id="66" x="208" y="160" width="16" height="112"/>
+  <object id="67" x="224" y="160" width="128" height="64"/>
+  <object id="68" x="304" y="112" width="16" height="48"/>
+  <object id="69" x="320" y="144" width="32" height="16"/>
+  <object id="70" x="320" y="224" width="48" height="32"/>
+  <object id="71" x="352" y="208" width="160" height="16"/>
+  <object id="72" x="368" y="224" width="144" height="64"/>
+  <object id="73" x="432" y="288" width="80" height="48"/>
  </objectgroup>
 </map>

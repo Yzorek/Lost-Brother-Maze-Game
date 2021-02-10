@@ -26,6 +26,30 @@ namespace LBMG.Map
             }
         }
 
+        public IEnumerable<(int, int)> GetNewSpawnLocations(int count, int minGap)
+        {
+            Random rnd = new Random();
+            List<(int, int)> spawnPositions = new List<(int, int)>();
+
+            var piecesKeys = new (int, int)[_pieces.Count];
+            _pieces.Keys.CopyTo(piecesKeys, 0);
+
+            for (int i = 0; i < count; i++)
+            {
+                int x, y;
+
+                do
+                {
+                    (x, y) = piecesKeys[rnd.Next(piecesKeys.Length)];
+                }
+                while (!spawnPositions.All((sp) => Math.Abs(sp.Item1 - x) > minGap && Math.Abs(sp.Item2 - y) > minGap));
+
+                spawnPositions.Add((x, y));
+            }
+
+            return spawnPositions;
+        }
+
         public IEnumerable<Tuple<(int, int), HashSet<Direction>>> GetPieces()
         {
             foreach (var pos in _pieces.Keys)

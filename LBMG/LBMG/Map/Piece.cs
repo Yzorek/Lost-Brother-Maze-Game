@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using LBMG.Tools;
 using Microsoft.Xna.Framework;
@@ -19,6 +20,8 @@ namespace LBMG.Map
 
         private TiledMapRenderer _tiledMapRenderer;
         private TiledMapObjectLayer _collisionLayer;
+        private TiledMapObjectLayer _spawnLayer;
+        private TiledMapObjectLayer _walkableLayer;
         private TiledMapLayer _backLayer;
         private TiledMapLayer _frontLayer;
         private Point _drawingPos;
@@ -44,6 +47,20 @@ namespace LBMG.Map
                     && tml is TiledMapObjectLayer collisionLayer)
                 {
                     _collisionLayer = collisionLayer;
+                }
+                else if (name.Length == 2
+                    && name[0] == "spawn"
+                    && name[1] == "layer"
+                    && tml is TiledMapObjectLayer spawnLayer)
+                {
+                    _spawnLayer = spawnLayer;
+                }
+                else if (name.Length == 2
+                   && name[0] == "walkable"
+                   && name[1] == "layer"
+                   && tml is TiledMapObjectLayer walkableLayer)
+                {
+                    _walkableLayer = walkableLayer;
                 }
                 else if (name.Length == 2 
                     && name[0] == "layer"
@@ -96,6 +113,26 @@ namespace LBMG.Map
             gpPosY += window.ClientBounds.Height / 2;
 
             _drawingPos = new Point(gpPosX, gpPosY);
+        }
+
+        public IEnumerable<Point> GetWalkableCases()
+        {
+            foreach (TiledMapObject tmObj in _walkableLayer.Objects)
+            {
+                // TODO Accurate player coords.
+                Point coords = (tmObj.Position / Constants.TileSize).ToPoint();
+                Point oppCorner = ((tmObj.Position + (Vector2)tmObj.Size) / Constants.TileSize).ToPoint();
+
+                for (int x = coords.X; x < oppCorner.X; x++)
+                    for (int y = coords.Y; y < oppCorner.Y; y++)
+                    {
+                        Point p = new Point(x, y);
+                        if (!IsCollision(p))
+                            yield return p;
+                    }
+
+            }
+            //return _walkableLayer.Objects.Select(tmObj => (tmObj.Position / Constants.TileSize).ToPoint());
         }
 
         public bool IsCollision(Point onPieceCoordinates)

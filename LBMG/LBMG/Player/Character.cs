@@ -35,6 +35,7 @@ namespace LBMG.Player
         public void Move()
         {
             Coordinates = GetFacingPoint();
+            Debug.WriteLine(Coordinates);
         }
 
         public Point GetFacingPoint()

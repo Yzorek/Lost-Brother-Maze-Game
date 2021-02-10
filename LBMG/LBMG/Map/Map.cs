@@ -26,14 +26,19 @@ namespace LBMG.Map
             TiledMapsDictionary = new Dictionary<Point, Piece>();
         }
 
-        public void LoadMap(GraphicsDevice gd, ContentManager cm, GameWindow window)
+        public void LoadMap(GraphicsDevice gd, ContentManager cm, GameWindow window, out Point[] spawnCoordinates)
         {
+            Random random = new Random();
+
             // Generating Map
             MapGenerator mg = new MapGenerator();
             GeneratedMap generatedMap = mg.GenerateMap(new Range<int>(2), 7, 1, 0);//(new Range<int>(2), 50, 1, 0);
+            var generatedSpawnPositions = generatedMap.GetNewSpawnLocations(2, 3);
 
-            //ConsoleGMapDrawer cgmd = new ConsoleGMapDrawer(generatedMap);
-            //cgmd.Draw(true);
+            List<Point> spawnCoordsList = new List<Point>();
+
+            ConsoleGMapDrawer cgmd = new ConsoleGMapDrawer(generatedMap);
+            cgmd.Draw(true);
 
             var directionsTMEquivalent = new Dictionary<HashSet<Direction>, TiledMap>
                {
@@ -60,7 +65,7 @@ namespace LBMG.Map
 
             bool __nomap = false,
                 __onlycrossroad = false,
-                __onemap = false;
+                __onetile = false;
 #endif
 
 #if DEBUG
@@ -68,10 +73,11 @@ namespace LBMG.Map
 #endif
                 foreach (var dirsPiece in generatedMap.GetPieces())
                 {
+
                     Point tiledMapLocation = new Point(dirsPiece.Item1.Item1, dirsPiece.Item1.Item2);
 
 #if DEBUG
-                    if (__onemap)
+                    if (__onetile)
                     {
                         tiledMapLocation = new Point(0, 0);
                         if (TiledMapsDictionary.ContainsKey(tiledMapLocation))
@@ -96,14 +102,26 @@ namespace LBMG.Map
 
                     piece.Initialize(gd, window);
                     TiledMapsDictionary.Add(tiledMapLocation, piece);
+
+                    // Add new spawn coords when we're on it
+                    if (generatedSpawnPositions.Contains(dirsPiece.Item1))
+                    {
+                        Point[] allPieceSpawnPointCoordinates = piece.GetWalkableCases().ToArray();
+                        Point pieceSpawnPointCoordinates = allPieceSpawnPointCoordinates[random.Next(allPieceSpawnPointCoordinates.Length)];
+                        Point coords = new Point(tiledMapLocation.X * Constants.TiledMapSize, tiledMapLocation.Y * Constants.TiledMapSize) + pieceSpawnPointCoordinates;
+                        coords.Y *= -1;
+                        spawnCoordsList.Add(coords);
+                    }
                 }
+
+            spawnCoordinates = spawnCoordsList.ToArray();
         }
 
         public bool IsCollision(Point coordinates)
         {
             Point fixedCoordinates = coordinates;
             fixedCoordinates.Y *= -1;
-
+            
             Vector2 pos = fixedCoordinates.ToVector2() / Constants.TiledMapSize;
 
             Point tiledMapLocation = new Point((int)Math.Round(pos.X, MidpointRounding.ToNegativeInfinity), (int)Math.Round(pos.Y, MidpointRounding.ToNegativeInfinity));
