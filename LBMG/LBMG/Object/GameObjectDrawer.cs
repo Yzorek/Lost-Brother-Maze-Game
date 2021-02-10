@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace LBMG.Object
@@ -52,7 +53,9 @@ namespace LBMG.Object
         {
             for (int i = 0; i < Objects.Count; i++)
             {
-                Objects[i].Update(gameTime, camera, _rectangles[i]);
+                Rectangle rect = _rectangles[i];
+                Objects[i].Update(gameTime, camera, ref rect);
+                _rectangles[i] = rect;
             }
         }
 
@@ -66,6 +69,7 @@ namespace LBMG.Object
                 {
                     Vector2 cdp = Entity.GetEntityDrawingPosByCamera(Objects[i], camera, _centerPos);
                     _sb.Draw(_textures[i], cdp, _rectangles[i], Color.White, default, new Vector2(0, (float)_rectangles[i].Height / 2), 1, default, default);
+                    Debug.WriteLine(_rectangles[i].Left);
                 }
             }
 

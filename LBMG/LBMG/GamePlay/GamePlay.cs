@@ -61,7 +61,12 @@ namespace LBMG.GamePlay
             UserInterface = new UI.UI();
             Objects = new List<GameObject>
             {
-                new Torch("Torch", ObjectState.OnGround, new Point(16, -16))
+                new Torch("Torch", ObjectState.OnGround, new Point(16, -16)),
+                new Torch("Torch", ObjectState.OnGround, new Point(32, -16)),
+                new Torch("Torch", ObjectState.OnGround, new Point(48, -16)),
+                new Torch("Torch", ObjectState.OnGround, new Point(64, -16)),
+                new Torch("Torch", ObjectState.OnGround, new Point(80, -16)),
+
             };
 
             InitDrawers();
@@ -90,10 +95,18 @@ namespace LBMG.GamePlay
 
             ObjectDrawer = new GameObjectDrawer(Objects, new List<string>
             {
-                "Objects/test"
+                "Objects/torch_lightened",
+                "Objects/torch_lightened",
+                "Objects/torch_lightened",
+                "Objects/torch_lightened",
+                "Objects/torch_lightened"
             }, new List<Rectangle>
             {
-                new Rectangle(0, 0, 1280, 720)
+                Constants.TorchRect(),
+                Constants.TorchRect(),
+                Constants.TorchRect(),
+                Constants.TorchRect(),
+                Constants.TorchRect()
             });
         }
 

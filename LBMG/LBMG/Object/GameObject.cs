@@ -55,7 +55,7 @@ namespace LBMG.Object
             Owner = null;
         }
 
-        public virtual void Update(GameTime gameTime, Camera<Vector2> camera, Rectangle rect)
+        public virtual void Update(GameTime gameTime, Camera<Vector2> camera, ref Rectangle rect)
         {
 
         }
