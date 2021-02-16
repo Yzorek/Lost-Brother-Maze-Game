@@ -32,6 +32,10 @@ namespace LBMG.GamePlay
         static Camera<Vector2> _camera;
         ActivePlayerTimer _activePlayerTimer;
         ActivePlayerTimerDrawer _activePlayerTimerDrawer;
+        TunnelMapFactory _tunnelMapFactory;
+
+        private bool _found = false;
+        private int OtherPlayer => ActivePlayer == 0 ? 1 : 0;
 
         public List<Character> Characters { get; set; }
         public Map.Map Map { get; set; }
@@ -59,12 +63,8 @@ namespace LBMG.GamePlay
 #endif
             _activePlayerTimer = new ActivePlayerTimer(minutsTime * 60 * 1000);
             _activePlayerTimer.ChangeActivePlayer += ActivePlayerTimer_ChangeActivePlayer;
-
-            Map = new Map.Map(Difficulty.Easy);
             Controller = new Controller();
             UserInterface = new UI.UI();
-
-            MapDrawer = new MapDrawer(Map);
 
             CharacterDrawer = new CharacterDrawer(Characters, new List<string>
             {
@@ -90,11 +90,32 @@ namespace LBMG.GamePlay
 
             _camera.ZoomIn(Constants.ZoomFact);
             _camera.Origin = Vector2.Zero;
-            Debug.WriteLine(_camera.WorldToScreen(new Vector2(256, 256)));
+
             BackGroundMusic = cm.Load<Song>("Sounds/043 - Crystal Cave");
             CharacterDrawer.Initialize(gd, cm, window);
 
-            Map.LoadMap(gd, cm, window, out Point[] characterSpawnPoints);
+            _tunnelMapFactory = new TunnelMapFactory();
+            _tunnelMapFactory.LoadTunnelMaps(cm);
+
+            MapDrawer = new MapDrawer();
+            MapDrawer.Initialize(_tunnelMapFactory, gd, window);
+
+            UiDrawer.Initialize(cm, window);
+            _activePlayerTimerDrawer = new ActivePlayerTimerDrawer(_activePlayerTimer, cm.Load<SpriteFont>("Fonts/myFont"));
+
+#if DEBUG // So we can avoid redundant start menu
+            StartGame();
+#endif
+
+            window.ClientSizeChanged += Window_ClientSizeChanged;
+        }
+
+        public void StartGame()
+        {
+            Map = LBMG.Map.Map.Create(Difficulty.Easy, _tunnelMapFactory, out Point[] characterSpawnPoints);
+
+            MapDrawer.LoadMap(Map);
+
             // Spawn characters
             for (int i = 0; i < Characters.Count; i++)
             {
@@ -105,22 +126,18 @@ namespace LBMG.GamePlay
 
             ActivePlayer = 0;
 
-            MapDrawer.Initialize(gd, cm, window);
-            UiDrawer.Initialize(cm, window);
-            _activePlayerTimerDrawer = new ActivePlayerTimerDrawer(_activePlayerTimer, cm.Load<SpriteFont>("Fonts/myFont"));
-
-#if DEBUG // So we can avoid redundant start menu
-            Start();
-#endif
-
-            window.ClientSizeChanged += Window_ClientSizeChanged;
-        }
-        public void Start()
-        {
             Started = true;
             _activePlayerTimer.Start();
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Play(BackGroundMusic);
+        }
+
+        public void QuitGameplayGoToMenu()
+        {
+            _found = false;
+            Started = false;
+            _activePlayerTimer.Stop();
+            MediaPlayer.Stop();
         }
 
         private void Window_ClientSizeChanged(object sender, EventArgs e)
@@ -133,9 +150,8 @@ namespace LBMG.GamePlay
 
         private void ActivePlayerTimer_ChangeActivePlayer(object sender, EventArgs e)
         {
-            ActivePlayer = ActivePlayer == 0 ? 1 : 0;
+            ActivePlayer = OtherPlayer;
         }
-
 
         public void Update(GameTime gameTime, KeyboardStateExtended kse)
         {
@@ -143,8 +159,7 @@ namespace LBMG.GamePlay
 
 #if DEBUG
             if (kse.WasKeyJustUp(Keys.C))
-                ActivePlayer = ActivePlayer == 0 ? 1 : 0;
-#endif
+                ActivePlayer = OtherPlayer;
             if (kse.WasKeyJustUp(Keys.L))                   // TEMP
             {
                 //UserInterface.DialogBox.Write(5, new[] { "sud", "est" });
@@ -154,12 +169,28 @@ namespace LBMG.GamePlay
                 UserInterface.DialogBox.NextDialog();
             if (kse.WasKeyJustUp(Keys.T)) // TEMP
                 TextBank.CurrentLanguage = Language.English;
+#endif
 
             Controller.Update();
-            ControlCharacter();
+            if (!_found)
+                ControlCharacter();
             CharacterDrawer.Update(gameTime, _camera);
             MapDrawer.Update(gameTime);
             UiDrawer.Update(gameTime);
+
+            if (!_found && Characters[ActivePlayer].EncounteredCharacter(Characters[OtherPlayer]))
+            {
+                _found = true;
+                UserInterface.DialogBox.Write(6);
+                // Then waiting for enter
+            }
+
+            if (_found && kse.WasKeyJustUp(Keys.Enter))
+            {  // Game finished
+                UserInterface.DialogBox.NextDialog();
+                QuitGameplayGoToMenu();
+                return;
+            }
         }
 
         public void Draw(GameTime gameTime, SpriteBatch sb)

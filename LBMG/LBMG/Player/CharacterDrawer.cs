@@ -75,10 +75,35 @@ namespace LBMG.Player
         {
             _sb.Begin(samplerState: SamplerState.PointClamp);
 
+            if (ActivePlayerOverInactive()) 
+            {
+                DrawActiveChar(camera);
+                DrawInactiveChar(camera);
+            }
+            else
+            {
+                DrawInactiveChar(camera);
+                DrawActiveChar(camera);
+            }
+           
+
+            _sb.End();
+        }
+
+        private bool ActivePlayerOverInactive()
+        {
+          return   Characters[_activePlayer].Coordinates.Y > Characters[_activePlayer == 0 ? 1 : 0].Coordinates.Y;
+        }
+
+        private void DrawActiveChar(Camera<Vector2> camera)
+        {
             _sb.Draw(_textures[_activePlayer], _centerPos, _rectangles[_activePlayer], Color.White, default,
                 new Vector2(0, (float)_rectangles[_activePlayer].Height / 2), 1, default,
                 default);
+        }
 
+        private void DrawInactiveChar(Camera<Vector2> camera)
+        {
             // Drawing inactive players
             for (int i = 0; i < Characters.Count; i++)
             {
@@ -88,8 +113,6 @@ namespace LBMG.Player
                 Vector2 cdp = GetCharacterDrawingPosByCamera(Characters[i], camera);
                 _sb.Draw(_textures[i], cdp, _rectangles[i], Color.White, default, new Vector2(0, (float)_rectangles[_activePlayer].Height / 2), 1, default, default);
             }
-
-            _sb.End();
         }
 
         public void SetActivePlayer(int val, Camera<Vector2> camera)
@@ -213,7 +236,7 @@ namespace LBMG.Player
         private void SetCameraPosToCharacterCoords(Camera<Vector2> camera)
         {
             Point charPos = Characters[_activePlayer].Coordinates;
-            camera.Position = new Vector2(charPos.X * TileSize, -charPos.Y * TileSize);
+            camera.Position = GetPixelPosFromCoordinates(charPos);
         }
 
         static Vector2 GetPixelPosFromCoordinates(Point coordinates)

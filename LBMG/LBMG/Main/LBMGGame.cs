@@ -49,7 +49,7 @@ namespace LBMG.Main
 #endif
 
             _titleScreen = new TitleScreen();
-            _titleScreen.PlayClick += (s, e) => CurrentGame.Start();
+            _titleScreen.PlayClick += (s, e) => CurrentGame.StartGame();
             _titleScreen.QuitClick += (s, e) => Exit();
             _titleScreen.SettingsChanged += SettingsChanged;
             CurrentGame = new GamePlay.GamePlay();         

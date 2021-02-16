@@ -15,54 +15,55 @@ namespace LBMG.Map
     public class Map
     {
 
-        public Dictionary<Point, Piece> TiledMapsDictionary { get; set; }
+        public Dictionary<Point, Piece> PiecesDictionary { get; }
 
-        public Difficulty Difficulty { get; set; }
+        public Difficulty Difficulty { get; }
 
-        public Map(Difficulty difficulty)
+        protected Map(Difficulty difficulty)
         {
-            TiledMapsDictionary = null;
             Difficulty = difficulty;
-            TiledMapsDictionary = new Dictionary<Point, Piece>();
+            PiecesDictionary = new Dictionary<Point, Piece>();
         }
 
-        public void LoadMap(GraphicsDevice gd, ContentManager cm, GameWindow window, out Point[] spawnCoordinates)
+        public static Map Create(Difficulty difficulty, TunnelMapFactory tmFactory, out Point[] spawnCoordinates)
         {
+            Map map = new Map(difficulty);
+
             Random random = new Random();
 
             // Generating Map
             MapGenerator mg = new MapGenerator();
             GeneratedMap generatedMap = mg.GenerateMap(new Range<int>(2), 7, 1, 0);//(new Range<int>(2), 50, 1, 0);
-            var generatedSpawnPositions = generatedMap.GetNewSpawnLocations(2, 3);
+            var generatedSpawnPositions = generatedMap.GetNewSpawnLocations(2, 3); // TODO Fix so that it works all the time
 
             List<Point> spawnCoordsList = new List<Point>();
 
+#if DEBUG
             ConsoleGMapDrawer cgmd = new ConsoleGMapDrawer(generatedMap);
             cgmd.Draw(true);
+#endif
 
-            var directionsTMEquivalent = new Dictionary<HashSet<Direction>, TiledMap>
+            var directionsTMEquivalent = new Dictionary<HashSet<Direction>, Tunnel>
                {
-                    { new HashSet<Direction> { Direction.Left, Direction.Top, Direction.Right, Direction.Bottom }, cm.Load<TiledMap>("TiledMaps/cross_road_tunnel") },
-                    { new HashSet<Direction> { Direction.Bottom, Direction.Left }, cm.Load<TiledMap>("TiledMaps/bottom_left_tunnel") },
-                    { new HashSet<Direction> { Direction.Bottom, Direction.Right }, cm.Load<TiledMap>("TiledMaps/bottom_right_tunnel") },
-                    { new HashSet<Direction> { Direction.Top, Direction.Right }, cm.Load<TiledMap>("TiledMaps/top_right_tunnel") },
-                    { new HashSet<Direction> { Direction.Bottom }, cm.Load<TiledMap>("TiledMaps/bottom_tunnel") },
-                    { new HashSet<Direction> { Direction.Top, Direction.Bottom, Direction.Left }, cm.Load<TiledMap>("TiledMaps/vertical_left_tunnel") },
-                    { new HashSet<Direction> { Direction.Left, Direction.Top }, cm.Load<TiledMap>("TiledMaps/top_left_tunnel") },
-                    { new HashSet<Direction> { Direction.Top }, cm.Load<TiledMap>("TiledMaps/top_tunnel") },
-                    { new HashSet<Direction> { Direction.Bottom, Direction.Top }, cm.Load<TiledMap>("TiledMaps/vertical_tunnel") },
-                    { new HashSet<Direction> { Direction.Left, Direction.Right }, cm.Load<TiledMap>("TiledMaps/horizontal_tunnel") },
-                    { new HashSet<Direction> { Direction.Left, Direction.Right, Direction.Bottom }, cm.Load<TiledMap>("TiledMaps/horizontal_bottom_tunnel") },
-                    { new HashSet<Direction> { Direction.Left, Direction.Right, Direction.Top }, cm.Load<TiledMap>("TiledMaps/horizontal_top_tunnel") },
-                    { new HashSet<Direction> { Direction.Bottom, Direction.Top, Direction.Right }, cm.Load<TiledMap>("TiledMaps/vertical_right_tunnel") },
-                    { new HashSet<Direction> { Direction.Right }, cm.Load<TiledMap>("TiledMaps/right_tunnel") },
-                    { new HashSet<Direction> { Direction.Left }, cm.Load<TiledMap>("TiledMaps/left_tunnel") },
+                    { new HashSet<Direction> { Direction.Left, Direction.Top, Direction.Right, Direction.Bottom }, Tunnel.CrossRoad },
+                    { new HashSet<Direction> { Direction.Bottom, Direction.Left }, Tunnel.BottomLeft },
+                    { new HashSet<Direction> { Direction.Bottom, Direction.Right }, Tunnel.BottomRight  },
+                    { new HashSet<Direction> { Direction.Top, Direction.Right }, Tunnel.TopRight  },
+                    { new HashSet<Direction> { Direction.Bottom }, Tunnel.Bottom  },
+                    { new HashSet<Direction> { Direction.Top, Direction.Bottom, Direction.Left }, Tunnel.VerticalLeft  },
+                    { new HashSet<Direction> { Direction.Left, Direction.Top }, Tunnel.TopLeft  },
+                    { new HashSet<Direction> { Direction.Top }, Tunnel.Top  },
+                    { new HashSet<Direction> { Direction.Bottom, Direction.Top }, Tunnel.Vertical  },
+                    { new HashSet<Direction> { Direction.Left, Direction.Right }, Tunnel.Horizontal  },
+                    { new HashSet<Direction> { Direction.Left, Direction.Right, Direction.Bottom }, Tunnel.HorizontalBottom  },
+                    { new HashSet<Direction> { Direction.Left, Direction.Right, Direction.Top }, Tunnel.HorizontalTop  },
+                    { new HashSet<Direction> { Direction.Bottom, Direction.Top, Direction.Right }, Tunnel.VerticalRight },
+                    { new HashSet<Direction> { Direction.Right }, Tunnel.Right  },
+                    { new HashSet<Direction> { Direction.Left }, Tunnel.Left  },
                 };
 
 
 #if DEBUG  // For clean tests sometimes
-            TiledMap crossRoad = cm.Load<TiledMap>("TiledMaps/cross_road_tunnel");
-
             bool __nomap = false,
                 __onlycrossroad = false,
                 __onetile = false;
@@ -80,7 +81,7 @@ namespace LBMG.Map
                     if (__onetile)
                     {
                         tiledMapLocation = new Point(0, 0);
-                        if (TiledMapsDictionary.ContainsKey(tiledMapLocation))
+                        if (map.PiecesDictionary.ContainsKey(tiledMapLocation))
                             break;
                     }
 #endif
@@ -94,19 +95,18 @@ namespace LBMG.Map
                     Piece piece;
 #if DEBUG
                     if (__onlycrossroad)
-                        piece = new Piece(crossRoad, tiledMapLocation.X, tiledMapLocation.Y);
+                        piece = new Piece(tmFactory.GetTunnelMap(Tunnel.CrossRoad), tiledMapLocation.X, tiledMapLocation.Y);
                     else
 #endif
-                        piece = new Piece(directionsTMEquivalent[dtmeDictKey], tiledMapLocation.X, tiledMapLocation.Y);
+                        piece = new Piece(tmFactory.GetTunnelMap(directionsTMEquivalent[dtmeDictKey]), tiledMapLocation.X, tiledMapLocation.Y);
 
 
-                    piece.Initialize(gd, window);
-                    TiledMapsDictionary.Add(tiledMapLocation, piece);
+                    map.PiecesDictionary.Add(tiledMapLocation, piece);
 
                     // Add new spawn coords when we're on it
                     if (generatedSpawnPositions.Contains(dirsPiece.Item1))
                     {
-                        Point[] allPieceSpawnPointCoordinates = piece.GetWalkableCases().ToArray();
+                        Point[] allPieceSpawnPointCoordinates = piece.TunnelMap.GetWalkableCases().ToArray();
                         Point pieceSpawnPointCoordinates = allPieceSpawnPointCoordinates[random.Next(allPieceSpawnPointCoordinates.Length)];
                         Point coords = new Point(tiledMapLocation.X * Constants.TiledMapSize, tiledMapLocation.Y * Constants.TiledMapSize) + pieceSpawnPointCoordinates;
                         coords.Y *= -1;
@@ -115,6 +115,8 @@ namespace LBMG.Map
                 }
 
             spawnCoordinates = spawnCoordsList.ToArray();
+
+            return map;
         }
 
         public bool IsCollision(Point coordinates)
@@ -126,12 +128,12 @@ namespace LBMG.Map
 
             Point tiledMapLocation = new Point((int)Math.Round(pos.X, MidpointRounding.ToNegativeInfinity), (int)Math.Round(pos.Y, MidpointRounding.ToNegativeInfinity));
 
-            if (!TiledMapsDictionary.ContainsKey(tiledMapLocation))
+            if (!PiecesDictionary.ContainsKey(tiledMapLocation))
                 return false;
 
             Point onPiecePos = fixedCoordinates - new Point(Constants.TiledMapSize * tiledMapLocation.X, Constants.TiledMapSize * tiledMapLocation.Y);
 
-            bool r = TiledMapsDictionary[tiledMapLocation].IsCollision(onPiecePos);
+            bool r = PiecesDictionary[tiledMapLocation].TunnelMap.IsCollision(onPiecePos);
             return r;
         }
     }

@@ -38,6 +38,40 @@ namespace LBMG.Player
             Debug.WriteLine(Coordinates);
         }
 
+        public bool EncounteredCharacter(Character otherChar, int minDistance = 5)
+        {
+            int deltaX = Coordinates.X - otherChar.Coordinates.X,
+                deltaY = Coordinates.Y - otherChar.Coordinates.Y;
+
+            if ((Math.Abs(deltaX) <= minDistance && deltaY == 0) || (Math.Abs(deltaY) <= minDistance && deltaX == 0))  // Like a cross
+            {
+                if (deltaY > 0) // Relative dir: top
+                {
+                    Direction = Direction.Bottom;
+                    otherChar.Direction = Direction.Top;
+                }
+                else if (deltaY < 0)
+                {
+                    Direction = Direction.Top;
+                    otherChar.Direction = Direction.Bottom;
+                }
+                else if (deltaX > 0) // Relative dir: right
+                {
+                    Direction = Direction.Left;
+                    otherChar.Direction = Direction.Right;
+                }
+                else if (deltaX < 0)
+                {
+                    Direction = Direction.Right;
+                    otherChar.Direction = Direction.Left;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
         public Point GetFacingPoint()
         {
             int x = Coordinates.X;

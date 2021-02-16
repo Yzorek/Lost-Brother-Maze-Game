@@ -26,6 +26,12 @@ namespace LBMG.UI
             _sw.Start();
         }
 
+        public void Stop()
+        {
+            _sw.Stop();
+            _sw.Reset();
+        }
+
         public void Update(GameTime gameTime)
         {
             if (_sw.Elapsed.TotalMilliseconds > _millisecInterval)
