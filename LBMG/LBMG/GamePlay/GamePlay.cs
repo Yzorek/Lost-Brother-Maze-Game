@@ -146,14 +146,14 @@ namespace LBMG.GamePlay
 
         public void StartGame()
         {
-            Map = LBMG.Map.Map.Create(Difficulty.Easy, _tunnelMapFactory, out Point[] characterSpawnPoints);
+            Map = LBMG.Map.Map.Create(Difficulty.Easy, _tunnelMapFactory);
 
             MapDrawer.LoadMap(Map);
 
             // Spawn characters
             for (int i = 0; i < Characters.Count; i++)
             {
-                Point spawningCoords = characterSpawnPoints[i];
+                Point spawningCoords = Map.SpawnCoordinates[i];
                 Characters[i].SpawnAt(spawningCoords.X, spawningCoords.Y);
             }
 

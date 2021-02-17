@@ -28,6 +28,12 @@ namespace LBMG.Map
 
         public IEnumerable<(int, int)> GetNewSpawnLocations(int count, int minGap)
         {
+            bool IsFarEnoughFromPositions(int x, int y, IEnumerable<(int, int)> positions) 
+                => positions.All(sp => Math.Abs(sp.Item1 - x) > minGap && Math.Abs(sp.Item2 - y) > minGap);
+
+            bool PossibleForNextPositions(int x, int y, IEnumerable<(int, int)> positions)
+                => positions.Any(sp => Math.Abs(sp.Item1 - x) > minGap && Math.Abs(sp.Item2 - y) > minGap);
+
             Random rnd = new Random();
             List<(int, int)> spawnPositions = new List<(int, int)>();
 
@@ -42,7 +48,7 @@ namespace LBMG.Map
                 {
                     (x, y) = piecesKeys[rnd.Next(piecesKeys.Length)];
                 }
-                while (!spawnPositions.All((sp) => Math.Abs(sp.Item1 - x) > minGap && Math.Abs(sp.Item2 - y) > minGap));
+                while (!(PossibleForNextPositions(x, y, piecesKeys) && IsFarEnoughFromPositions(x, y, spawnPositions)));
 
                 spawnPositions.Add((x, y));
             }

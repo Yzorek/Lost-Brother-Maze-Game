@@ -19,13 +19,15 @@ namespace LBMG.Map
 
         public Difficulty Difficulty { get; }
 
+        public Point[] SpawnCoordinates { get; private set; }
+
         protected Map(Difficulty difficulty)
         {
             Difficulty = difficulty;
             PiecesDictionary = new Dictionary<Point, Piece>();
         }
 
-        public static Map Create(Difficulty difficulty, TunnelMapFactory tmFactory, out Point[] spawnCoordinates)
+        public static Map Create(Difficulty difficulty, TunnelMapFactory tmFactory)
         {
             Map map = new Map(difficulty);
 
@@ -34,7 +36,7 @@ namespace LBMG.Map
             // Generating Map
             MapGenerator mg = new MapGenerator();
             GeneratedMap generatedMap = mg.GenerateMap(new Range<int>(2), 7, 1, 0);//(new Range<int>(2), 50, 1, 0);
-            var generatedSpawnPositions = generatedMap.GetNewSpawnLocations(2, 3); // TODO Fix so that it works all the time
+            var generatedSpawnPositions = generatedMap.GetNewSpawnLocations(2, 4); // TODO Fix so that it works all the time
 
             List<Point> spawnCoordsList = new List<Point>();
 
@@ -114,7 +116,7 @@ namespace LBMG.Map
                     }
                 }
 
-            spawnCoordinates = spawnCoordsList.ToArray();
+            map.SpawnCoordinates = spawnCoordsList.ToArray();
 
             return map;
         }
