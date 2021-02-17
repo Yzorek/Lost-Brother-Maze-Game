@@ -20,7 +20,7 @@ namespace LBMG.Tools
             return camera.WorldToScreen(GetPixelPosFromCoordinates(obj.Coordinates)) + centerPos;
         }
 
-        static Vector2 GetPixelPosFromCoordinates(Point coordinates)
+        public static Vector2 GetPixelPosFromCoordinates(Point coordinates)
         {
             return new Vector2(coordinates.X * (Constants.TileSize), -coordinates.Y * (Constants.TileSize));
         }

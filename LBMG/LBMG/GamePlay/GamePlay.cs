@@ -78,15 +78,13 @@ namespace LBMG.GamePlay
 
             };
 
-            InitDrawers();
+            InstanceDrawers();
 
             Started = false;
         }
 
-        public void InitDrawers()
+        public void InstanceDrawers()
         {
-            MapDrawer = new MapDrawer(Map);
-
             CharacterDrawer = new CharacterDrawer(Characters, new List<string>
             {
                 "Characters/peter",
@@ -156,7 +154,6 @@ namespace LBMG.GamePlay
             for (int i = 0; i < Characters.Count; i++)
             {
                 Point spawningCoords = characterSpawnPoints[i];
-                Debug.WriteLine(spawningCoords);
                 Characters[i].SpawnAt(spawningCoords.X, spawningCoords.Y);
             }
 

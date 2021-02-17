@@ -35,7 +35,6 @@ namespace LBMG.Player
         public void Move()
         {
             Coordinates = GetFacingPoint();
-            Debug.WriteLine(Coordinates);
         }
 
         public bool EncounteredCharacter(Character otherChar, int minDistance = 5)

@@ -231,7 +231,7 @@ namespace LBMG.Player
         private void SetCameraPosToCharacterCoords(Camera<Vector2> camera)
         {
             Point charPos = Characters[_activePlayer].Coordinates;
-            camera.Position = GetPixelPosFromCoordinates(charPos);
+            camera.Position = Entity.GetPixelPosFromCoordinates(charPos);
         }
     }
 }
