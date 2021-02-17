@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Input;
+using LBMG.Object;
 
 namespace LBMG.GamePlay
 {
@@ -44,6 +45,8 @@ namespace LBMG.GamePlay
         public Controller Controller { get; set; }
         public UI.UI UserInterface { get; set; }
         public UIDrawer UiDrawer { get; set; }
+        public List<GameObject> Objects { get; set; }
+        public GameObjectDrawer ObjectDrawer { get; set; }
 
         public bool Started { get; private set; }
 
@@ -65,6 +68,24 @@ namespace LBMG.GamePlay
             _activePlayerTimer.ChangeActivePlayer += ActivePlayerTimer_ChangeActivePlayer;
             Controller = new Controller();
             UserInterface = new UI.UI();
+            Objects = new List<GameObject>
+            {
+                new Torch("Torch", ObjectState.OnGround, new Point(16, -16)),
+                new Torch("Torch", ObjectState.OnGround, new Point(32, -16)),
+                new Torch("Torch", ObjectState.OnGround, new Point(48, -16)),
+                new Torch("Torch", ObjectState.OnGround, new Point(64, -16)),
+                new Torch("Torch", ObjectState.OnGround, new Point(80, -16)),
+
+            };
+
+            InitDrawers();
+
+            Started = false;
+        }
+
+        public void InitDrawers()
+        {
+            MapDrawer = new MapDrawer(Map);
 
             CharacterDrawer = new CharacterDrawer(Characters, new List<string>
             {
@@ -81,7 +102,21 @@ namespace LBMG.GamePlay
                 "DialogBox/dialog_box"
             });
 
-            Started = false;
+            ObjectDrawer = new GameObjectDrawer(Objects, new List<string>
+            {
+                "Objects/torch_lightened",
+                "Objects/torch_lightened",
+                "Objects/torch_lightened",
+                "Objects/torch_lightened",
+                "Objects/torch_lightened"
+            }, new List<Rectangle>
+            {
+                Constants.TorchRect(),
+                Constants.TorchRect(),
+                Constants.TorchRect(),
+                Constants.TorchRect(),
+                Constants.TorchRect()
+            });
         }
 
         public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
@@ -101,6 +136,7 @@ namespace LBMG.GamePlay
             MapDrawer.Initialize(_tunnelMapFactory, gd, window);
 
             UiDrawer.Initialize(cm, window);
+            ObjectDrawer.Initialize(gd, cm, window);
             _activePlayerTimerDrawer = new ActivePlayerTimerDrawer(_activePlayerTimer, cm.Load<SpriteFont>("Fonts/myFont"));
 
 #if DEBUG // So we can avoid redundant start menu
@@ -176,6 +212,7 @@ namespace LBMG.GamePlay
                 ControlCharacter();
             CharacterDrawer.Update(gameTime, _camera);
             MapDrawer.Update(gameTime);
+            ObjectDrawer.UpdateObjects(gameTime, _camera);
             UiDrawer.Update(gameTime);
 
             if (!_found && Characters[ActivePlayer].EncounteredCharacter(Characters[OtherPlayer]))
@@ -198,6 +235,7 @@ namespace LBMG.GamePlay
             MapDrawer.DrawBackLayer(gameTime, _camera, sb);
             CharacterDrawer.Draw(gameTime, _camera);
             MapDrawer.DrawFrontLayer(gameTime, _camera, sb);
+            ObjectDrawer.DrawObjects(gameTime, _camera);
             UiDrawer.Draw(sb, gameTime);
             _activePlayerTimerDrawer.Draw(gameTime, sb);
         }
