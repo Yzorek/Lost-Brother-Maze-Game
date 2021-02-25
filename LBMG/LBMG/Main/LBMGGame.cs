@@ -22,6 +22,7 @@ namespace LBMG.Main
         private SpriteBatch _sb;
         TitleScreen _titleScreen;
 
+        private bool GameplayRunning => CurrentGame != null && CurrentGame.Started;
         public GamePlay.GamePlay CurrentGame { get; set; }
 
         public LBMGGame()
@@ -49,15 +50,25 @@ namespace LBMG.Main
 #endif
 
             _titleScreen = new TitleScreen();
-            _titleScreen.PlayClick += (s, e) => CurrentGame.StartGame();
+            _titleScreen.PlayClick += (s, e) => StartGame();
             _titleScreen.QuitClick += (s, e) => Exit();
-            _titleScreen.SettingsChanged += SettingsChanged;
-            CurrentGame = new GamePlay.GamePlay();         
+            _titleScreen.SettingsChanged += SettingsChanged;  
 
             _sb = new SpriteBatch(GraphicsDevice);
             _titleScreen.Initialize(GraphicsDevice, Content, Window);
-            CurrentGame.Initialize(GraphicsDevice, Content, Window);
+
+#if DEBUG
+            StartGame();
+#endif
+
             base.Initialize();
+        }
+
+        private void StartGame()
+        {
+            CurrentGame = new GamePlay.GamePlay();
+            CurrentGame.Initialize(GraphicsDevice, Content, Window);
+            CurrentGame.StartGame();
         }
 
         protected override void Update(GameTime gameTime)
@@ -67,10 +78,11 @@ namespace LBMG.Main
 
             if (ks.IsKeyDown(Keys.Escape))
                 Exit();
-            if (CurrentGame.Started)
+            if (GameplayRunning)
                 CurrentGame.Update(gameTime, kse);
             else
                 _titleScreen.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -78,12 +90,14 @@ namespace LBMG.Main
         {
             Color backgroundColor = new Color(1, 2, 11);
             GraphicsDevice.Clear(backgroundColor);
-            base.Draw(gameTime);
+
             _sb.Begin(samplerState: SamplerState.PointClamp);
-            if (CurrentGame.Started)
+            if (GameplayRunning)
                 CurrentGame.Draw(gameTime, _sb);
             else
                 _titleScreen.Draw(_sb, gameTime);
+
+            base.Draw(gameTime);
 
             _sb.End();
         }

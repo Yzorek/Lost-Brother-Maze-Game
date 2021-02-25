@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -12,35 +13,26 @@ namespace LBMG.Object
 {
     public class GameObjectDrawer
     {
-        public List<GameObject> Objects { get; set; }
 
-        private readonly List<string> _texturePaths;
-        private readonly List<Texture2D> _textures;
-        private List<Rectangle> _rectangles;
         private Vector2 _centerPos;
         private SpriteBatch _sb;
+        private GameObjectSpriteFactory _spriteFactory;
+        private GameObjectSet _set;
 
-        public GameObjectDrawer(List<GameObject> objects, List<string> paths, List<Rectangle> rectangles)
+        public GameObjectDrawer(GameObjectSet set)
         {
-            Objects = objects;
-            _texturePaths = paths;
-            _rectangles = rectangles;
-            _textures = new List<Texture2D>();
+            _set = set;
+            _spriteFactory = new GameObjectSpriteFactory();
         }
-
 
         public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
         {
             SetPosition(window);
             window.ClientSizeChanged += (s, e) => SetPosition(s as GameWindow);
 
-            _sb = new SpriteBatch(gd);
+            _spriteFactory.Initialize(cm);
 
-            foreach (string path in _texturePaths)
-            {
-                Texture2D text = cm.Load<Texture2D>(path);
-                _textures.Add(text);
-            }
+            _sb = new SpriteBatch(gd);
         }
 
         private void SetPosition(GameWindow window)
@@ -51,11 +43,9 @@ namespace LBMG.Object
 
         public void UpdateObjects(GameTime gameTime, Camera<Vector2> camera)
         {
-            for (int i = 0; i < Objects.Count; i++)
+            for (int i = 0; i < _set.Objects.Count; i++)
             {
-                Rectangle rect = _rectangles[i];
-                Objects[i].Update(gameTime, camera, ref rect);
-                _rectangles[i] = rect;
+                _set.Objects[i].UpdateRectangle(gameTime, camera);
             }
         }
 
@@ -63,13 +53,14 @@ namespace LBMG.Object
         {
             _sb.Begin(samplerState: SamplerState.PointClamp);
 
-            for (int i = 0; i < Objects.Count; i++)
+            for (int i = 0; i < _set.Objects.Count; i++)
             {
-                if (Objects[i].State == ObjectState.OnGround)
+                GameObject obj = _set.Objects[i];
+                if (_set.Objects[i].State == ObjectState.OnGround)
                 {
-                    Vector2 cdp = Entity.GetEntityDrawingPosByCamera(Objects[i], camera, _centerPos);
-                    _sb.Draw(_textures[i], cdp, _rectangles[i], Color.White, default, new Vector2(0, (float)_rectangles[i].Height / 2), 1, default, default);
-                    Debug.WriteLine(_rectangles[i].Left);
+                    Vector2 cdp = Entity.GetEntityDrawingPosByCamera(obj, camera, _centerPos);
+                    _sb.Draw(_spriteFactory.GetGameObjectSprite(obj.Sprite), cdp, obj.Rect, Color.White, 
+                        default, new Vector2(0, (float)obj.Rect.Height / 2), obj.DrawingScale, default, default);
                 }
             }
 

@@ -16,6 +16,8 @@ namespace LBMG.Player
         public bool IsMoving { get; set; }
         public Point Coordinates { get; private set; }
         public int MoveState { get; set; }
+        public event EventHandler<Point> Moved;
+        public event EventHandler<Point> Teleported;
 
         public Character(string name, float speed)
         {
@@ -30,11 +32,13 @@ namespace LBMG.Player
         public void SpawnAt(int x, int y/*, Map map*/)
         {
             Coordinates = new Point(x, y);
+            Teleported?.Invoke(this, Coordinates);
         }
 
         public void Move()
         {
             Coordinates = GetFacingPoint();
+            Moved?.Invoke(this, Coordinates);
         }
 
         public bool EncounteredCharacter(Character otherChar, int minDistance = 5)

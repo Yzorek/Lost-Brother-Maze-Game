@@ -1,4 +1,5 @@
 ﻿using LBMG.Player;
+using LBMG.Tools;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using System;
@@ -10,11 +11,17 @@ namespace LBMG.Object
 {
     public class Torch : GameObject
     {
-        public bool IsBurning { get; set; }
         private float _counter;
+
+        public bool IsBurning { get; set; }
+
+        public override float DrawingScale => 0.75f;
+        public override Size CaseSize => new Size(1, 2);
 
         public Torch(string name, ObjectState state, Point coordinates, Character owner = null) : base(name, state, coordinates, owner)
         {
+            Rect = Constants.TorchRect();
+            Sprite = GameObjectSprite.TorchLightened;
             IsBurning = false;
             _counter = 0;
         }
@@ -34,15 +41,14 @@ namespace LBMG.Object
             base.Drop();
         }
 
-        public override void Update(GameTime gameTime, Camera<Vector2> camera, ref Rectangle rect)
+        public override void UpdateRectangle(GameTime gameTime, Camera<Vector2> camera)
         {
-            Rectangle newRect = rect;
-
             _counter += 2 * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             if (_counter > 1800)
                 _counter = 0;
-
+            
+            Rectangle newRect = Rect;
             if (_counter > 0 && _counter <= 200)
                 newRect.Location = new Point(37, 0);
             if (_counter > 200 && _counter <= 400)
@@ -61,8 +67,7 @@ namespace LBMG.Object
                 newRect.Location = new Point(283, 0);
             if (_counter > 1600 && _counter <= 1800)
                 newRect.Location = new Point(3, 0);
-            rect = newRect;
-            base.Update(gameTime, camera, ref rect);
+            Rect = newRect;
         }
     }
 }

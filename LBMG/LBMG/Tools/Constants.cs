@@ -28,7 +28,7 @@ namespace LBMG.Tools
 
         public static Rectangle TorchRect()
         {
-            return (new Rectangle(0, 0, 37, 125));
+            return new Rectangle(0, 0, 37, 125);
         }
     }
 }

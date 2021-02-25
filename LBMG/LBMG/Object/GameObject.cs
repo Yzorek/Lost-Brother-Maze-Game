@@ -5,15 +5,21 @@ using Microsoft.Xna.Framework;
 using LBMG.Player;
 using MonoGame.Extended;
 using Microsoft.Xna.Framework.Graphics;
+using LBMG.Tools;
 
 namespace LBMG.Object
 {
-    public class GameObject
+    public abstract class GameObject
     {
         public string Name { get; set; }
         public Point Coordinates { get; set; }
         public ObjectState State { get; set; }
         public Character Owner { get; set; }
+
+        public Rectangle Rect { get; protected set; }
+        public GameObjectSprite Sprite { get; protected set; }
+        public abstract float DrawingScale { get; }
+        public abstract Size CaseSize { get; }
 
         public GameObject(string name, ObjectState state, Point coordinates, Character owner = null)
         {
@@ -31,6 +37,11 @@ namespace LBMG.Object
                 Coordinates = new Point(0, 0);
             }
         }
+
+        /// <summary>
+        /// Currently, called when the character walk on
+        /// </summary>
+        public virtual void OnTriggered(Character fromChar) { }
 
         public virtual void Take(Character character)
         {
@@ -55,11 +66,10 @@ namespace LBMG.Object
             Owner = null;
         }
 
-        public virtual void Update(GameTime gameTime, Camera<Vector2> camera, ref Rectangle rect)
-        {
-
-        }
+        // DOLATER Here a dictionary, Prefer a handled in drawer system than this 
+        public abstract void UpdateRectangle(GameTime gameTime, Camera<Vector2> camera);
     }
+
 
     public enum ObjectState
     {

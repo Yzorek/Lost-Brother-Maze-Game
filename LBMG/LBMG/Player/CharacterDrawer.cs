@@ -24,7 +24,8 @@ namespace LBMG.Player
         const float TileSize = Constants.TileSize;
         private SpriteBatch _sb;
         private float _counter;
-        
+        private Camera<Vector2> _camera;
+
         public CharacterDrawer(List<Character> characters, List<string> paths, List<Rectangle> rectangles)
         {
             Characters = characters;
@@ -33,11 +34,15 @@ namespace LBMG.Player
             _textures = new List<Texture2D>();
         }
 
-
-        public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
+        public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window, Camera<Vector2> camera)
         {
+            _camera = camera;
+
             SetPosition(window);
             window.ClientSizeChanged += (s, e) => SetPosition(s as GameWindow);
+
+            foreach (var @char in Characters)
+                @char.Teleported += Character_Teleported;
 
             _activePlayer = 0;
             _counter = TileSize;
@@ -121,6 +126,15 @@ namespace LBMG.Player
             _activePlayer = val;
 
             SetCameraPosToCharacterCoords(camera);
+        }
+
+        private void Character_Teleported(object sender, Point e)
+        {
+            Character teleportedCharacter = sender as Character;
+            if (teleportedCharacter != Characters[_activePlayer])
+                return;
+
+            SetCameraPosToCharacterCoords(_camera);
         }
 
         private void AnimateSprite()

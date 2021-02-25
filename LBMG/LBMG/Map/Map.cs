@@ -14,7 +14,6 @@ namespace LBMG.Map
 {
     public class Map
     {
-
         public Dictionary<Point, Piece> PiecesDictionary { get; }
 
         public Difficulty Difficulty { get; }

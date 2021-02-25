@@ -30,7 +30,7 @@ namespace LBMG.GamePlay
             }
         }
 
-        static Camera<Vector2> _camera;
+        Camera<Vector2> _camera;
         ActivePlayerTimer _activePlayerTimer;
         ActivePlayerTimerDrawer _activePlayerTimerDrawer;
         TunnelMapFactory _tunnelMapFactory;
@@ -45,8 +45,8 @@ namespace LBMG.GamePlay
         public Controller Controller { get; set; }
         public UI.UI UserInterface { get; set; }
         public UIDrawer UiDrawer { get; set; }
-        public List<GameObject> Objects { get; set; }
         public GameObjectDrawer ObjectDrawer { get; set; }
+        public GameObjectSet GameObjectSet { get; set; }
 
         public bool Started { get; private set; }
 
@@ -66,17 +66,15 @@ namespace LBMG.GamePlay
 #endif
             _activePlayerTimer = new ActivePlayerTimer(minutsTime * 60 * 1000);
             _activePlayerTimer.ChangeActivePlayer += ActivePlayerTimer_ChangeActivePlayer;
+
             Controller = new Controller();
             UserInterface = new UI.UI();
-            Objects = new List<GameObject>
-            {
-                new Torch("Torch", ObjectState.OnGround, new Point(16, -16)),
-                new Torch("Torch", ObjectState.OnGround, new Point(32, -16)),
-                new Torch("Torch", ObjectState.OnGround, new Point(48, -16)),
-                new Torch("Torch", ObjectState.OnGround, new Point(64, -16)),
-                new Torch("Torch", ObjectState.OnGround, new Point(80, -16)),
 
-            };
+            GameObjectSet = new GameObjectSet();
+            foreach (var @char in Characters)
+            {
+                @char.Moved += GameObjectSet.Character_Moved;
+            }
 
             InstanceDrawers();
 
@@ -85,6 +83,8 @@ namespace LBMG.GamePlay
 
         public void InstanceDrawers()
         {
+            MapDrawer = new MapDrawer();
+
             CharacterDrawer = new CharacterDrawer(Characters, new List<string>
             {
                 "Characters/peter",
@@ -100,46 +100,38 @@ namespace LBMG.GamePlay
                 "DialogBox/dialog_box"
             });
 
-            ObjectDrawer = new GameObjectDrawer(Objects, new List<string>
+            ObjectDrawer = new GameObjectDrawer(GameObjectSet);
+            GameObjectSet.Objects.AddRange(
+                new List<GameObject> // TEMP
             {
-                "Objects/torch_lightened",
-                "Objects/torch_lightened",
-                "Objects/torch_lightened",
-                "Objects/torch_lightened",
-                "Objects/torch_lightened"
-            }, new List<Rectangle>
-            {
-                Constants.TorchRect(),
-                Constants.TorchRect(),
-                Constants.TorchRect(),
-                Constants.TorchRect(),
-                Constants.TorchRect()
+                //new Portal("Portal", ObjectState.OnGround, new Point(16, -10)),
+                //new Portal("Portal", ObjectState.OnGround, new Point(10, -20)),
+                new Torch("Torch", ObjectState.OnGround, new Point(16, -16)),
+                new Torch("Torch", ObjectState.OnGround, new Point(32, -16)),
+                new Torch("Torch", ObjectState.OnGround, new Point(48, -16)),
+                new Torch("Torch", ObjectState.OnGround, new Point(64, -16)),
+                new Torch("Torch", ObjectState.OnGround, new Point(80, -16)),
             });
         }
 
         public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
         {
-            _camera ??= new OrthographicCamera(gd);
+            _camera = new OrthographicCamera(gd);
 
             _camera.ZoomIn(Constants.ZoomFact);
             _camera.Origin = Vector2.Zero;
 
             BackGroundMusic = cm.Load<Song>("Sounds/043 - Crystal Cave");
-            CharacterDrawer.Initialize(gd, cm, window);
+            CharacterDrawer.Initialize(gd, cm, window, _camera);
 
             _tunnelMapFactory = new TunnelMapFactory();
             _tunnelMapFactory.LoadTunnelMaps(cm);
-
-            MapDrawer = new MapDrawer();
             MapDrawer.Initialize(_tunnelMapFactory, gd, window);
 
             UiDrawer.Initialize(cm, window);
             ObjectDrawer.Initialize(gd, cm, window);
-            _activePlayerTimerDrawer = new ActivePlayerTimerDrawer(_activePlayerTimer, cm.Load<SpriteFont>("Fonts/myFont"));
 
-#if DEBUG // So we can avoid redundant start menu
-            StartGame();
-#endif
+            _activePlayerTimerDrawer = new ActivePlayerTimerDrawer(_activePlayerTimer, cm.Load<SpriteFont>("Fonts/myFont"));
 
             window.ClientSizeChanged += Window_ClientSizeChanged;
         }
@@ -157,6 +149,13 @@ namespace LBMG.GamePlay
                 Characters[i].SpawnAt(spawningCoords.X, spawningCoords.Y);
             }
 
+            { // TEMP
+                Portal prtl1 = new Portal("Portal", ObjectState.OnGround, Map.SpawnCoordinates[0] + new Point(-3, -2)),
+                                prtl2 = new Portal("Portal", ObjectState.OnGround, Map.SpawnCoordinates[1] + new Point(-3, -2), prtl1);
+                prtl1.DestinationPortal = prtl2;
+                GameObjectSet.Objects.AddRange(new[] { prtl1, prtl2 });
+            }
+            
             ActivePlayer = 0;
 
             Started = true;
@@ -193,20 +192,22 @@ namespace LBMG.GamePlay
 #if DEBUG
             if (kse.WasKeyJustUp(Keys.C))
                 ActivePlayer = OtherPlayer;
-            if (kse.WasKeyJustUp(Keys.L))                   // TEMP
+            if (kse.WasKeyJustUp(Keys.L))  
             {
                 //UserInterface.DialogBox.Write(5, new[] { "sud", "est" });
                 UserInterface.DialogBox.Write(3);
             }
-            if (kse.WasKeyJustUp(Keys.N))                   // TEMP
+            if (kse.WasKeyJustUp(Keys.N))          
                 UserInterface.DialogBox.NextDialog();
-            if (kse.WasKeyJustUp(Keys.T)) // TEMP
+            if (kse.WasKeyJustUp(Keys.T)) 
                 TextBank.CurrentLanguage = Language.English;
 #endif
 
             Controller.Update();
+
             if (!_found)
                 ControlCharacter();
+
             CharacterDrawer.Update(gameTime, _camera);
             MapDrawer.Update(gameTime);
             ObjectDrawer.UpdateObjects(gameTime, _camera);
