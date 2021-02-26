@@ -13,7 +13,6 @@ namespace LBMG.Object
 {
     public class GameObjectDrawer
     {
-
         private Vector2 _centerPos;
         private SpriteBatch _sb;
         private GameObjectSpriteFactory _spriteFactory;
@@ -60,7 +59,7 @@ namespace LBMG.Object
                 {
                     Vector2 cdp = Entity.GetEntityDrawingPosByCamera(obj, camera, _centerPos);
                     _sb.Draw(_spriteFactory.GetGameObjectSprite(obj.Sprite), cdp, obj.Rect, Color.White, 
-                        default, new Vector2(0, (float)obj.Rect.Height / 2), obj.DrawingScale, default, default);
+                        default, new Vector2(0, 0), obj.DrawingScale, default, default);
                 }
             }
 

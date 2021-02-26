@@ -22,8 +22,8 @@ namespace LBMG.Object
 
             foreach (var obj in Objects)
             {
-                if (newCoords.X >= obj.Coordinates.X && newCoords.Y >= obj.Coordinates.Y
-                    && newCoords.X <= obj.Coordinates.X + obj.CaseSize.Width && newCoords.Y <= obj.Coordinates.Y + obj.CaseSize.Height)
+                if (newCoords.X >= obj.Coordinates.X && newCoords.Y <= obj.Coordinates.Y
+                    && newCoords.X < obj.Coordinates.X + obj.CaseSize.Width && newCoords.Y > obj.Coordinates.Y - obj.CaseSize.Height)
                 { // When a player trigger it, we notify the object about
                     obj.OnTriggered(senderChar);
                 }

@@ -231,9 +231,9 @@ namespace LBMG.GamePlay
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
             MapDrawer.DrawBackLayer(gameTime, _camera, sb);
+            ObjectDrawer.DrawObjects(gameTime, _camera);
             CharacterDrawer.Draw(gameTime, _camera);
             MapDrawer.DrawFrontLayer(gameTime, _camera, sb);
-            ObjectDrawer.DrawObjects(gameTime, _camera);
             UiDrawer.Draw(sb, gameTime);
             _activePlayerTimerDrawer.Draw(gameTime, sb);
         }

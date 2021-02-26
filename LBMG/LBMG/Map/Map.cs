@@ -70,50 +70,49 @@ namespace LBMG.Map
                 __onetile = false;
 #endif
 
+            foreach (var dirsPiece in generatedMap.GetPieces())
+            {
+
+                Point tiledMapLocation = new Point(dirsPiece.Item1.Item1, dirsPiece.Item1.Item2);
+
 #if DEBUG
-            if (!__nomap)
-#endif
-                foreach (var dirsPiece in generatedMap.GetPieces())
+                if (__onetile)
                 {
-
-                    Point tiledMapLocation = new Point(dirsPiece.Item1.Item1, dirsPiece.Item1.Item2);
-
-#if DEBUG
-                    if (__onetile)
-                    {
-                        tiledMapLocation = new Point(0, 0);
-                        if (map.PiecesDictionary.ContainsKey(tiledMapLocation))
-                            break;
-                    }
+                    tiledMapLocation = new Point(0, 0);
+                    if (map.PiecesDictionary.ContainsKey(tiledMapLocation))
+                        break;
+                }
 #endif
 
-                    HashSet<Direction> directions = dirsPiece.Item2;
+                HashSet<Direction> directions = dirsPiece.Item2;
 
-                    var dtmeDictKey = directionsTMEquivalent.Keys
-                        .Where(x => directions.SetEquals(x))
-                        .FirstOrDefault();
+                var dtmeDictKey = directionsTMEquivalent.Keys
+                    .Where(x => directions.SetEquals(x))
+                    .FirstOrDefault();
 
-                    Piece piece;
+                Piece piece;
 #if DEBUG
-                    if (__onlycrossroad)
-                        piece = new Piece(tmFactory.GetTunnelMap(Tunnel.CrossRoad), tiledMapLocation.X, tiledMapLocation.Y);
-                    else
+                if (__onlycrossroad)
+                    piece = new Piece(tmFactory.GetTunnelMap(Tunnel.CrossRoad), tiledMapLocation.X, tiledMapLocation.Y);
+                else
 #endif
-                        piece = new Piece(tmFactory.GetTunnelMap(directionsTMEquivalent[dtmeDictKey]), tiledMapLocation.X, tiledMapLocation.Y);
+                    piece = new Piece(tmFactory.GetTunnelMap(directionsTMEquivalent[dtmeDictKey]), tiledMapLocation.X, tiledMapLocation.Y);
 
-
+#if DEBUG
+                if (!__nomap)
+#endif
                     map.PiecesDictionary.Add(tiledMapLocation, piece);
 
-                    // Add new spawn coords when we're on it
-                    if (generatedSpawnPositions.Contains(dirsPiece.Item1))
-                    {
-                        Point[] allPieceSpawnPointCoordinates = piece.TunnelMap.GetWalkableCases().ToArray();
-                        Point pieceSpawnPointCoordinates = allPieceSpawnPointCoordinates[random.Next(allPieceSpawnPointCoordinates.Length)];
-                        Point coords = new Point(tiledMapLocation.X * Constants.TiledMapSize, tiledMapLocation.Y * Constants.TiledMapSize) + pieceSpawnPointCoordinates;
-                        coords.Y *= -1;
-                        spawnCoordsList.Add(coords);
-                    }
+                // Add new spawn coords when we're on it
+                if (generatedSpawnPositions.Contains(dirsPiece.Item1))
+                {
+                    Point[] allPieceSpawnPointCoordinates = piece.TunnelMap.GetWalkableCases().ToArray();
+                    Point pieceSpawnPointCoordinates = allPieceSpawnPointCoordinates[random.Next(allPieceSpawnPointCoordinates.Length)];
+                    Point coords = new Point(tiledMapLocation.X * Constants.TiledMapSize, tiledMapLocation.Y * Constants.TiledMapSize) + pieceSpawnPointCoordinates;
+                    coords.Y *= -1;
+                    spawnCoordsList.Add(coords);
                 }
+            }
 
             map.SpawnCoordinates = spawnCoordsList.ToArray();
 
@@ -124,7 +123,7 @@ namespace LBMG.Map
         {
             Point fixedCoordinates = coordinates;
             fixedCoordinates.Y *= -1;
-            
+
             Vector2 pos = fixedCoordinates.ToVector2() / Constants.TiledMapSize;
 
             Point tiledMapLocation = new Point((int)Math.Round(pos.X, MidpointRounding.ToNegativeInfinity), (int)Math.Round(pos.Y, MidpointRounding.ToNegativeInfinity));
