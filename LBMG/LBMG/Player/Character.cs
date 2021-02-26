@@ -39,6 +39,7 @@ namespace LBMG.Player
         {
             Coordinates = GetFacingPoint();
             Moved?.Invoke(this, Coordinates);
+            Debug.WriteLine("Player pos: " + Coordinates);
         }
 
         public bool EncounteredCharacter(Character otherChar, int minDistance = 5)

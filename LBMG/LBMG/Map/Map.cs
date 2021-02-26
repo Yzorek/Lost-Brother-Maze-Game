@@ -26,6 +26,24 @@ namespace LBMG.Map
             PiecesDictionary = new Dictionary<Point, Piece>();
         }
 
+        public bool IsCollision(Point coordinates)
+        {
+            Point fixedCoordinates = coordinates;
+            fixedCoordinates.Y *= -1;
+
+            Vector2 pos = fixedCoordinates.ToVector2() / Constants.TiledMapSize;
+
+            Point tiledMapLocation = new Point((int)Math.Round(pos.X, MidpointRounding.ToNegativeInfinity), (int)Math.Round(pos.Y, MidpointRounding.ToNegativeInfinity));
+
+            if (!PiecesDictionary.ContainsKey(tiledMapLocation))
+                return false;
+
+            Point onPiecePos = fixedCoordinates - new Point(Constants.TiledMapSize * tiledMapLocation.X, Constants.TiledMapSize * tiledMapLocation.Y);
+
+            bool r = PiecesDictionary[tiledMapLocation].TunnelMap.IsCollision(onPiecePos);
+            return r;
+        }
+
         public static Map Create(Difficulty difficulty, TunnelMapFactory tmFactory)
         {
             Map map = new Map(difficulty);
@@ -108,8 +126,7 @@ namespace LBMG.Map
                 {
                     Point[] allPieceSpawnPointCoordinates = piece.TunnelMap.GetWalkableCases().ToArray();
                     Point pieceSpawnPointCoordinates = allPieceSpawnPointCoordinates[random.Next(allPieceSpawnPointCoordinates.Length)];
-                    Point coords = new Point(tiledMapLocation.X * Constants.TiledMapSize, tiledMapLocation.Y * Constants.TiledMapSize) + pieceSpawnPointCoordinates;
-                    coords.Y *= -1;
+                    Point coords = GetMapCoordsFromPieceCase(tiledMapLocation, pieceSpawnPointCoordinates);
                     spawnCoordsList.Add(coords);
                 }
             }
@@ -119,22 +136,11 @@ namespace LBMG.Map
             return map;
         }
 
-        public bool IsCollision(Point coordinates)
+        public static Point GetMapCoordsFromPieceCase(Point pieceLoc, Point caseCoords)
         {
-            Point fixedCoordinates = coordinates;
-            fixedCoordinates.Y *= -1;
-
-            Vector2 pos = fixedCoordinates.ToVector2() / Constants.TiledMapSize;
-
-            Point tiledMapLocation = new Point((int)Math.Round(pos.X, MidpointRounding.ToNegativeInfinity), (int)Math.Round(pos.Y, MidpointRounding.ToNegativeInfinity));
-
-            if (!PiecesDictionary.ContainsKey(tiledMapLocation))
-                return false;
-
-            Point onPiecePos = fixedCoordinates - new Point(Constants.TiledMapSize * tiledMapLocation.X, Constants.TiledMapSize * tiledMapLocation.Y);
-
-            bool r = PiecesDictionary[tiledMapLocation].TunnelMap.IsCollision(onPiecePos);
-            return r;
+            Point coords = new Point(pieceLoc.X * Constants.TiledMapSize, pieceLoc.Y * Constants.TiledMapSize) + caseCoords;
+            coords.Y *= -1;
+            return coords;
         }
     }
 

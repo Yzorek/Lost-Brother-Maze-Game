@@ -34,8 +34,9 @@ namespace LBMG.GamePlay
         ActivePlayerTimer _activePlayerTimer;
         ActivePlayerTimerDrawer _activePlayerTimerDrawer;
         TunnelMapFactory _tunnelMapFactory;
+        bool _found = false;
+        PortalSystem _portalSystem;
 
-        private bool _found = false;
         private int OtherPlayer => ActivePlayer == 0 ? 1 : 0;
 
         public List<Character> Characters { get; set; }
@@ -141,6 +142,8 @@ namespace LBMG.GamePlay
             Map = LBMG.Map.Map.Create(Difficulty.Easy, _tunnelMapFactory);
 
             MapDrawer.LoadMap(Map);
+            _portalSystem = new PortalSystem(GameObjectSet, Map);
+            _portalSystem.SpreadPortalsOnMap();
 
             // Spawn characters
             for (int i = 0; i < Characters.Count; i++)
@@ -149,12 +152,12 @@ namespace LBMG.GamePlay
                 Characters[i].SpawnAt(spawningCoords.X, spawningCoords.Y);
             }
 
-            { // TEMP
-                Portal prtl1 = new Portal("Portal", ObjectState.OnGround, Map.SpawnCoordinates[0] + new Point(-3, -2)),
-                                prtl2 = new Portal("Portal", ObjectState.OnGround, Map.SpawnCoordinates[1] + new Point(-3, -2), prtl1);
-                prtl1.DestinationPortal = prtl2;
-                GameObjectSet.Objects.AddRange(new[] { prtl1, prtl2 });
-            }
+            //{ // TEMP
+            //    Portal prtl1 = new Portal("Portal", ObjectState.OnGround, Map.SpawnCoordinates[0] + new Point(-3, -2)),
+            //                    prtl2 = new Portal("Portal", ObjectState.OnGround, Map.SpawnCoordinates[1] + new Point(-3, -2), prtl1);
+            //    prtl1.DestinationPortal = prtl2;
+            //    GameObjectSet.Objects.AddRange(new[] { prtl1, prtl2 });
+            //}
             
             ActivePlayer = 0;
 

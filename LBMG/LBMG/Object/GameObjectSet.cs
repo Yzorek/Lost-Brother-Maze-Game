@@ -30,6 +30,9 @@ namespace LBMG.Object
             }
         }
 
+        // Is collision ()
+        // On Player Clicked
+
         public void Update(GameTime gameTime, Camera<Vector2> camera)
         {
              // Not doing anything yet
