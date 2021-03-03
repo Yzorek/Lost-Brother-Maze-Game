@@ -17,6 +17,7 @@ namespace LBMG.Object
 
         public override float DrawingScale => 0.75f;
         public override Size CaseSize => new Size(1, 2);
+        public override ObjectTriggerApproach TriggerApproach => ObjectTriggerApproach.Walk;
 
         public Torch(string name, ObjectState state, Point coordinates, Character owner = null) : base(name, state, coordinates, owner)
         {

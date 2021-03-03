@@ -73,9 +73,7 @@ namespace LBMG.GamePlay
 
             GameObjectSet = new GameObjectSet();
             foreach (var @char in Characters)
-            {
                 @char.Moved += GameObjectSet.Character_Moved;
-            }
 
             InstanceDrawers();
 
@@ -158,6 +156,10 @@ namespace LBMG.GamePlay
             //    prtl1.DestinationPortal = prtl2;
             //    GameObjectSet.Objects.AddRange(new[] { prtl1, prtl2 });
             //}
+
+            // TEMP
+            Sign testsign = new Sign("Test Sign", ObjectState.OnGround, Map.SpawnCoordinates[0] + new Point(0, 3), UserInterface.DialogBox);
+            GameObjectSet.Objects.Add(testsign);
             
             ActivePlayer = 0;
 
@@ -188,6 +190,17 @@ namespace LBMG.GamePlay
             ActivePlayer = OtherPlayer;
         }
 
+        private void EnterPressed()
+        {
+            if (UserInterface.DialogBox.Active)
+                UserInterface.DialogBox.NextDialog();
+            else
+            {
+                Character character = Characters[ActivePlayer];
+                GameObjectSet.Character_Clicked(character, character.GetFacingPoint());
+            }
+        }
+        
         public void Update(GameTime gameTime, KeyboardStateExtended kse)
         {
             _activePlayerTimer.Update(gameTime);
@@ -206,16 +219,20 @@ namespace LBMG.GamePlay
                 TextBank.CurrentLanguage = Language.English;
 #endif
 
-            Controller.Update();
+            if (!UserInterface.DialogBox.Active)// Enter action already used with DialogBox
+                Controller.Update(kse);
 
-            if (!_found)
-                ControlCharacter();
+            if (kse.WasKeyJustDown(Keys.Enter))
+                EnterPressed();
+
+            ControlCharacter();
 
             CharacterDrawer.Update(gameTime, _camera);
             MapDrawer.Update(gameTime);
             ObjectDrawer.UpdateObjects(gameTime, _camera);
             UiDrawer.Update(gameTime);
 
+            // TODO Handle this in a separate class, like CharacterInteraction
             if (!_found && Characters[ActivePlayer].EncounteredCharacter(Characters[OtherPlayer]))
             {
                 _found = true;
@@ -223,9 +240,8 @@ namespace LBMG.GamePlay
                 // Then waiting for enter
             }
 
-            if (_found && kse.WasKeyJustUp(Keys.Enter))
+            if (_found && !UserInterface.DialogBox.Active)
             {  // Game finished
-                UserInterface.DialogBox.NextDialog();
                 QuitGameplayGoToMenu();
                 return;
             }
@@ -243,7 +259,9 @@ namespace LBMG.GamePlay
 
         private void ControlCharacter()
         {
-            if (Characters[ActivePlayer].IsMoving) return;
+            if (Characters[ActivePlayer].IsMoving) 
+                return;
+
             SendMove();
         }
 
@@ -254,7 +272,7 @@ namespace LBMG.GamePlay
                 Direction dir = Controller.Direction;
                 Characters[ActivePlayer].Direction = dir;
 
-                if (!Map.IsCollision(Characters[ActivePlayer].GetFacingPoint()))
+                if (!Map.IsCollision(Characters[ActivePlayer].GetFacingPoint(), GameObjectSet))
                 {
                     Characters[ActivePlayer].IsMoving = true;
                 }

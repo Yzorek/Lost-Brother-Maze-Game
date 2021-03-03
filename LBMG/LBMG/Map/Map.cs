@@ -1,4 +1,5 @@
-﻿using LBMG.Tools;
+﻿using LBMG.Object;
+using LBMG.Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,9 +16,7 @@ namespace LBMG.Map
     public class Map
     {
         public Dictionary<Point, Piece> PiecesDictionary { get; }
-
         public Difficulty Difficulty { get; }
-
         public Point[] SpawnCoordinates { get; private set; }
 
         protected Map(Difficulty difficulty)
@@ -26,8 +25,11 @@ namespace LBMG.Map
             PiecesDictionary = new Dictionary<Point, Piece>();
         }
 
-        public bool IsCollision(Point coordinates)
+        public bool IsCollision(Point coordinates, GameObjectSet goSet)
         {
+            if (goSet.IsCollision(coordinates))
+                return true;
+
             Point fixedCoordinates = coordinates;
             fixedCoordinates.Y *= -1;
 
@@ -40,8 +42,8 @@ namespace LBMG.Map
 
             Point onPiecePos = fixedCoordinates - new Point(Constants.TiledMapSize * tiledMapLocation.X, Constants.TiledMapSize * tiledMapLocation.Y);
 
-            bool r = PiecesDictionary[tiledMapLocation].TunnelMap.IsCollision(onPiecePos);
-            return r;
+            
+            return PiecesDictionary[tiledMapLocation].TunnelMap.IsCollision(onPiecePos);
         }
 
         public static Map Create(Difficulty difficulty, TunnelMapFactory tmFactory)
@@ -53,7 +55,7 @@ namespace LBMG.Map
             // Generating Map
             MapGenerator mg = new MapGenerator();
             GeneratedMap generatedMap = mg.GenerateMap(new Range<int>(2), 7, 1, 0);//(new Range<int>(2), 50, 1, 0);
-            var generatedSpawnPositions = generatedMap.GetNewSpawnLocations(2, 4); // TODO Fix so that it works all the time
+            var generatedSpawnPositions = generatedMap.GetNewSpawnLocations(2, 4);
 
             List<Point> spawnCoordsList = new List<Point>();
 
@@ -136,9 +138,9 @@ namespace LBMG.Map
             return map;
         }
 
-        public static Point GetMapCoordsFromPieceCase(Point pieceLoc, Point caseCoords)
+        public static Point GetMapCoordsFromPieceCase(Point pieceLoc, Point pieceCase)
         {
-            Point coords = new Point(pieceLoc.X * Constants.TiledMapSize, pieceLoc.Y * Constants.TiledMapSize) + caseCoords;
+            Point coords = new Point(pieceLoc.X * Constants.TiledMapSize, pieceLoc.Y * Constants.TiledMapSize) + pieceCase;
             coords.Y *= -1;
             return coords;
         }

@@ -5,12 +5,14 @@ using System.Linq;
 using System.Text;
 using LBMG.Tools;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Input;
 
 namespace LBMG.UI
 {
     public class DialogBox
     {
-        public bool Visible { get; set; }
+        public bool Active { get; set; }
 
         public List<string> TextWritten { get; set; }
 
@@ -22,11 +24,11 @@ namespace LBMG.UI
 
         public int CharWidth { get; set; }
 
-        public int DisplaySpeed { get; set; }               //TODO
+        public int DisplaySpeed { get; set; }
 
         public DialogBox(string font, Point size)
         {
-            Visible = false;
+            Active = false;
             FontPath = font;
             Size = size;
             CharWidth = 12;
@@ -34,11 +36,11 @@ namespace LBMG.UI
 
         public void Write(int keyOfTextToDisplay, string[] args)
         {
-            if (Visible)
+            if (Active)
                 return;
 
             TextWritten = new List<string>();
-            Visible = true;
+            Active = true;
 
             List<string> texts = WrapText(string.Format(TextBank.GetText(keyOfTextToDisplay), args));
 
@@ -51,11 +53,11 @@ namespace LBMG.UI
 
         public void Write(List<int> keysOfTextToDisplay)
         {
-            if (Visible)
+            if (Active)
                 return;
 
             TextWritten = new List<string>();
-            Visible = true;
+            Active = true;
 
             foreach (var key in keysOfTextToDisplay)
             {
@@ -71,11 +73,11 @@ namespace LBMG.UI
 
         public void Write(int keyOfTextToDisplay)
         {
-            if (Visible)
+            if (Active)
                 return;
 
             TextWritten = new List<string>();
-            Visible = true;
+            Active = true;
 
             List<string> texts = WrapText(TextBank.GetText(keyOfTextToDisplay));
 
@@ -88,7 +90,7 @@ namespace LBMG.UI
 
         public void NextDialog()
         {
-            if (Visible == false)
+            if (!Active)
                 return;
 
             if (CurrentTextIndex == TextWritten.Count - 1)
@@ -104,7 +106,7 @@ namespace LBMG.UI
         public void EndDialog()
         {
             CurrentTextIndex = 0;
-            Visible = false;
+            Active = false;
             TextWritten.Clear();
             Debug.WriteLine("Dialog end");
         }

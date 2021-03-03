@@ -15,11 +15,12 @@ namespace LBMG.Object
         public Point Coordinates { get; set; }
         public ObjectState State { get; set; }
         public Character Owner { get; set; }
-
         public Rectangle Rect { get; protected set; }
         public GameObjectSprite Sprite { get; protected set; }
+
         public abstract float DrawingScale { get; }
         public abstract Size CaseSize { get; }
+        public abstract ObjectTriggerApproach TriggerApproach { get; }
 
         public GameObject(string name, ObjectState state, Point coordinates, Character owner = null)
         {
@@ -76,5 +77,10 @@ namespace LBMG.Object
         OnGround,
         InHand,
         InInventory
+    }
+
+    public enum ObjectTriggerApproach
+    {
+        Walk, Click
     }
 }

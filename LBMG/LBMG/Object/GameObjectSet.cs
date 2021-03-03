@@ -19,19 +19,46 @@ namespace LBMG.Object
         public void Character_Moved(object sender, Point newCoords)
         {
             var senderChar = sender as Character;
+            GameObject gameObject = GetGameObjectCoveringCoordinates(newCoords);
 
-            foreach (var obj in Objects)
+            if (gameObject != null && gameObject.TriggerApproach == ObjectTriggerApproach.Walk)
             {
-                if (newCoords.X >= obj.Coordinates.X && newCoords.Y <= obj.Coordinates.Y
-                    && newCoords.X < obj.Coordinates.X + obj.CaseSize.Width && newCoords.Y > obj.Coordinates.Y - obj.CaseSize.Height)
-                { // When a player trigger it, we notify the object about
-                    obj.OnTriggered(senderChar);
-                }
+                gameObject.OnTriggered(senderChar);
             }
         }
 
-        // Is collision ()
-        // On Player Clicked
+        public void Character_Clicked(object sender, Point towardCoords)
+        {
+            var senderChar = sender as Character;
+            GameObject gameObject = GetGameObjectCoveringCoordinates(towardCoords);
+
+            if (gameObject != null && gameObject.TriggerApproach == ObjectTriggerApproach.Click)
+            {
+                gameObject.OnTriggered(senderChar);
+            }
+        }
+
+        public bool IsCollision(Point coordinates)
+        {
+            GameObject collidingGameObj = GetGameObjectCoveringCoordinates(coordinates);
+
+            return collidingGameObj != null && collidingGameObj.TriggerApproach == ObjectTriggerApproach.Click;
+        }
+
+        private GameObject GetGameObjectCoveringCoordinates(Point coordinates)
+        {
+            foreach (var obj in Objects)
+            {
+                if (coordinates.X >= obj.Coordinates.X && coordinates.Y <= obj.Coordinates.Y
+                    && coordinates.X < obj.Coordinates.X + obj.CaseSize.Width && coordinates.Y > obj.Coordinates.Y - obj.CaseSize.Height)
+                { // When a player trigger it, we notify the object about
+                    return obj;
+                }
+            }
+
+            return null;
+        }
+
 
         public void Update(GameTime gameTime, Camera<Vector2> camera)
         {

@@ -14,8 +14,9 @@ namespace LBMG.Object
         private float _counter;
 
         public Portal DestinationPortal { get; set; }
-        public override float DrawingScale => 1.5F;
+        public override float DrawingScale => .9f;
         public override Size CaseSize => new Size(3, 3);
+        public override ObjectTriggerApproach TriggerApproach => ObjectTriggerApproach.Walk;
 
         public Portal(string name, ObjectState state, Point coordinates, Portal destinationPortal = null, Character owner = null) : base(name, state, coordinates, owner)
         {

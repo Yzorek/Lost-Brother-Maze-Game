@@ -9,7 +9,8 @@ namespace LBMG.Object
     public enum GameObjectSprite
     {
         TorchLightened,
-        Portal
+        Portal,
+        Sign
     }
 
     public class GameObjectSpriteFactory
@@ -22,6 +23,7 @@ namespace LBMG.Object
             {
                 { GameObjectSprite.TorchLightened, content.Load<Texture2D>("Objects/torch_lightened") },
                 { GameObjectSprite.Portal, content.Load<Texture2D>("Objects/portal") },
+                { GameObjectSprite.Sign, content.Load<Texture2D>("Objects/sign") }
             };
         }
 

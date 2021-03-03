@@ -54,7 +54,7 @@ namespace LBMG.UI
 
         public void Draw(SpriteBatch sb, GameTime gameTime/*, Matrix transformMatrix*/)
         {
-            if (DialogBox.Visible)
+            if (DialogBox.Active)
             {
                 sb.Draw(_boxTexture, _boxPos, _rectangle, Color.White);
                 sb.DrawString(_font, DialogBox.TextWritten[DialogBox.CurrentTextIndex], _textPos, Color.White);

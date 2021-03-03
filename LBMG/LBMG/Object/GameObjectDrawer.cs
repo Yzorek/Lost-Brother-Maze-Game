@@ -50,14 +50,16 @@ namespace LBMG.Object
 
         public void DrawObjects(GameTime gameTime, Camera<Vector2> camera)
         {
-            _sb.Begin(samplerState: SamplerState.PointClamp);
+            Matrix mat = camera.GetViewMatrix();
+            mat.Translation += new Vector3(_centerPos, 0);
+            _sb.Begin(samplerState: SamplerState.PointClamp, transformMatrix: mat);
 
             for (int i = 0; i < _set.Objects.Count; i++)
             {
                 GameObject obj = _set.Objects[i];
                 if (_set.Objects[i].State == ObjectState.OnGround)
                 {
-                    Vector2 cdp = Entity.GetEntityDrawingPosByCamera(obj, camera, _centerPos);
+                    Vector2 cdp = Entity.GetPixelPosFromCoordinates(obj.Coordinates);
                     _sb.Draw(_spriteFactory.GetGameObjectSprite(obj.Sprite), cdp, obj.Rect, Color.White, 
                         default, new Vector2(0, 0), obj.DrawingScale, default, default);
                 }

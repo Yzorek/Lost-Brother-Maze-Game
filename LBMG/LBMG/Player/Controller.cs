@@ -4,6 +4,7 @@ using System.Text;
 using LBMG.Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Input;
 
 namespace LBMG.Player
 {
@@ -19,25 +20,23 @@ namespace LBMG.Player
             IsKeyPressed = false;
         }
 
-        public void Update()
+        public void Update(KeyboardStateExtended kse)
         {
-            KeyboardState ks = Keyboard.GetState();
-
-            if (ks.IsKeyDown(Keys.Left))
+            if (kse.IsKeyDown(Keys.Left))
                 Direction = Direction.Left;
-            else if (ks.IsKeyDown(Keys.Up))
+            else if (kse.IsKeyDown(Keys.Up))
                 Direction = Direction.Top;
-            else if (ks.IsKeyDown(Keys.Right))
+            else if (kse.IsKeyDown(Keys.Right))
                 Direction = Direction.Right;
-            else if (ks.IsKeyDown(Keys.Down))
+            else if (kse.IsKeyDown(Keys.Down))
                 Direction = Direction.Bottom;
-            else if (ks.IsKeyDown(Keys.Q))
+            else if (kse.IsKeyDown(Keys.Q))
                 Direction = Direction.Left;
-            else if (ks.IsKeyDown(Keys.Z))
+            else if (kse.IsKeyDown(Keys.Z))
                 Direction = Direction.Top;
-            else if (ks.IsKeyDown(Keys.D))
+            else if (kse.IsKeyDown(Keys.D))
                 Direction = Direction.Right;
-            else if (ks.IsKeyDown(Keys.S))
+            else if (kse.IsKeyDown(Keys.S))
                 Direction = Direction.Bottom;
             else
             {
