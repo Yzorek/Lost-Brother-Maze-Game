@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using LBMG.Tools;
 using Microsoft.Xna.Framework;
@@ -10,6 +11,8 @@ namespace LBMG.Player
 {
     public class Controller
     {
+        private List<Direction> _pressedDirs = new List<Direction>();
+
         public Direction Direction { get; private set; }
 
         public bool IsKeyPressed { get; private set; }
@@ -22,28 +25,31 @@ namespace LBMG.Player
 
         public void Update(KeyboardStateExtended kse)
         {
-            if (kse.IsKeyDown(Keys.Left))
-                Direction = Direction.Left;
-            else if (kse.IsKeyDown(Keys.Up))
-                Direction = Direction.Top;
-            else if (kse.IsKeyDown(Keys.Right))
-                Direction = Direction.Right;
-            else if (kse.IsKeyDown(Keys.Down))
-                Direction = Direction.Bottom;
-            else if (kse.IsKeyDown(Keys.Q))
-                Direction = Direction.Left;
-            else if (kse.IsKeyDown(Keys.Z))
-                Direction = Direction.Top;
-            else if (kse.IsKeyDown(Keys.D))
-                Direction = Direction.Right;
-            else if (kse.IsKeyDown(Keys.S))
-                Direction = Direction.Bottom;
-            else
+            AssignPressedKeys(kse);
+
+            IsKeyPressed = _pressedDirs.Count != 0;
+
+            if (IsKeyPressed)
+                Direction = _pressedDirs.Last();
+        }
+
+        private void AssignPressedKeys(KeyboardStateExtended kse)
+        {
+            var keysDirs = new Dictionary<Keys, Direction>
             {
-                IsKeyPressed = false;
-                return;
+                { Keys.Down, Direction.Bottom },
+                { Keys.Up, Direction.Top },
+                { Keys.Left, Direction.Left },
+                { Keys.Right, Direction.Right }
+            };
+
+            foreach (Keys key in keysDirs.Keys)
+            {
+                if (kse.WasKeyJustUp(key))
+                    _pressedDirs.Add(keysDirs[key]);
+                else if (kse.WasKeyJustDown(key))
+                    _pressedDirs.Remove(keysDirs[key]);
             }
-            IsKeyPressed = true;
         }
     }
 }
