@@ -22,7 +22,7 @@ namespace LBMG.UI
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
             GraphicsDevice gd = sb.GraphicsDevice;
-            string drawingTime =  _activePlayerTimer.ElapsedTime.ToString(TimeSpanFormat);
+            string drawingTime = _activePlayerTimer.RemainingTime.ToString(TimeSpanFormat);
             Vector2 position = new Vector2(gd.Viewport.Width - 57, 5);
             sb.DrawString(_font, drawingTime, position, Color.DodgerBlue);
         }

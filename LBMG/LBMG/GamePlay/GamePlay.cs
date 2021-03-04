@@ -61,11 +61,11 @@ namespace LBMG.GamePlay
                 new Character("Fred", 160)
             };
 
-            float minutsTime = 1;
+            double minutsTime = 1;
 #if DEBUG
             minutsTime = 10;
 #endif
-            _activePlayerTimer = new ActivePlayerTimer(minutsTime * 60 * 1000);
+            _activePlayerTimer = new ActivePlayerTimer(TimeSpan.FromMinutes(minutsTime));
             _activePlayerTimer.ChangeActivePlayer += ActivePlayerTimer_ChangeActivePlayer;
 
             Controller = new Controller();

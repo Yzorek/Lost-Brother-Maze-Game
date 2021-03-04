@@ -11,14 +11,14 @@ namespace LBMG.UI
     {
         public event EventHandler ChangeActivePlayer;
 
-        private Stopwatch _sw = new Stopwatch();
-        private double _millisecInterval;
+        private readonly TimeSpan _intervalTimeSpan;
+        private readonly Stopwatch _sw = new Stopwatch();
 
-        public TimeSpan ElapsedTime => _sw.Elapsed;
+        public TimeSpan RemainingTime => _intervalTimeSpan - _sw.Elapsed;
 
-        public ActivePlayerTimer(double millisecInterval)
+        public ActivePlayerTimer(TimeSpan intervalTs)
         {
-            _millisecInterval = millisecInterval;
+            _intervalTimeSpan = intervalTs;
         }
 
         public void Start()
@@ -34,16 +34,11 @@ namespace LBMG.UI
 
         public void Update(GameTime gameTime)
         {
-            if (_sw.Elapsed.TotalMilliseconds > _millisecInterval)
+            if (RemainingTime.TotalSeconds <= 1)
             {
                 ChangeActivePlayer?.Invoke(this, EventArgs.Empty);
                 _sw.Restart();
             }
-        }
-
-        public void Draw(GameTime gameTime)
-        {
-
         }
     }
 }
