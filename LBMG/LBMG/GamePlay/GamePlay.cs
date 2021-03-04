@@ -150,6 +150,16 @@ namespace LBMG.GamePlay
                 Characters[i].SpawnAt(spawningCoords.X, spawningCoords.Y);
             }
 
+#if DEBUG
+            bool __spawnNear = false;
+
+            if (__spawnNear)
+            {
+                Characters[0].SpawnAt(16, -16);
+                Characters[1].SpawnAt(17, -20);
+            }
+#endif
+
             //{ // TEMP
             //    Portal prtl1 = new Portal("Portal", ObjectState.OnGround, Map.SpawnCoordinates[0] + new Point(-3, -2)),
             //                    prtl2 = new Portal("Portal", ObjectState.OnGround, Map.SpawnCoordinates[1] + new Point(-3, -2), prtl1);
@@ -158,9 +168,9 @@ namespace LBMG.GamePlay
             //}
 
             // TEMP
-            Sign testsign = new Sign("Test Sign", ObjectState.OnGround, Map.SpawnCoordinates[0] + new Point(0, 3), UserInterface.DialogBox);
+            Sign testsign = new Sign("Test Sign", ObjectState.OnGround, Characters[0].Coordinates + new Point(0, 3), UserInterface.DialogBox);
             GameObjectSet.Objects.Add(testsign);
-            
+
             ActivePlayer = 0;
 
             Started = true;
@@ -200,7 +210,7 @@ namespace LBMG.GamePlay
                 GameObjectSet.Character_Clicked(character, character.GetFacingPoint());
             }
         }
-        
+
         public void Update(GameTime gameTime, KeyboardStateExtended kse)
         {
             _activePlayerTimer.Update(gameTime);
@@ -208,24 +218,26 @@ namespace LBMG.GamePlay
 #if DEBUG
             if (kse.WasKeyJustUp(Keys.C))
                 ActivePlayer = OtherPlayer;
-            if (kse.WasKeyJustUp(Keys.L))  
+            if (kse.WasKeyJustUp(Keys.L))
             {
                 //UserInterface.DialogBox.Write(5, new[] { "sud", "est" });
                 UserInterface.DialogBox.Write(3);
             }
-            if (kse.WasKeyJustUp(Keys.N))          
+            if (kse.WasKeyJustUp(Keys.N))
                 UserInterface.DialogBox.NextDialog();
-            if (kse.WasKeyJustUp(Keys.T)) 
+            if (kse.WasKeyJustUp(Keys.T))
                 TextBank.CurrentLanguage = Language.English;
 #endif
 
+            Controller.Update(kse);
+
             if (!UserInterface.DialogBox.Active)// Enter action already used with DialogBox
-                Controller.Update(kse);
+            {
+                ControlCharacter();
+            }
 
             if (kse.WasKeyJustDown(Keys.Enter))
                 EnterPressed();
-
-            ControlCharacter();
 
             CharacterDrawer.Update(gameTime, _camera);
             MapDrawer.Update(gameTime);
@@ -259,7 +271,7 @@ namespace LBMG.GamePlay
 
         private void ControlCharacter()
         {
-            if (Characters[ActivePlayer].IsMoving) 
+            if (Characters[ActivePlayer].IsMoving)
                 return;
 
             SendMove();
