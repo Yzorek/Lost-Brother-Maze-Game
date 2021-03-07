@@ -18,7 +18,8 @@ namespace LBMG.Object
         public Rectangle Rect { get; protected set; }
         public GameObjectSprite Sprite { get; protected set; }
 
-        public abstract float DrawingScale { get; }
+        public virtual float DrawingScale { get => 1f; }
+        public virtual Point RectangleOffset { get => Point.Zero; }
         public abstract Size CaseSize { get; }
         public abstract ObjectTriggerApproach TriggerApproach { get; }
 

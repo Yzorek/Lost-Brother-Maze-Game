@@ -37,7 +37,7 @@ namespace LBMG.Player
 
         public void Move()
         {
-            Coordinates = GetFacingPoint();
+            Coordinates = GetFacingCoordinates();
             Moved?.Invoke(this, Coordinates);
             Debug.WriteLine("Player pos: " + Coordinates);
         }
@@ -76,30 +76,34 @@ namespace LBMG.Player
             return false;
         }
 
-        public Point GetFacingPoint()
+        public Point GetFacingCoordinates()
         {
-            int x = Coordinates.X;
-            int y = Coordinates.Y;
+            return Coordinates + GetFacingAttr();
+        }
 
-            x += Direction switch
+        public Point GetBehindCoordinates()
+        {
+            return Coordinates - GetFacingAttr();
+        }
+
+        private Point GetFacingAttr()
+            => new Point(Direction switch
             {
                 Direction.Left => -1,
                 Direction.Top => 0,
                 Direction.Right => 1,
                 Direction.Bottom => 0,
                 _ => throw new ArgumentOutOfRangeException()
-            };
-
-            y += Direction switch
+            },
+            Direction switch
             {
-                Direction.Left => 0,
-                Direction.Top => 1,
-                Direction.Right => 0,
-                Direction.Bottom => -1,
-                _ => throw new ArgumentOutOfRangeException()
-            };
+                 Direction.Left => 0,
+                 Direction.Top => 1,
+                 Direction.Right => 0,
+                 Direction.Bottom => -1,
+                 _ => throw new ArgumentOutOfRangeException()
+                }
+            );
 
-            return new Point(x, y);
-        }
     }
 }

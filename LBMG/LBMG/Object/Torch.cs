@@ -15,13 +15,14 @@ namespace LBMG.Object
 
         public bool IsBurning { get; set; }
 
-        public override float DrawingScale => 0.75f;
+        public override float DrawingScale => .55f;
+        public override Point RectangleOffset => new Point(0, 68);
         public override Size CaseSize => new Size(1, 2);
         public override ObjectTriggerApproach TriggerApproach => ObjectTriggerApproach.Walk;
 
         public Torch(string name, ObjectState state, Point coordinates, Character owner = null) : base(name, state, coordinates, owner)
         {
-            Rect = Constants.TorchRect();
+            Rect = new Rectangle(0, 0, 37, 125);
             Sprite = GameObjectSprite.TorchLightened;
             IsBurning = false;
             _counter = 0;

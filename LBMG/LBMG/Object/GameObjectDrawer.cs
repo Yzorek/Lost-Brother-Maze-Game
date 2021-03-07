@@ -60,8 +60,9 @@ namespace LBMG.Object
                 if (_set.Objects[i].State == ObjectState.OnGround)
                 {
                     Vector2 cdp = Entity.GetPixelPosFromCoordinates(obj.Coordinates);
+                    Vector2 origin = new Vector2(obj.RectangleOffset.X, obj.RectangleOffset.Y);
                     _sb.Draw(_spriteFactory.GetGameObjectSprite(obj.Sprite), cdp, obj.Rect, Color.White, 
-                        default, new Vector2(0, 0), obj.DrawingScale, default, default);
+                        default, origin, obj.DrawingScale, SpriteEffects.None, default);
                 }
             }
 

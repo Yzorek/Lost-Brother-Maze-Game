@@ -36,6 +36,7 @@ namespace LBMG.GamePlay
         TunnelMapFactory _tunnelMapFactory;
         bool _found = false;
         PortalSystem _portalSystem;
+        TorchSystem _torchSystem;
 
         private int OtherPlayer => ActivePlayer == 0 ? 1 : 0;
 
@@ -100,17 +101,17 @@ namespace LBMG.GamePlay
             });
 
             ObjectDrawer = new GameObjectDrawer(GameObjectSet);
-            GameObjectSet.Objects.AddRange(
-                new List<GameObject> // TEMP
-            {
-                //new Portal("Portal", ObjectState.OnGround, new Point(16, -10)),
-                //new Portal("Portal", ObjectState.OnGround, new Point(10, -20)),
-                new Torch("Torch", ObjectState.OnGround, new Point(16, -16)),
-                new Torch("Torch", ObjectState.OnGround, new Point(32, -16)),
-                new Torch("Torch", ObjectState.OnGround, new Point(48, -16)),
-                new Torch("Torch", ObjectState.OnGround, new Point(64, -16)),
-                new Torch("Torch", ObjectState.OnGround, new Point(80, -16)),
-            });
+            //GameObjectSet.Objects.AddRange(
+            //    new List<GameObject> // TEMP
+            //{
+            //    //new Portal("Portal", ObjectState.OnGround, new Point(16, -10)),
+            //    //new Portal("Portal", ObjectState.OnGround, new Point(10, -20)),
+            //    new Torch("Torch", ObjectState.OnGround, new Point(16, -16)),
+            //    new Torch("Torch", ObjectState.OnGround, new Point(32, -16)),
+            //    new Torch("Torch", ObjectState.OnGround, new Point(48, -16)),
+            //    new Torch("Torch", ObjectState.OnGround, new Point(64, -16)),
+            //    new Torch("Torch", ObjectState.OnGround, new Point(80, -16)),
+            //});
         }
 
         public void Initialize(GraphicsDevice gd, ContentManager cm, GameWindow window)
@@ -142,6 +143,8 @@ namespace LBMG.GamePlay
             MapDrawer.LoadMap(Map);
             _portalSystem = new PortalSystem(GameObjectSet, Map);
             _portalSystem.SpreadPortalsOnMap();
+
+            _torchSystem = new TorchSystem(GameObjectSet);
 
             // Spawn characters
             for (int i = 0; i < Characters.Count; i++)
@@ -207,7 +210,7 @@ namespace LBMG.GamePlay
             else
             {
                 Character character = Characters[ActivePlayer];
-                GameObjectSet.Character_Clicked(character, character.GetFacingPoint());
+                GameObjectSet.Character_Clicked(character, character.GetFacingCoordinates());
             }
         }
 
@@ -241,6 +244,7 @@ namespace LBMG.GamePlay
 
             CharacterDrawer.Update(gameTime, _camera);
             MapDrawer.Update(gameTime);
+            _torchSystem.Update(gameTime, kse, Characters[ActivePlayer]);
             ObjectDrawer.UpdateObjects(gameTime, _camera);
             UiDrawer.Update(gameTime);
 
@@ -284,7 +288,7 @@ namespace LBMG.GamePlay
                 Direction dir = Controller.Direction;
                 Characters[ActivePlayer].Direction = dir;
 
-                if (!Map.IsCollision(Characters[ActivePlayer].GetFacingPoint(), GameObjectSet))
+                if (!Map.IsCollision(Characters[ActivePlayer].GetFacingCoordinates(), GameObjectSet))
                 {
                     Characters[ActivePlayer].IsMoving = true;
                 }

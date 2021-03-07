@@ -16,6 +16,7 @@ namespace LBMG.Object
 
         public override float DrawingScale => 1;
         public override Size CaseSize => new Size(2, 3);
+        public override Point RectangleOffset => new Point(0, 32);
         public override ObjectTriggerApproach TriggerApproach => ObjectTriggerApproach.Click;
 
         public Sign(string name, ObjectState state, Point coordinates, DialogBox dialogBox, Character owner = null) : base(name, state, coordinates, owner)
