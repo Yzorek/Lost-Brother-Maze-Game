@@ -44,7 +44,7 @@ namespace LBMG.Object
         {
             for (int i = 0; i < _set.Objects.Count; i++)
             {
-                _set.Objects[i].UpdateRectangle(gameTime, camera);
+                _set.Objects[i].Update(gameTime, camera);
             }
         }
 

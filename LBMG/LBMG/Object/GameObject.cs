@@ -69,7 +69,7 @@ namespace LBMG.Object
         }
 
         // DOLATER Here a dictionary, Prefer a handled in drawer system than this 
-        public abstract void UpdateRectangle(GameTime gameTime, Camera<Vector2> camera);
+        public abstract void Update(GameTime gameTime, Camera<Vector2> camera);
     }
 
 

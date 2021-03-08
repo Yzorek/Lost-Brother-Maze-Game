@@ -50,7 +50,7 @@ namespace LBMG.Object
             base.Drop();
         }
 
-        public override void UpdateRectangle(GameTime gameTime, Camera<Vector2> camera)
+        public override void Update(GameTime gameTime, Camera<Vector2> camera)
         {
             _counter += 2 * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 

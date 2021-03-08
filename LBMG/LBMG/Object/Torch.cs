@@ -12,11 +12,13 @@ namespace LBMG.Object
     public class Torch : GameObject
     {
         private float _counter;
+        private TimeSpan? _litSince;
+        private TimeSpan _burningTime;
 
         public bool IsBurning { get; set; }
 
         public override float DrawingScale => .55f;
-        public override Point RectangleOffset => new Point(0, 68);
+        public override Point RectangleOffset => new Point(0, 28);
         public override Size CaseSize => new Size(1, 2);
         public override ObjectTriggerApproach TriggerApproach => ObjectTriggerApproach.Walk;
 
@@ -26,6 +28,7 @@ namespace LBMG.Object
             Sprite = GameObjectSprite.TorchLightened;
             IsBurning = false;
             _counter = 0;
+            _burningTime = TimeSpan.FromMinutes(1); // Lightened for 3 minutes
         }
 
         public override void Take(Character character)
@@ -43,13 +46,24 @@ namespace LBMG.Object
             base.Drop();
         }
 
-        public override void UpdateRectangle(GameTime gameTime, Camera<Vector2> camera)
+        public override void Update(GameTime gameTime, Camera<Vector2> camera)
         {
+            if (State == ObjectState.OnGround)
+            {
+                _litSince ??= gameTime.TotalGameTime;
+                IsBurning = gameTime.TotalGameTime - _litSince <= _burningTime;
+            }
+            else
+            {
+                _litSince = null;
+                IsBurning = false;
+            }
+
             _counter += 2 * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             if (_counter > 1800)
                 _counter = 0;
-            
+
             Rectangle newRect = Rect;
             if (_counter > 0 && _counter <= 200)
                 newRect.Location = new Point(37, 0);
