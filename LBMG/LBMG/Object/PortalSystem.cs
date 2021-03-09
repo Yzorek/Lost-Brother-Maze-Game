@@ -38,7 +38,7 @@ namespace LBMG.Object
 
             IEnumerable<Point> coordinatesToLayPortals = tookPieces.Select(piece =>
                {
-                   var wk = piece.TunnelMap.GetWalkableCases();
+                   var wk = piece.TunnelMap.GetPortalCases();
                    return Map.Map.GetMapCoordsFromPieceCase(piece.Location, wk.ElementAt(rnd.Next(wk.Count())));
                });
 

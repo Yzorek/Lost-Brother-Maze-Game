@@ -46,6 +46,10 @@ namespace LBMG.Map
             return PiecesDictionary[tiledMapLocation].TunnelMap.IsCollision(onPiecePos);
         }
 
+        public  IEnumerable<Point> GetCases(Func<TunnelMap, IEnumerable<Point>> getCasesFunc) => PiecesDictionary.Values
+                .SelectMany(x => getCasesFunc(x.TunnelMap)
+                    .Select(y => GetMapCoordsFromPieceCase(x.Location, y)));
+
         public static Map Create(Difficulty difficulty, TunnelMapFactory tmFactory)
         {
             Map map = new Map(difficulty);
@@ -86,7 +90,7 @@ namespace LBMG.Map
 
 #if DEBUG  // For clean tests sometimes
             bool __nomap = false,
-                __onlycrossroad = false,
+                __onlycrossroad = true,
                 __onetile = false;
 #endif
 

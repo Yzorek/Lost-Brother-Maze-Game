@@ -419,4 +419,10 @@
   <object id="71" x="240" y="384" width="48" height="128"/>
   <object id="72" x="288" y="416" width="16" height="96"/>
  </objectgroup>
+ <group id="21" name="Ops">
+ <objectgroup color="#aa00ff" id="24" name="Portal Layer">
+  </objectgroup>
+  <objectgroup color="#dddd00" id="23" name="WS Layer">
+  </objectgroup>
+</group>
 </map>

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended.Tiled;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace LBMG.Map
@@ -12,6 +13,8 @@ namespace LBMG.Map
         public TiledMap TiledMap { get; }
         public TiledMapObjectLayer CollisionLayer { get; }
         public TiledMapObjectLayer WalkableLayer { get; }
+        public TiledMapObjectLayer PortalLayer { get; }
+        public TiledMapObjectLayer WoodenSticksLayer { get; }
         public TiledMapLayer BackLayer { get; }
         public TiledMapLayer FrontLayer { get; }
 
@@ -19,32 +22,12 @@ namespace LBMG.Map
         {
             TiledMap = tiledMap ?? throw new ArgumentNullException(nameof(tiledMap));
 
+            // Fill properties from found layers
             foreach (TiledMapLayer tml in TiledMap.Layers)
             {
                 string[] name = tml.Name.ToLower().Split(' ', StringSplitOptions.None);
 
                 if (name.Length == 2
-                    && name[0] == "collision"
-                    && name[1] == "layer"
-                    && tml is TiledMapObjectLayer collisionLayer)
-                {
-                    CollisionLayer = collisionLayer;
-                }
-                else if (name.Length == 2
-                    && name[0] == "spawn"
-                    && name[1] == "layer"
-                    && tml is TiledMapObjectLayer spawnLayer)
-                {
-                    // Deprecated
-                }
-                else if (name.Length == 2
-                   && name[0] == "walkable"
-                   && name[1] == "layer"
-                   && tml is TiledMapObjectLayer walkableLayer)
-                {
-                    WalkableLayer = walkableLayer;
-                }
-                else if (name.Length == 2
                     && name[0] == "layer"
                     && int.TryParse(name[1], out int layerNumber))
                 {
@@ -53,6 +36,30 @@ namespace LBMG.Map
                     else if (layerNumber == 2)
                         FrontLayer = tml;
                 }
+                else if (name[0] == "ops" && tml is TiledMapGroupLayer tmgl)
+                {
+                    foreach (TiledMapObjectLayer tmol in tmgl.Layers)
+                    {
+                        string[] opName = tmol.Name.ToLower().Split(' ', StringSplitOptions.None);
+                        switch (opName[0])
+                        {
+                            case "walkable":
+                                WalkableLayer = tmol;
+                                break;
+                            case "collision":
+                                CollisionLayer = tmol;
+                                break;
+                            case "spawn":
+                                break; // Deprecated
+                            case "portal":
+                                PortalLayer = tmol;
+                                break;
+                            case "ws":
+                                WoodenSticksLayer = tmol;
+                                break;
+                        }
+                    }
+                }
             }
         }
 
@@ -60,7 +67,7 @@ namespace LBMG.Map
         {
             foreach (TiledMapObject tmObj in WalkableLayer.Objects)
             {
-                // TODO Accurate player coords.
+                // TODO Accurate player coords. EDIT ???
                 Point coords = (tmObj.Position / Constants.TileSize).ToPoint();
                 Point oppCorner = ((tmObj.Position + (Vector2)tmObj.Size) / Constants.TileSize).ToPoint();
 
@@ -74,6 +81,16 @@ namespace LBMG.Map
 
             }
             //return _walkableLayer.Objects.Select(tmObj => (tmObj.Position / Constants.TileSize).ToPoint());
+        }
+
+        public IEnumerable<Point> GetPortalCases()
+        {
+            return PortalLayer.Objects.Select(tmObj => (tmObj.Position / Constants.TileSize).ToPoint());
+        }
+
+        public IEnumerable<Point> GetWoodenSticksCases()
+        {
+            return WoodenSticksLayer.Objects.Select(tmObj => (tmObj.Position / Constants.TileSize).ToPoint());
         }
 
         public bool IsCollision(Point onPieceCoordinates)

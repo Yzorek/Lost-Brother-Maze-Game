@@ -144,7 +144,8 @@ namespace LBMG.GamePlay
             _portalSystem = new PortalSystem(GameObjectSet, Map);
             _portalSystem.SpreadPortalsOnMap();
 
-            _torchSystem = new TorchSystem(GameObjectSet);
+            _torchSystem = new TorchSystem(GameObjectSet, Map);
+            _torchSystem.SpreadWoodenSticksOnMap();
 
             // Spawn characters
             for (int i = 0; i < Characters.Count; i++)
@@ -172,7 +173,6 @@ namespace LBMG.GamePlay
 
             // TEMP
             Sign testsign = new Sign("Test Sign", ObjectState.OnGround, Characters[0].Coordinates + new Point(0, 3), UserInterface.DialogBox);
-            GameObjectSet.Objects.Add(testsign);
 
             ActivePlayer = 0;
 
