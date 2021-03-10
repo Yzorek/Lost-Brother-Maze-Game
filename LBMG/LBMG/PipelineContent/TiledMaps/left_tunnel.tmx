@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="2020.05.27" orientation="orthogonal" renderorder="left-up" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="18" nextobjectid="37">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="left-up" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="18" nextobjectid="57">
  <tileset firstgid="1" source="Tilesets/VS Dungeon Set 01/_Tiled_Hanzo-Dungeon01VS.tsx"/>
  <tileset firstgid="1025" source="Tilesets/VS Dungeon Set 01/_Tiled_AT-A5-DungeonVX01-Ground.tsx"/>
  <tileset firstgid="1033" source="Tilesets/VS Dungeon Set 01/_Tiled_AT-A2-DungeonVX01-GroundTiles.tsx"/>
@@ -334,51 +334,91 @@
 </data>
   </layer>
  </group>
- <objectgroup color="#ff0000" id="17" name="Collision Layer">
-  <object id="1" x="0" y="336" width="64" height="16"/>
-  <object id="2" x="48" y="304" width="16" height="32"/>
-  <object id="3" x="64" y="304" width="80" height="16"/>
-  <object id="4" x="128" y="320" width="16" height="64"/>
-  <object id="5" x="144" y="368" width="48" height="16"/>
-  <object id="6" x="176" y="384" width="16" height="32"/>
-  <object id="7" x="192" y="400" width="112" height="16"/>
-  <object id="8" x="288" y="368" width="16" height="32"/>
-  <object id="9" x="304" y="368" width="48" height="16"/>
-  <object id="13" x="336" y="240" width="16" height="128"/>
-  <object id="14" x="352" y="240" width="32" height="16"/>
-  <object id="16" x="336" y="192" width="32" height="16"/>
-  <object id="17" x="336" y="160" width="16" height="32"/>
-  <object id="18" x="304" y="160" width="32" height="16"/>
-  <object id="19" x="304" y="128" width="16" height="32"/>
-  <object id="20" x="192" y="128" width="112" height="16"/>
-  <object id="21" x="176" y="128" width="16" height="48"/>
-  <object id="22" x="64" y="160" width="112" height="16"/>
-  <object id="23" x="32" y="176" width="48" height="16"/>
-  <object id="24" x="0" y="192" width="48" height="16"/>
-  <object id="25" x="224" y="208" width="64" height="128"/>
-  <object id="26" x="368" y="192" width="16" height="48"/>
- </objectgroup>
- <objectgroup color="#00ff00" id="18" name="Spawn Layer">
-  <object id="47" x="178.896" y="292.876">
-   <point/>
-  </object>
- </objectgroup>
- <objectgroup color="#00ffff" id="19" name="Walkable Layer">
-  <object id="27" x="0" y="208" width="48" height="128"/>
-  <object id="28" x="48" y="192" width="96" height="112"/>
-  <object id="29" x="80" y="176" width="256" height="16"/>
-  <object id="30" x="144" y="192" width="80" height="176"/>
-  <object id="31" x="192" y="368" width="96" height="32"/>
-  <object id="32" x="224" y="336" width="112" height="32"/>
-  <object id="33" x="288" y="192" width="48" height="144"/>
-  <object id="34" x="336" y="208" width="32" height="32"/>
-  <object id="35" x="224" y="192" width="64" height="16"/>
-  <object id="36" x="192" y="144" width="112" height="32"/>
- </objectgroup>
  <group id="21" name="Ops">
- <objectgroup color="#aa00ff" id="24" name="Portal Layer">
+  <objectgroup color="#ff0000" id="17" name="Collision Layer">
+   <object id="1" x="0" y="336" width="64" height="16"/>
+   <object id="2" x="48" y="304" width="16" height="32"/>
+   <object id="3" x="64" y="304" width="80" height="16"/>
+   <object id="4" x="128" y="320" width="16" height="64"/>
+   <object id="5" x="144" y="368" width="48" height="16"/>
+   <object id="6" x="176" y="384" width="16" height="32"/>
+   <object id="7" x="192" y="400" width="112" height="16"/>
+   <object id="8" x="288" y="368" width="16" height="32"/>
+   <object id="9" x="304" y="368" width="48" height="16"/>
+   <object id="13" x="336" y="240" width="16" height="128"/>
+   <object id="14" x="352" y="240" width="32" height="16"/>
+   <object id="16" x="336" y="192" width="32" height="16"/>
+   <object id="17" x="336" y="160" width="16" height="32"/>
+   <object id="18" x="304" y="160" width="32" height="16"/>
+   <object id="19" x="304" y="128" width="16" height="32"/>
+   <object id="20" x="192" y="128" width="112" height="16"/>
+   <object id="21" x="176" y="128" width="16" height="48"/>
+   <object id="22" x="64" y="160" width="112" height="16"/>
+   <object id="23" x="32" y="176" width="48" height="16"/>
+   <object id="24" x="0" y="192" width="48" height="16"/>
+   <object id="25" x="224" y="208" width="64" height="128"/>
+   <object id="26" x="368" y="192" width="16" height="48"/>
+  </objectgroup>
+  <objectgroup color="#00ffff" id="19" name="Walkable Layer">
+   <object id="27" x="0" y="208" width="48" height="128"/>
+   <object id="28" x="48" y="192" width="96" height="112"/>
+   <object id="29" x="80" y="176" width="256" height="16"/>
+   <object id="30" x="144" y="192" width="80" height="176"/>
+   <object id="31" x="192" y="368" width="96" height="32"/>
+   <object id="32" x="224" y="336" width="112" height="32"/>
+   <object id="33" x="288" y="192" width="48" height="144"/>
+   <object id="34" x="336" y="208" width="32" height="32"/>
+   <object id="35" x="224" y="192" width="64" height="16"/>
+   <object id="36" x="192" y="144" width="112" height="32"/>
+  </objectgroup>
+  <objectgroup color="#aa00ff" id="24" name="Portal Layer">
+   <object id="37" x="288" y="288" width="48" height="48"/>
+   <object id="38" x="288" y="208" width="48" height="48"/>
+   <object id="39" x="240" y="352" width="48" height="48"/>
+   <object id="40" x="144" y="320" width="48" height="48"/>
+   <object id="41" x="144" y="240" width="48" height="48"/>
+   <object id="43" x="112" y="224" width="48" height="48"/>
   </objectgroup>
   <objectgroup color="#dddd00" id="23" name="WS Layer">
+   <object id="44" x="313.038" y="184.835">
+    <point/>
+   </object>
+   <object id="45" x="344.777" y="214.708">
+    <point/>
+   </object>
+   <object id="46" x="314.905" y="263.873">
+    <point/>
+   </object>
+   <object id="47" x="314.905" y="294.367">
+    <point/>
+   </object>
+   <object id="48" x="296.234" y="346.022">
+    <point/>
+   </object>
+   <object id="49" x="201.016" y="359.091">
+    <point/>
+   </object>
+   <object id="50" x="215.952" y="364.07">
+    <point/>
+   </object>
+   <object id="51" x="202.883" y="205.373">
+    <point/>
+   </object>
+   <object id="52" x="74.6809" y="201.639">
+    <point/>
+   </object>
+   <object id="53" x="11.2021" y="295.612">
+    <point/>
+   </object>
+   <object id="54" x="27.383" y="294.99">
+    <point/>
+   </object>
+   <object id="55" x="70.3245" y="276.942">
+    <point/>
+   </object>
+   <object id="56" x="201.016" y="262.006">
+    <point/>
+   </object>
   </objectgroup>
-</group>
+ </group>
 </map>

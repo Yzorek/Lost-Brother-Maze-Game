@@ -90,7 +90,7 @@ namespace LBMG.Map
 
 #if DEBUG  // For clean tests sometimes
             bool __nomap = false,
-                __onlycrossroad = true,
+                __onlycrossroad = false,
                 __onetile = false;
 #endif
 
